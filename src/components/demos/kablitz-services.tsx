@@ -85,7 +85,7 @@ export function KablitzServices() {
       <div className="kx-progress" aria-hidden="true"><i style={{ transform: `scaleX(${(active + 1) / SERVICES.length})` }} /></div>
 
       {/* Narrow screens: every area as its own card. */}
-      <div className="kx-cards">
+      <div className="kx-cards" data-stack="">
         {SERVICES.map((s, i) => (
           <article key={s.title} className="kx-card">
             <div className="kx-card-media" data-clip={String(i * 0.05)}><Image src={`${IMG}/${s.image}.jpg`} alt={s.alt} fill sizes="100vw" /></div>

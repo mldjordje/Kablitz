@@ -13,6 +13,8 @@ import {
   FolderKanban,
   Globe,
   History,
+  MoreHorizontal,
+  X,
   LayoutDashboard,
   Newspaper,
   PackageSearch,
@@ -25,7 +27,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, type ReactNode } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { useRef, useState, type CSSProperties, type ReactNode } from "react";
 import type { LeadProfile } from "@/lib/lead-schema";
 import { KablitzAdminNews } from "./kablitz-admin-news";
 
@@ -141,6 +145,10 @@ const NAV: NavItem[] = [
   { key: "settings", label: "Einstellungen", icon: <Settings size={17} />, done: false },
 ];
 
+/** Primary modules in the phone tab bar; the rest sit in the "Mehr" sheet. */
+const TAB_KEYS: ViewKey[] = ["dashboard", "projects", "installed", "stock"];
+const TAB_LABELS: Partial<Record<ViewKey, string>> = { dashboard: "Übersicht", projects: "Projekte", installed: "Anlagen", stock: "Lager" };
+
 const PLACEHOLDER_COPY: Record<string, string> = {
   approvals: "Mehrstufige Freigabe von Bestellungen ab einem definierten Betrag.",
   movements: "Lückenlose Historie jeder Bestandsbewegung — exportierbar für Audits.",
@@ -150,7 +158,22 @@ const PLACEHOLDER_COPY: Record<string, string> = {
 
 export function KablitzAdminPanel({ lead }: { lead: LeadProfile }) {
   const [view, setView] = useState<ViewKey>("dashboard");
+  const [sheet, setSheet] = useState(false);
   const active = NAV.find((n) => n.key === view)!;
+  const contentRef = useRef<HTMLDivElement>(null);
+  const go = (key: ViewKey) => { setView(key); setSheet(false); window.scrollTo({ top: 0 }); };
+
+  // Every module enters the same way: blocks rise in turn, counters run up, bars fill.
+  useGSAP(() => {
+    const root = contentRef.current;
+    if (!root) return;
+    gsap.fromTo(root.querySelectorAll(":scope > *, [data-rise]"), { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 0.8, ease: "expo.out", stagger: 0.05, clearProps: "transform" });
+    root.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
+      const counter = { v: 0 };
+      gsap.to(counter, { v: Number(el.dataset.count), duration: 1.4, ease: "power3.out", delay: 0.15, onUpdate: () => { el.textContent = `${Math.round(counter.v)}${el.dataset.suffix ?? ""}`; } });
+    });
+    gsap.fromTo(root.querySelectorAll("[data-fill]"), { scaleX: 0 }, { scaleX: 1, transformOrigin: "0 50%", duration: 1.3, ease: "expo.out", stagger: 0.06, delay: 0.2 });
+  }, { dependencies: [view], scope: contentRef });
 
   return (
     <div className="kablitz-panel">
@@ -169,7 +192,7 @@ export function KablitzAdminPanel({ lead }: { lead: LeadProfile }) {
               key={item.key}
               type="button"
               className={`kablitz-panel-navitem ${view === item.key ? "is-active" : ""} ${item.done ? "" : "is-wip"}`}
-              onClick={() => setView(item.key)}
+              onClick={() => go(item.key)}
             >
               {item.icon}
               <span>{item.label}</span>
@@ -188,14 +211,15 @@ export function KablitzAdminPanel({ lead }: { lead: LeadProfile }) {
       <main className="kablitz-panel-main">
         <header className="kablitz-panel-topbar">
           <div>
-            <h1>{active.label}</h1>
+            <p className="kablitz-panel-kicker"><span className="kablitz-panel-live" /> System online</p>
+            <h1 key={view}>{view === "dashboard" ? "Guten Tag, Werkleitung." : active.label}</h1>
             <p>{lead.businessName} · Konzept-Vorschau</p>
           </div>
           <span className="kablitz-panel-demo-tag">{view === "news" ? "Vorschau · Speicherung nur in diesem Browser" : "Fiktive Daten · nichts wird gespeichert"}</span>
         </header>
 
-        <div className="kablitz-panel-content">
-          {view === "dashboard" && <DashboardView onJump={setView} />}
+        <div className="kablitz-panel-content" ref={contentRef}>
+          {view === "dashboard" && <DashboardView onJump={go} />}
           {view === "news" && <KablitzAdminNews />}
           {view === "projects" && <ProjectsView />}
           {view === "installed" && <InstalledView />}
@@ -207,6 +231,31 @@ export function KablitzAdminPanel({ lead }: { lead: LeadProfile }) {
           {!active.done && <RedPlaceholder title={active.label} copy={PLACEHOLDER_COPY[active.key]} />}
         </div>
       </main>
+
+      {/* Phones: native-style tab bar plus a sheet for the remaining modules */}
+      <nav className="kablitz-tabbar" aria-label="Module">
+        {TAB_KEYS.map((key) => (
+          <button key={key} type="button" aria-current={view === key ? "page" : undefined} onClick={() => go(key)}>
+            {NAV.find((n) => n.key === key)!.icon}<span>{TAB_LABELS[key]}</span>
+          </button>
+        ))}
+        <button type="button" aria-expanded={sheet} aria-current={!TAB_KEYS.includes(view) ? "page" : undefined} onClick={() => setSheet(true)}>
+          <MoreHorizontal size={17} /><span>Mehr</span>
+        </button>
+      </nav>
+      <div className="kablitz-sheet" data-open={sheet} onClick={() => setSheet(false)}>
+        <div className="kablitz-sheet-panel" role="dialog" aria-label="Alle Module" onClick={(e) => e.stopPropagation()}>
+          <div className="kablitz-sheet-head"><strong>Alle Module</strong><button type="button" aria-label="Schließen" onClick={() => setSheet(false)}><X size={18} /></button></div>
+          <div className="kablitz-sheet-grid">
+            {NAV.filter((n) => !TAB_KEYS.includes(n.key)).map((item) => (
+              <button key={item.key} type="button" className={view === item.key ? "is-active" : ""} onClick={() => go(item.key)}>
+                {item.icon}<span>{item.label}</span>{!item.done && <em>bald</em>}
+              </button>
+            ))}
+          </div>
+          <div className="kablitz-sheet-links"><Link href="/projekt">Projektübersicht</Link><Link href="/">Zurück zur Demo</Link></div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -245,44 +294,135 @@ function RedPlaceholder({ title, copy }: { title: string; copy: string }) {
   );
 }
 
+const TREND: Record<string, number[]> = {
+  projects: [3, 3, 4, 4, 5, 4, 5],
+  plants: [3, 3, 4, 4, 4, 5, 5],
+  service: [0, 1, 1, 0, 1, 2, 2],
+  foundry: [64, 70, 68, 75, 79, 77, 82],
+  stock: [1, 1, 2, 2, 1, 3, 3],
+  late: [0, 1, 0, 1, 1, 2, 2],
+};
+
+const ACTIVITY = [
+  { time: "08:12", text: "Abguss Rippenplatte RP-12 in Qualitätsprüfung", tone: "check" },
+  { time: "07:45", text: "Lieferung Dichtungssätze WT-Serie vollständig eingegangen", tone: "ok" },
+  { time: "Gestern", text: "Stahlhandel Tauber: Liefertermin um 8 Tage überschritten", tone: "danger" },
+  { time: "Gestern", text: "Service-Retrofit Riga: Inbetriebnahme gestartet", tone: "active" },
+  { time: "Mo.", text: "Angebot Wärmerückgewinnung Linz versendet", tone: "plan" },
+];
+
+function Sparkline({ values }: { values: number[] }) {
+  const max = Math.max(...values);
+  const min = Math.min(...values);
+  const pts = values.map((v, i) => `${(i / (values.length - 1)) * 100},${28 - ((v - min) / Math.max(1, max - min)) * 24}`).join(" ");
+  return (
+    <svg className="kablitz-spark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
+      <polygon points={`0,30 ${pts} 100,30`} className="kablitz-spark-area" />
+      <polyline points={pts} className="kablitz-spark-line" pathLength={1} />
+    </svg>
+  );
+}
+
+function Gauge({ value, label }: { value: number; label: string }) {
+  return (
+    <div className="kablitz-gauge" style={{ "--v": value } as CSSProperties}>
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="50" className="kablitz-gauge-track" pathLength={100} />
+        <circle cx="60" cy="60" r="50" className="kablitz-gauge-value" pathLength={100} />
+      </svg>
+      <div><strong data-count={value} data-suffix="%">{value}%</strong><span>{label}</span></div>
+    </div>
+  );
+}
+
 function DashboardView({ onJump }: { onJump: (v: ViewKey) => void }) {
-  const tiles: { label: string; value: string | number; tone: string; to: ViewKey }[] = [
-    { label: "Laufende Projekte", value: PROJECTS.filter((p) => p.phase !== "Service").length, tone: "neutral", to: "projects" },
-    { label: "Anlagen weltweit", value: PLANTS.length, tone: "ok", to: "installed" },
-    { label: "Service überfällig", value: overdueServices.length, tone: "danger", to: "installed" },
-    { label: "Gießerei-Auslastung", value: `${FOUNDRY_CAPACITY}%`, tone: "warn", to: "foundry" },
-    { label: "Unter Mindestbestand", value: lowStock.length, tone: "warn", to: "stock" },
-    { label: "Lieferungen verspätet", value: lateOrders.length, tone: "danger", to: "orders" },
+  const tiles: { label: string; value: number; suffix?: string; tone: string; to: ViewKey; trend: number[] }[] = [
+    { label: "Laufende Projekte", value: PROJECTS.filter((p) => p.phase !== "Service").length, tone: "neutral", to: "projects", trend: TREND.projects },
+    { label: "Anlagen weltweit", value: PLANTS.length, tone: "ok", to: "installed", trend: TREND.plants },
+    { label: "Service überfällig", value: overdueServices.length, tone: "danger", to: "installed", trend: TREND.service },
+    { label: "Gießerei-Auslastung", value: FOUNDRY_CAPACITY, suffix: "%", tone: "warn", to: "foundry", trend: TREND.foundry },
+    { label: "Unter Mindestbestand", value: lowStock.length, tone: "warn", to: "stock", trend: TREND.stock },
+    { label: "Lieferungen verspätet", value: lateOrders.length, tone: "danger", to: "orders", trend: TREND.late },
   ];
+  const perPhase = PHASES.map((phase) => ({ phase, count: PROJECTS.filter((p) => p.phase === phase).length }));
+  const maxPhase = Math.max(...perPhase.map((p) => p.count), 1);
+  const volume = PROJECTS.reduce((sum, p) => sum + p.budget, 0);
   return (
     <>
       <div className="kablitz-admin-alerts">
         {overdueServices.length > 0 && (
-          <article className="kablitz-admin-alert is-danger">
+          <button type="button" className="kablitz-admin-alert is-danger" onClick={() => onJump("installed")}>
             <AlertTriangle size={18} />
             <span>{overdueServices.length} Anlagen mit überfälligem Service — Wartung einplanen.</span>
-          </article>
+          </button>
         )}
         {lateOrders.length > 0 && (
-          <article className="kablitz-admin-alert is-warning">
+          <button type="button" className="kablitz-admin-alert is-warning" onClick={() => onJump("orders")}>
             <Clock size={18} />
             <span>{lateOrders.length} Bestellung(en) überfällig — Lieferant kontaktieren.</span>
-          </article>
+          </button>
         )}
         {lowStock.length > 0 && (
-          <article className="kablitz-admin-alert is-warning">
+          <button type="button" className="kablitz-admin-alert is-warning" onClick={() => onJump("stock")}>
             <PackageSearch size={18} />
             <span>{lowStock.length} Artikel unter Mindestbestand — Nachbestellung erforderlich.</span>
-          </article>
+          </button>
         )}
       </div>
+
       <div className="kablitz-panel-tiles kablitz-panel-tiles-6">
         {tiles.map((t) => (
-          <button key={t.label} type="button" className={`kablitz-panel-tile tone-${t.tone}`} onClick={() => onJump(t.to)}>
-            <strong>{t.value}</strong>
+          <button key={t.label} type="button" className={`kablitz-panel-tile tone-${t.tone}`} onClick={() => onJump(t.to)} data-rise="">
+            <strong data-count={t.value} data-suffix={t.suffix ?? ""}>{t.value}{t.suffix}</strong>
             <span>{t.label}</span>
+            <Sparkline values={t.trend} />
           </button>
         ))}
+      </div>
+
+      <div className="kablitz-dash-grid">
+        <section className="kablitz-dash-card kablitz-dash-foundry" data-rise="">
+          <header><h2><Factory size={17} /> Gießerei</h2><button type="button" onClick={() => onJump("foundry")}>Planung</button></header>
+          <Gauge value={FOUNDRY_CAPACITY} label="Auslastung diese Woche" />
+          <ul className="kablitz-dash-mini">
+            {CASTS.slice(0, 3).map((c) => <li key={c.part + c.project}><span>{c.part}</span><CastStatus status={c.status} /></li>)}
+          </ul>
+        </section>
+
+        <section className="kablitz-dash-card" data-rise="">
+          <header><h2><FolderKanban size={17} /> Projekt-Pipeline</h2><button type="button" onClick={() => onJump("projects")}>Alle</button></header>
+          <p className="kablitz-dash-big"><strong>{(volume / 1e6).toLocaleString("de-DE", { maximumFractionDigits: 1 })} Mio. €</strong> Auftragsvolumen</p>
+          <div className="kablitz-dash-phases">
+            {perPhase.map(({ phase, count }) => (
+              <div key={phase}>
+                <span>{phase}</span>
+                <span className="kablitz-dash-bar"><i data-fill="" style={{ width: `${(count / maxPhase) * 100}%` }} /></span>
+                <b>{count}</b>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="kablitz-dash-card" data-rise="">
+          <header><h2><Star size={17} /> Liefertreue</h2><button type="button" onClick={() => onJump("suppliers")}>Details</button></header>
+          <div className="kablitz-dash-phases">
+            {SUPPLIER_SCORES.map((s) => (
+              <div key={s.supplier}>
+                <span>{s.supplier}</span>
+                <span className="kablitz-dash-bar"><i data-fill="" className={s.onTimeRate < 75 ? "is-low" : ""} style={{ width: `${s.onTimeRate}%` }} /></span>
+                <b className={s.onTimeRate < 75 ? "is-low" : ""}>{s.onTimeRate}%</b>
+              </div>
+            ))}
+          </div>
+          <p className="kablitz-dash-foot">Ø {avgOnTime}% pünktlich über alle Lieferanten</p>
+        </section>
+
+        <section className="kablitz-dash-card" data-rise="">
+          <header><h2><History size={17} /> Aktivität</h2></header>
+          <ol className="kablitz-dash-feed">
+            {ACTIVITY.map((a) => <li key={a.text} className={`tone-${a.tone}`}><time>{a.time}</time><span>{a.text}</span></li>)}
+          </ol>
+        </section>
       </div>
     </>
   );

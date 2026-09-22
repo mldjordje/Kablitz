@@ -173,7 +173,7 @@ export function KablitzMotion() {
       });
     }
 
-    // Gallery: vertical scroll drives a horizontal rail on wide screens.
+    // Services explorer pins on wide screens (narrow screens get stacked cards below).
     const mm = gsap.matchMedia();
     mm.add("(min-width: 900px)", () => {
       // Pins are created in page order (services before gallery) so their spacing is measured correctly.
@@ -189,17 +189,52 @@ export function KablitzMotion() {
           },
         });
       }
-
-      const section = document.querySelector<HTMLElement>(".kablitz-gallery");
-      const track = section?.querySelector<HTMLElement>(".kablitz-gallery-track");
-      const bar = section?.querySelector<HTMLElement>(".kablitz-gallery-progress i");
-      if (!section || !track) return;
-      const distance = () => Math.max(0, track.scrollWidth - section.clientWidth);
-      const tl = gsap.timeline({ scrollTrigger: { trigger: section, start: "top top", end: () => `+=${distance()}`, pin: true, scrub: 0.8, invalidateOnRefresh: true } });
-      tl.to(track, { x: () => -distance(), ease: "none" }, 0);
-      if (bar) tl.fromTo(bar, { scaleX: 0 }, { scaleX: 1, ease: "none" }, 0);
-      track.querySelectorAll(".kablitz-gallery-media").forEach((media) => tl.fromTo(media, { xPercent: -7 }, { xPercent: 7, ease: "none" }, 0));
     });
+
+    // Gallery: vertical scroll drives a horizontal rail at every width.
+    const gallery = document.querySelector<HTMLElement>(".kablitz-gallery");
+    const galleryTrack = gallery?.querySelector<HTMLElement>(".kablitz-gallery-track");
+    if (gallery && galleryTrack) {
+      const bar = gallery.querySelector<HTMLElement>(".kablitz-gallery-progress i");
+      const distance = () => Math.max(0, galleryTrack.scrollWidth - gallery.clientWidth);
+      const tl = gsap.timeline({ scrollTrigger: { trigger: gallery, start: "top top", end: () => `+=${distance()}`, pin: true, scrub: 0.8, invalidateOnRefresh: true } });
+      tl.to(galleryTrack, { x: () => -distance(), ease: "none" }, 0);
+      if (bar) tl.fromTo(bar, { scaleX: 0 }, { scaleX: 1, ease: "none" }, 0);
+      galleryTrack.querySelectorAll(".kablitz-gallery-media").forEach((media) => tl.fromTo(media, { xPercent: -7 }, { xPercent: 7, ease: "none" }, 0));
+    }
+
+    // Narrow screens: cards pile up — each sticks, the one beneath shrinks and dims as the next lands.
+    mm.add("(max-width: 899px)", () => {
+      gsap.utils.toArray<HTMLElement>("[data-stack]").forEach((stack) => {
+        const cards = Array.from(stack.children) as HTMLElement[];
+        cards.forEach((card, i) => {
+          const next = cards[i + 1];
+          gsap.fromTo(card, { autoAlpha: 0, y: 60 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: "expo.out", scrollTrigger: { trigger: card, start: "top 92%", once: true } });
+          if (next) gsap.to(card, { scale: 0.9, filter: "brightness(.55)", ease: "none", scrollTrigger: { trigger: next, start: "top bottom", end: "top 20%", scrub: true } });
+        });
+      });
+    });
+    mm.add("(min-width: 900px)", () => {
+      const grid = document.querySelector("[data-stack].kablitz-cert-grid");
+      if (grid) gsap.from(grid.children, { autoAlpha: 0, y: 70, rotateX: -14, transformPerspective: 900, transformOrigin: "50% 0%", duration: 1.15, ease: "expo.out", stagger: 0.11, clearProps: "transform", scrollTrigger: once(grid, "top 84%") });
+    });
+
+    // Timeline: the rule draws with scroll (vertical on phones) and each milestone lights up as it is reached.
+    const timeline = document.querySelector<HTMLElement>(".kablitz-timeline");
+    if (timeline) {
+      const rule = timeline.querySelector(".kablitz-timeline-rule");
+      const items = gsap.utils.toArray<HTMLElement>(".kablitz-timeline li");
+      mm.add({ narrow: "(max-width: 700px)", wide: "(min-width: 701px)" }, (ctx) => {
+        const narrow = ctx.conditions?.narrow;
+        gsap.fromTo(rule, narrow ? { scaleY: 0, scaleX: 1 } : { scaleX: 0, scaleY: 1 }, { scaleX: 1, scaleY: 1, transformOrigin: "0 0", ease: "none", scrollTrigger: { trigger: timeline, start: "top 80%", end: narrow ? "bottom 60%" : "top 35%", scrub: true } });
+        items.forEach((li, i) => {
+          ScrollTrigger.create({
+            trigger: narrow ? li : timeline, start: narrow ? "top 70%" : `top ${80 - i * 15}%`,
+            onEnter: () => li.classList.add("is-on"), onLeaveBack: () => li.classList.remove("is-on"),
+          });
+        });
+      });
+    }
 
     // Images and fonts change layout after mount; re-measure once they settle.
     const refresh = () => ScrollTrigger.refresh();

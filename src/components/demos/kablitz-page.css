@@ -987,3 +987,55 @@ html.lenis { scroll-behavior: auto; }
   .kablitz-story-chips > span[data-active="true"] { padding: 6px 10px; font-size: 11px; }
 }
 .kablitz-story-callout[data-align="left"] { flex-direction: row-reverse; padding: 6px 9px 6px 11px; transform-origin: 100% 50%; transform: translate(calc(-100% - 14px),-50%) scale(calc(1 / var(--cam-z))); }
+
+/* Mobile menu */
+.kmenu-toggle { display: none; position: relative; z-index: 42; width: 44px; height: 44px; border: 0; border-radius: 50%; background: #fff; cursor: pointer; }
+.kmenu-toggle i { position: absolute; left: 13px; right: 13px; height: 2px; border-radius: 2px; background: var(--kablitz-red); transition: transform .5s cubic-bezier(.7,0,.2,1), top .5s cubic-bezier(.7,0,.2,1); }
+.kmenu-toggle i:first-child { top: 17px; } .kmenu-toggle i:last-child { top: 25px; }
+.kmenu-toggle[data-open="true"] i:first-child { top: 21px; transform: rotate(45deg); }
+.kmenu-toggle[data-open="true"] i:last-child { top: 21px; transform: rotate(-45deg); }
+.kmenu { position: fixed; inset: 0; z-index: 41; visibility: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 120px 24px 36px; background: radial-gradient(circle at 100% 0%, #e0142c, var(--kablitz-red) 40%, #7e0210); color: #fff; }
+.kmenu nav { display: grid; gap: 4px; }
+.kmenu-mask { display: block; overflow: hidden; }
+.kmenu-link { display: flex; align-items: baseline; gap: 14px; font: 750 clamp(40px, 11vw, 64px)/1.08 var(--font-display); letter-spacing: -.05em; }
+.kmenu-link small { font: 500 12px var(--font-geist-mono), monospace; letter-spacing: 0; opacity: .6; }
+.kmenu-foot { display: grid; gap: 12px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.25); }
+.kmenu-foot a { display: inline-flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; }
+html.kmenu-open { overflow: hidden; }
+@media (max-width: 880px) { .kmenu-toggle { display: block; } }
+@media (max-width: 560px) { .kablitz-page .kablitz-header-actions > .kablitz-btn-primary { display: none; } }
+
+/* Touch feedback */
+@media (hover: none) {
+  .kablitz-btn:active, .kablitz-videoband-btn:active, .kx-subs a:active, .kmap-card a:active { transform: scale(.95); }
+  .kablitz-cert-card:active, .kx-card:active { transform: scale(.98); }
+}
+
+/* Gallery rail pins at every width */
+.kablitz-gallery { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; }
+.kablitz-gallery-track { overflow: visible; width: max-content; scroll-snap-type: none; }
+@media (max-width: 899px) {
+  .kablitz-gallery-item { flex-basis: 74vw; }
+  .kablitz-gallery-head { padding-top: 90px; }
+}
+
+/* Stacked cards on phones */
+@media (max-width: 899px) {
+  .kx-cards[data-stack] { gap: 18px; padding-bottom: 40vh; }
+  .kx-cards[data-stack] > .kx-card { position: sticky; top: 90px; padding: 18px; border-radius: 22px; background: #111a22; box-shadow: 0 -20px 40px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.07); transform-origin: 50% 0; will-change: transform; }
+  .kablitz-cert-grid[data-stack] { gap: 18px; padding-bottom: 12vh; }
+  .kablitz-cert-grid[data-stack] > .kablitz-cert-card { position: sticky; top: 100px; background: #fff; box-shadow: 0 -18px 40px -24px rgba(0,0,0,.35); transform-origin: 50% 0; }
+}
+
+/* Timeline — milestones light up as the rule reaches them */
+.kablitz-timeline li::before { transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s, background .5s; background: #d9d9d9; box-shadow: none; }
+.kablitz-timeline li.is-on::before { background: var(--kablitz-red); box-shadow: 0 0 0 6px rgba(192,4,24,.16); transform: scale(1.3); }
+.kablitz-timeline li strong, .kablitz-timeline li span { transition: opacity .6s, translate .6s cubic-bezier(.2,.8,.2,1); }
+.kablitz-timeline li:not(.is-on) strong, .kablitz-timeline li:not(.is-on) span { opacity: .25; translate: 0 10px; }
+@media (max-width: 700px) {
+  .kablitz-timeline { padding-left: 30px; }
+  .kablitz-timeline-rule { position: absolute; left: 5px; top: 0; bottom: 0; width: 2px; height: auto; }
+  .kablitz-timeline ol { gap: 34px; }
+  .kablitz-timeline li { padding-top: 0; }
+  .kablitz-timeline li::before { top: 8px; left: -30px; }
+}

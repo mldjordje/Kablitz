@@ -25,6 +25,7 @@ import { KablitzIntro } from "./kablitz-intro";
 import { KablitzSmoothScroll } from "./kablitz-smooth-scroll";
 import { KablitzReveal } from "./kablitz-reveal";
 import { KablitzMarquee } from "./kablitz-marquee";
+import { KablitzMenu } from "./kablitz-menu";
 import "./kablitz-page.css";
 
 const NAV_ITEMS = [
@@ -106,6 +107,7 @@ function KablitzHeader({ lead }: { lead: LeadProfile }) {
           </a>
         )}
         <a className="kablitz-btn kablitz-btn-primary" href="#kontakt">Kontakt</a>
+        <KablitzMenu items={[...NAV_ITEMS, { label: "Projekt", href: "/projekt" }]} phone={lead.contact.phone} phoneHref={telephoneHref(lead.contact.phone)} />
       </div>
       <span className="kablitz-progress" aria-hidden="true" />
     </header>
@@ -205,8 +207,8 @@ function Company() {
         </p>
       </div>
       <div className="kablitz-timeline">
-        <span className="kablitz-timeline-rule" data-line="" aria-hidden="true" />
-        <ol data-stagger="">
+        <span className="kablitz-timeline-rule" aria-hidden="true" />
+        <ol>
           {milestones.map((m) => (
             <li key={m.year}><strong>{m.year}</strong><span>{m.text}</span></li>
           ))}
@@ -224,7 +226,7 @@ function Certifications({ lead }: { lead: LeadProfile }) {
         <p className="kablitz-eyebrow" data-fade="">Qualität</p>
         <h2 data-split="">Worauf Sie sich verlassen können</h2>
       </div>
-      <div className="kablitz-cert-grid" data-stagger="">
+      <div className="kablitz-cert-grid" data-stack="">
         {lead.certifications.map((cert, index) => (
           <article className="kablitz-cert-card" key={cert.title} data-tilt="">
             <span className="kablitz-card-number">{String(index + 1).padStart(2, "0")}</span>
