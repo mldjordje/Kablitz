@@ -18,15 +18,12 @@ import Link from "next/link";
 import type { LeadProfile, MediaAsset } from "@/lib/lead-schema";
 import { telephoneHref } from "@/lib/lead-schema";
 import { MotionLayer } from "@/components/motion-layer";
-import { KablitzProcessStory } from "./kablitz-video-story";
-import { KablitzEmberCanvas } from "./kablitz-ember-canvas";
+import { KablitzProcessStory } from "./kablitz-process-story";
+import { KablitzFire } from "./kablitz-fire";
 import { KablitzStats } from "./kablitz-stats";
-import { KablitzVideoBand } from "./kablitz-video-band";
+import { KablitzFoundryBand } from "./kablitz-foundry-band";
+import { KablitzMotion } from "./kablitz-motion";
 import "./kablitz-page.css";
-
-function reveal(index = 0): { "data-reveal": ""; style: CSSProperties } {
-  return { "data-reveal": "", style: { "--i": index } as CSSProperties };
-}
 
 const NAV_ITEMS = ["Leistungen", "Unternehmen", "Zertifikate", "Kontakt"];
 
@@ -49,6 +46,7 @@ export function KablitzPage({ lead }: { lead: LeadProfile }) {
   return (
     <main className="kablitz-page" id="top">
       <MotionLayer />
+      <KablitzMotion />
       <p className="kablitz-disclaimer">Unverbindliches Designkonzept — nicht die offizielle Website des Unternehmens</p>
 
       <KablitzHeader lead={lead} />
@@ -57,19 +55,19 @@ export function KablitzPage({ lead }: { lead: LeadProfile }) {
 
       <KablitzStats />
 
-      <Services />
-
       <KablitzProcessStory />
 
-      <KablitzVideoBand />
+      <Services />
 
-      <Gallery assets={ordered.slice(1, 6)} />
+      <KablitzFoundryBand />
+
+      <Gallery assets={ordered.slice(7, 14)} />
 
       <Company />
 
       <Certifications lead={lead} />
 
-      <AdminCta lead={lead} />
+      <AdminCta />
 
       <ContactBand lead={lead} phoneHref={phoneHref} />
 
@@ -92,7 +90,7 @@ function KablitzHeader({ lead }: { lead: LeadProfile }) {
       <div className="kablitz-header-actions">
         {lead.contact.mapsUrl && (
           <a className="kablitz-btn kablitz-btn-ghost" href={lead.contact.mapsUrl} target="_blank" rel="noreferrer">
-            <MapPin size={15} /> Route
+            <MapPin size={15} /> Standort
           </a>
         )}
         <a className="kablitz-btn kablitz-btn-primary" href="#kontakt">Kontakt</a>
@@ -107,23 +105,24 @@ function Hero({ lead, heroImage, phoneHref }: { lead: LeadProfile; heroImage?: M
       {heroImage && (
         <div className="kablitz-hero-media" data-parallax="0.06">
           <Image src={heroImage.src} alt={heroImage.alt} fill sizes="100vw" unoptimized priority />
-          <KablitzEmberCanvas />
           <div className="kablitz-hero-scrim" />
         </div>
       )}
+      <KablitzFire />
       <div className="kablitz-hero-copy">
-        <p className="kablitz-eyebrow" {...reveal(0)}>Seit 1901 · Lauda-Königshofen</p>
+        <p className="kablitz-eyebrow" data-fade="0.1">Seit 1901 · Lauda-Königshofen</p>
         <h1 className="kablitz-hero-title">
-          {["Aus", "Biomasse", "wird", "Energie."].map((word, i) => (
+          {["Energie", "aus", "Biomasse", "und", "Abfällen."].map((word, i) => (
             <span className="kablitz-hero-word" style={{ "--w": i } as CSSProperties} key={word + i}>
               {word}
             </span>
           ))}
         </h1>
-        <p className="kablitz-hero-desc" {...reveal(2)}>
-          Komplette Heizkraftwerke, Kessel und Feuerungen — aus eigener Fertigung.
+        <p className="kablitz-hero-desc" data-fade="0.55">
+          Kablitz plant und liefert Biomasse-Heizkraftwerke, Kesselanlagen und
+          Heißgaserzeuger. Mit eigener Gießerei und Stahlfertigung.
         </p>
-        <div className="kablitz-hero-actions" {...reveal(3)}>
+        <div className="kablitz-hero-actions" data-fade="0.7">
           {phoneHref && (
             <a className="kablitz-btn kablitz-btn-primary" href={phoneHref}>
               <Phone size={16} /> Anrufen
@@ -131,12 +130,12 @@ function Hero({ lead, heroImage, phoneHref }: { lead: LeadProfile; heroImage?: M
           )}
           {lead.contact.mapsUrl && (
             <a className="kablitz-btn kablitz-btn-ghost" href={lead.contact.mapsUrl} target="_blank" rel="noreferrer">
-              <MapPin size={16} /> Route
+              <MapPin size={16} /> Standort
             </a>
           )}
         </div>
-        <a className="kablitz-scroll-cue" href="#leistungen" {...reveal(4)}>
-          <ArrowDown size={15} /> Mehr entdecken
+        <a className="kablitz-scroll-cue" href="#anlage" data-fade="0.85">
+          <ArrowDown size={15} /> Die Anlage entdecken
         </a>
       </div>
       {heroImage && (
@@ -150,26 +149,28 @@ function Hero({ lead, heroImage, phoneHref }: { lead: LeadProfile; heroImage?: M
 
 function Services() {
   const services = [
-    { title: "Feuerungen", description: "Wasser- und luftgekühlte Roste zur Verbrennung von Biomasse und Abfällen." },
-    { title: "Energiezentralen", description: "Dampfkessel, Thermoölanlagen, Fernwärme und Stromerzeugung." },
-    { title: "Wärmetauscher", description: "Wärmerückgewinnung aus Abgasen senkt die Energiekosten." },
-    { title: "Gießerei", description: "Eigene Roststäbe und Rippenplatten, auch für Fremdfabrikate." },
-    { title: "Brennstoffe", description: "Lösungen für nahezu jeden Festbrennstoff." },
-    { title: "Service", description: "Betreuung der Anlage über die gesamte Lebensdauer." },
+    { title: "Feuerungen", description: "Rostfeuerungen mit Luft- oder Wasserkühlung für unterschiedliche Brennstoffe.", path: "feuerungen" },
+    { title: "Energiezentralen", description: "Individuelle Anlagenkonzepte mit Dampf, Thermalöl, Heißgas oder Heißwasser.", path: "energiezentralen" },
+    { title: "Wärmetauscher", description: "Wärme aus Abgasen zurückgewinnen und für den Betrieb nutzbar machen.", path: "waermetauscher" },
+    { title: "Gießerei", description: "Gussteile und eigener Modellbau am Standort Lauda, auch für andere Anlagenhersteller.", path: "wir-giessen-selbst" },
+    { title: "Brennstoffe", description: "Technik für Holz, Agrarreststoffe und Ersatzbrennstoffe, einschließlich Multifuel-Anwendungen.", path: "brennstoffe" },
+    { title: "Service", description: "Originalteile, Inspektion, Instandhaltung und Modernisierung bestehender Anlagen.", path: "service" },
   ];
   return (
     <section className="kablitz-services" id="leistungen">
-      <div className="kablitz-section-head" {...reveal(0)}>
-        <p className="kablitz-eyebrow">Leistungen</p>
-        <h2>Was wir bauen</h2>
+      <div className="kablitz-section-head">
+        <p className="kablitz-eyebrow" data-fade="">Leistungen</p>
+        <h2 data-split="">Technik für Ihre Energieversorgung.</h2>
       </div>
-      <div className="kablitz-service-grid">
+      <div className="kablitz-service-grid" data-stagger="">
         {services.map((service, index) => (
-          <article className="kablitz-service-card" key={service.title} {...reveal(index)}>
+          <a className="kablitz-service-card" key={service.title} href={`https://www.kablitz.de/${service.path}/`} target="_blank" rel="noreferrer">
+            <span className="kablitz-card-index">{String(index + 1).padStart(2, "0")}</span>
             <span className="kablitz-card-icon">{SERVICE_ICONS[index]}</span>
             <h3>{service.title}</h3>
             <p>{service.description}</p>
-          </article>
+            <span className="kablitz-service-link">Mehr über {service.title} <ArrowUpRight size={16} /></span>
+          </a>
         ))}
       </div>
     </section>
@@ -179,12 +180,21 @@ function Services() {
 function Gallery({ assets }: { assets: MediaAsset[] }) {
   if (!assets.length) return null;
   return (
-    <section className="kablitz-gallery">
+    <section className="kablitz-gallery" aria-label="Gussteile aus eigener Fertigung">
+      <div className="kablitz-gallery-head">
+        <p className="kablitz-eyebrow" data-fade="">Gießerei Lauda</p>
+        <h2 data-split="">Gussteile aus eigener Fertigung.</h2>
+        <p data-fade="0.2">Roststäbe, Rippenplatten und weitere Gusskomponenten für Feuerungsanlagen und Wärmetauscher.</p>
+        <div className="kablitz-gallery-progress" aria-hidden="true"><i /></div>
+      </div>
       <div className="kablitz-gallery-track" role="list">
         {assets.map((asset, index) => (
-          <div className="kablitz-gallery-item" role="listitem" key={asset.src} {...reveal(index)}>
-            <Image src={asset.src} alt={asset.alt} fill sizes="(max-width: 760px) 78vw, 30vw" unoptimized />
-          </div>
+          <figure className="kablitz-gallery-item" role="listitem" key={asset.src} data-clip={String(index * 0.08)}>
+            <div className="kablitz-gallery-media">
+              <Image src={asset.src} alt="Gussteil aus der Kablitz-Gießerei" fill sizes="(max-width: 900px) 78vw, 40vw" unoptimized />
+            </div>
+            <figcaption>{String(index + 1).padStart(2, "0")}</figcaption>
+          </figure>
         ))}
       </div>
     </section>
@@ -192,15 +202,31 @@ function Gallery({ assets }: { assets: MediaAsset[] }) {
 }
 
 function Company() {
+  const milestones = [
+    { year: "1901", text: "Gründung in Riga" },
+    { year: "1950er", text: "Neubeginn in Deutschland, heute in Lauda-Königshofen" },
+    { year: "Heute", text: "Kunden in Europa, Asien, Amerika, Australien und Neuseeland" },
+  ];
   return (
     <section className="kablitz-company" id="unternehmen">
-      <div className="kablitz-company-copy" {...reveal(0)}>
-        <p className="kablitz-eyebrow">Über uns</p>
-        <h2>Seit 1901 in Familienhand.</h2>
-        <p>
-          Gegründet 1901 in Riga, seit den 1950ern in Lauda-Königshofen. Eigene Gießerei, eigene
-          Stahlfertigung, über 70 Mitarbeiter — Anlagen auf fünf Kontinenten.
+      <span className="kablitz-company-year" aria-hidden="true" data-drift="">1901</span>
+      <div className="kablitz-company-copy">
+        <p className="kablitz-eyebrow" data-fade="">Über uns</p>
+        <h2 data-split="">In Lauda verwurzelt.<br />Weltweit im Einsatz.</h2>
+        <p className="kablitz-company-lead" data-scrub-words="">
+          1901 in Riga gegründet und seit den 1950er-Jahren in Deutschland:
+          Das inhabergeführte Unternehmen verbindet Anlagenbau mit eigener Fertigung.
+          Zu den Kunden gehören Holzverarbeiter, Sägewerke, Energieversorger und Kommunen
+          in Europa, Asien, Amerika, Australien und Neuseeland.
         </p>
+      </div>
+      <div className="kablitz-timeline">
+        <span className="kablitz-timeline-rule" data-line="" aria-hidden="true" />
+        <ol data-stagger="">
+          {milestones.map((m) => (
+            <li key={m.year}><strong>{m.year}</strong><span>{m.text}</span></li>
+          ))}
+        </ol>
       </div>
     </section>
   );
@@ -210,13 +236,13 @@ function Certifications({ lead }: { lead: LeadProfile }) {
   if (!lead.certifications?.length) return null;
   return (
     <section className="kablitz-certifications" id="zertifikate">
-      <div className="kablitz-section-head" {...reveal(0)}>
-        <p className="kablitz-eyebrow">Qualität</p>
-        <h2>Worauf Sie sich verlassen können</h2>
+      <div className="kablitz-section-head">
+        <p className="kablitz-eyebrow" data-fade="">Qualität</p>
+        <h2 data-split="">Worauf Sie sich verlassen können</h2>
       </div>
-      <div className="kablitz-cert-grid">
+      <div className="kablitz-cert-grid" data-stagger="">
         {lead.certifications.map((cert, index) => (
-          <article className="kablitz-cert-card" key={cert.title} {...reveal(index)}>
+          <article className="kablitz-cert-card" key={cert.title}>
             <span className="kablitz-card-number">{String(index + 1).padStart(2, "0")}</span>
             <h3>{cert.title}</h3>
             {cert.description && <p>{cert.description}</p>}
@@ -227,43 +253,42 @@ function Certifications({ lead }: { lead: LeadProfile }) {
   );
 }
 
-function AdminCta({ lead }: { lead: LeadProfile }) {
+function AdminCta() {
   return (
-    <section className="kablitz-admin-cta" {...reveal(0)}>
+    <section className="kablitz-admin-cta" data-expand="">
+      <span className="kablitz-admin-cta-glow" aria-hidden="true" />
       <div className="kablitz-admin-cta-copy">
-        <p className="kablitz-eyebrow">Software-Konzept</p>
-        <h2>Nie wieder leeres Lager oder vergessene Lieferung.</h2>
-        <p>Ein Blick in das geplante Beschaffungs- und Lagersystem.</p>
+        <p className="kablitz-eyebrow" data-fade="">Service & Modernisierung</p>
+        <h2 data-split="">Auch nach der Inbetriebnahme an Ihrer Seite.</h2>
+        <p data-fade="0.25">Inspektionen, Wartung und Umbauten für bestehende Anlagen. Kablitz unterstützt auch bei einem Brennstoffwechsel oder veränderten Leistungsanforderungen.</p>
       </div>
-      <Link className="kablitz-btn kablitz-btn-primary kablitz-admin-btn" href="/admin">
-        <LayoutDashboard size={16} /> Control-Panel ansehen <ArrowUpRight size={16} />
-      </Link>
+      <a className="kablitz-btn kablitz-btn-primary kablitz-admin-btn" data-fade="0.4" href="https://www.kablitz.de/service/" target="_blank" rel="noreferrer">Service entdecken <ArrowUpRight size={16} /></a>
     </section>
   );
 }
 
 function ContactBand({ lead, phoneHref }: { lead: LeadProfile; phoneHref?: string }) {
   return (
-    <section className="kablitz-contact" id="kontakt" {...reveal(0)}>
-      <div className="kablitz-contact-copy" {...reveal(0)}>
-        <p className="kablitz-eyebrow">Kontakt</p>
-        <h2>{lead.businessName}</h2>
-        <p>Sprechen Sie unverbindlich mit unseren Experten für Biomasse- und Anlagenbau.</p>
-        <p className="kablitz-contact-address">{lead.contact.address ?? lead.city}</p>
+    <section className="kablitz-contact" id="kontakt">
+      <div className="kablitz-contact-copy">
+        <p className="kablitz-eyebrow" data-fade="">Kontakt</p>
+        <h2 data-split="">{lead.businessName}</h2>
+        <p data-fade="0.2">Ihr Ansprechpartner für Anlagenbau, Service und Ersatzteile.</p>
+        <p className="kablitz-contact-address" data-fade="0.3">{lead.contact.address ?? lead.city}</p>
       </div>
-      <div className="kablitz-contact-actions" {...reveal(1)}>
+      <div className="kablitz-contact-actions" data-stagger="">
         {phoneHref && (
           <a href={phoneHref}>
-            <Phone /> <span><small>Telefon</small>{lead.contact.phone}</span>
+            <Phone /> <span><small>Telefon</small>{lead.contact.phone}</span> <ArrowUpRight className="kablitz-contact-arrow" size={18} />
           </a>
         )}
         {lead.contact.mapsUrl && (
           <a href={lead.contact.mapsUrl} target="_blank" rel="noreferrer">
-            <MapPin /> <span><small>Standort</small>Route öffnen</span>
+            <MapPin /> <span><small>Standort</small>Route öffnen</span> <ArrowUpRight className="kablitz-contact-arrow" size={18} />
           </a>
         )}
         <Link href="/admin">
-          <LayoutDashboard /> <span><small>Konzept</small>Admin-Vorschau</span>
+          <LayoutDashboard /> <span><small>Konzept</small>Admin-Vorschau</span> <ArrowUpRight className="kablitz-contact-arrow" size={18} />
         </Link>
       </div>
     </section>
@@ -277,6 +302,7 @@ function KablitzFooter({ lead }: { lead: LeadProfile }) {
         <Image src="/leads/kablitz-gmbh-r4t9k2/logo-transparent.png" alt="Kablitz Logo" width={110} height={34} unoptimized />
         <a className="kablitz-back-to-top" href="#top">Nach oben <ArrowRight size={14} /></a>
       </div>
+      <p className="kablitz-footer-wordmark" aria-hidden="true" data-chars="">KABLITZ</p>
       <div className="kablitz-footer-bottom">
         <span>© 2026 {lead.businessName}</span>
         <span>Unverbindliches Designkonzept · Kein offizieller Unternehmensauftritt</span>

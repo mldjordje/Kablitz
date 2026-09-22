@@ -17,7 +17,7 @@ import { useEffect } from "react";
 export function MotionLayer() {
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    const reduceMotion = false;
     const cleanups: Array<() => void> = [];
 
     // --- Scroll reveal -----------------------------------------------------
@@ -56,7 +56,7 @@ export function MotionLayer() {
     }
 
     // --- Header scroll state ----------------------------------------------
-    const header = document.querySelector<HTMLElement>(".site-header");
+    const header = document.querySelector<HTMLElement>(".kablitz-header, .site-header");
     if (header) {
       let headerFrame = 0;
       const syncHeader = () => {

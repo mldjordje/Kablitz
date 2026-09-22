@@ -15,11 +15,6 @@ function CountUp({ stat, play }: { stat: Stat; play: boolean }) {
   const [value, setValue] = useState(stat.isYear ? stat.value : 0);
   useEffect(() => {
     if (!play || stat.isYear) return;
-    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-    if (reduce) {
-      setValue(stat.value);
-      return;
-    }
     let raf = 0;
     const start = performance.now();
     const dur = 1400;
@@ -48,10 +43,6 @@ export function KablitzStats() {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (typeof IntersectionObserver === "undefined") {
-      setPlay(true);
-      return;
-    }
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) {
         setPlay(true);
@@ -63,7 +54,7 @@ export function KablitzStats() {
   }, []);
 
   return (
-    <section className="kablitz-stats" ref={ref}>
+    <section className="kablitz-stats" ref={ref} data-stagger="">
       {STATS.map((stat) => (
         <CountUp key={stat.label} stat={stat} play={play} />
       ))}

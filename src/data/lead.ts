@@ -38,9 +38,9 @@ const rawLead: LeadProfile = {
     { title: "Service", description: "Ersatzteile und Wartung über den gesamten Betrieb." },
   ],
   certifications: [
-    { title: "ISO 9001:2015", description: "Zertifiziertes Qualitätsmanagement, Erstzertifizierung 1996." },
+    { title: "ISO 9001:2015", description: "Das Qualitätsmanagement ist nach ISO 9001:2015 zertifiziert." },
     { title: "Gegründet 1901", description: "Ursprünglich in Riga, seit den 1950ern in Deutschland ansässig." },
-    { title: "70+ Mitarbeiter", description: "Familiengeführt, Kunden in Europa, Asien, Amerika, Australien und Neuseeland." },
+    { title: "Eigene Fertigung", description: "Gießerei und Stahlfertigung am Unternehmensstandort." },
   ],
   contact: {
     phone: "+49 9343 79010",
