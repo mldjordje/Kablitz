@@ -161,3 +161,38 @@ export const PREPARE = [
   "Fotos und Videos in Originalqualität, ggf. Termin für ein Fotoshooting",
   "Häufige Kundenfragen aus Vertrieb und Service – die Grundlage für die KI-Sichtbarkeit",
 ];
+
+export type SummaryItem = { icon: string; title: string; what: string; value: string; anchor: string };
+
+/** "Auf einen Blick": the whole specification condensed, each point with its value for management. */
+export const SUMMARY_CORE: SummaryItem[] = [
+  { icon: "compass", title: "Klare Kundenführung", what: "Besucher kommen über Brennstoff oder Problem direkt zur passenden Lösung und Anfrage.", value: "Mehr und passendere Anfragen – der Vertrieb spricht mit Interessenten, die schon wissen, was sie brauchen.", anchor: "anforderungen" },
+  { icon: "layers", title: "Eigene Seite für jedes Thema", what: "Jede Leistung, jeder Brennstoff und jede häufige Kundenfrage erhält eine eigene Seite.", value: "Kablitz wird bei deutlich mehr Suchanfragen gefunden; jede Seite arbeitet als Verkäufer.", anchor: "seiten" },
+  { icon: "award", title: "Referenzen als Erfolgsgeschichten", what: "Realisierte Anlagen mit Ausgangslage, Lösung, Lieferumfang und Ergebnis.", value: "Vertrauen entsteht vor dem ersten Gespräch; der Vertrieb verschickt Links statt Präsentationen.", anchor: "anforderungen" },
+  { icon: "factory", title: "Gießerei und Fertigung im Mittelpunkt", what: "Eigene Gießerei, Modellbau und Fertigung werden mit echten Bildern gezeigt.", value: "Ihr stärkstes Alleinstellungsmerkmal wird für jeden Besucher sichtbar.", anchor: "anforderungen" },
+  { icon: "wrench", title: "Service- und Ersatzteilbereich", what: "Eigener Bereich mit strukturiertem Ersatzteilformular inklusive Foto-Upload.", value: "Mehr planbarer Serviceumsatz aus bestehenden Anlagen, weniger Rückfragen.", anchor: "anforderungen" },
+  { icon: "pen", title: "Inhalte selbst pflegen", what: "Anmeldung mit Google, News-Editor, Referenzen und Bilder ohne Programmierung.", value: "Ihr Team aktualisiert die Website selbst – ohne Wartezeit und Agenturkosten für jede Änderung.", anchor: "redaktion" },
+  { icon: "shield", title: "Deutsch/Englisch, schnell, rechtssicher", what: "Vollständige Sprachfassungen, kurze Ladezeiten, Datenschutz nach deutschen Vorgaben.", value: "Internationale Kunden werden erreicht; das Risiko von Abmahnungen wird minimiert.", anchor: "recht" },
+];
+
+export const SUMMARY_RECOMMENDED: SummaryItem[] = [
+  { icon: "sparkles", title: "KI-Sichtbarkeit (AEO)", what: "Die Website wird so aufgebaut, dass ChatGPT, Gemini und Perplexity Kablitz als Antwort nennen.", value: "Kablitz ist in der Auswahl, wenn Einkäufer eine KI nach einem Hersteller fragen – dort, wo Wettbewerber noch fehlen.", anchor: "empfehlungen" },
+  { icon: "inbox", title: "Intelligente Anfragen", what: "Gezielte Anfrageformulare, Übersicht aller Anfragen mit Erinnerungen, KI-Hilfe für News.", value: "Keine verlorene Anfrage, schnellere Angebote, weniger Zeitaufwand im Tagesgeschäft.", anchor: "empfehlungen" },
+];
+
+export const SUMMARY_LATER: SummaryItem[] = [
+  { icon: "plug", title: "Anbindung an Ihre Systeme", what: "CRM, ERP/Lager, Kundenportal, Wartungserinnerungen, interne Suche.", value: "Weitere Automatisierung, sobald die neue Website läuft und Ihre Systeme geprüft sind.", anchor: "spaeter" },
+];
+
+/** One-line takeaway at the start of each detailed section. */
+export const TAKEAWAYS: Record<string, string> = {
+  ziel: "Mehr passende Anfragen, weniger manueller Aufwand.",
+  anforderungen: "Alle Punkte aus Ihrer Präsentation sind enthalten – hier steht, was jeder einzelne bewirkt.",
+  seiten: "Für jede Kundenfrage gibt es eine passende Seite – das bringt Besucher über Google und KI.",
+  redaktion: "Ihr Team veröffentlicht selbst, sicher und ohne Programmierkenntnisse.",
+  recht: "Datenschutz und Recht sind von Anfang an eingeplant, nicht nachträglich angeflickt.",
+  empfehlungen: "AEO ist die wichtigste Ergänzung: Sichtbarkeit dort, wo Kunden heute fragen.",
+  spaeter: "Sinnvolle Ideen, die aber Ihre Systeme betreffen – erst nach dem Start angehen.",
+  ablauf: "Sechs Schritte, jeder endet mit Ihrer Abstimmung.",
+  vorbereitung: "Diese Informationen beschleunigen das Projekt am meisten.",
+};
