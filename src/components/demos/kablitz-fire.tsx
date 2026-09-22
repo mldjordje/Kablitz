@@ -12,6 +12,7 @@ uniform float u_time;
 uniform float u_scroll;
 uniform float u_wind;
 uniform float u_power;
+uniform float u_base;
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){
  vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
@@ -22,7 +23,7 @@ void main(){
  vec2 uv=gl_FragCoord.xy/u_res;
  float aspect=u_res.x/u_res.y;
  float t=u_time;
- float reach=.34+u_scroll*.28;
+ float reach=u_base+u_scroll*.22;
  float pointer=exp(-pow((uv.x-u_pointer.x)*4.,2.))*(1.-u_pointer.y)*.19;
  vec2 p=vec2(uv.x*aspect*3.8,uv.y*4.5);
  p.x-=uv.y*(u_wind*1.7+(u_pointer.x-.5)*.7);
@@ -89,7 +90,7 @@ export function KablitzFire({ progressRef, variant = "hero" }: {
     const pos = gl.getAttribLocation(program, "a_pos");
     gl.enableVertexAttribArray(pos);
     gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
-    const uniforms = Object.fromEntries(["res", "pointer", "time", "scroll", "wind", "power"].map((key) => [key, gl.getUniformLocation(program, `u_${key}`)]));
+    const uniforms = Object.fromEntries(["res", "pointer", "time", "scroll", "wind", "power", "base"].map((key) => [key, gl.getUniformLocation(program, `u_${key}`)]));
     let frame = 0, visible = false, last = 0, time = 4, scroll = 0, wind = 0;
     let targetScroll = 0, targetWind = 0, previousY = window.scrollY;
     let px = .7, py = .3, tx = .7, ty = .3;
@@ -122,13 +123,14 @@ export function KablitzFire({ progressRef, variant = "hero" }: {
       wind += (targetWind - wind) * ease; targetWind *= .93;
       px += (tx - px) * ease; py += (ty - py) * ease;
       const p = progressRef?.current ?? 0;
-      const power = variant === "hero" ? 1 : .12 + Math.sin(Math.min(1, p) * Math.PI) * .65;
+      const power = variant === "hero" ? .6 : .12 + Math.sin(Math.min(1, p) * Math.PI) * .65;
       gl.uniform2f(uniforms.res, canvas.width, canvas.height);
       gl.uniform2f(uniforms.pointer, px, py);
       gl.uniform1f(uniforms.time, time);
       gl.uniform1f(uniforms.scroll, variant === "hero" ? scroll : p);
       gl.uniform1f(uniforms.wind, wind);
       gl.uniform1f(uniforms.power, power);
+      gl.uniform1f(uniforms.base, variant === "hero" ? .2 : .34);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       canvas.dataset.rendered = "true";
       if (!pausedRef.current) frame = requestAnimationFrame(render);

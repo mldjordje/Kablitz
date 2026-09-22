@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 export function KablitzFoundryBand() {
   return <section className="kablitz-videoband">
     <div className="kablitz-videoband-bg" data-zoom="">
-      <Image src="/leads/kablitz-gmbh-r4t9k2/04-16effbe9d8afa5c2.webp" alt="Montage eines Kablitz-Rostsystems" fill sizes="100vw" style={{ objectFit: "cover", objectPosition: "center 55%" }} />
+      <Image src="/leads/kablitz-gmbh-r4t9k2/01-ec57535860fcda44.webp" alt="Kablitz-Energieanlage" fill sizes="100vw" style={{ objectFit: "cover", objectPosition: "center 40%" }} />
     </div>
     <div className="kablitz-videoband-scrim" aria-hidden="true" />
     <div className="kablitz-videoband-copy">

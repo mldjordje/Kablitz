@@ -792,3 +792,9 @@
 /* Footer wordmark */
 .kablitz-footer { overflow: hidden; }
 .kablitz-footer-wordmark { margin: 10px 0 24px; font: 800 clamp(64px, 19vw, 300px)/.85 var(--font-display); letter-spacing: -.06em; color: #fff; white-space: nowrap; }
+
+/* Hero video background + calmer fire */
+.kablitz-hero-video { position: absolute; inset: 0; overflow: hidden; opacity: 0; transition: opacity 1.4s ease; pointer-events: none; }
+.kablitz-hero-video[data-ready="true"] { opacity: 1; }
+.kablitz-hero-video iframe { position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-width: 177.78vh; min-height: 100vh; transform: translate(-50%, -50%) scale(1.3); border: 0; }
+.kablitz-fire-hero { opacity: .7; mask-image: linear-gradient(90deg,#0006,#000 70%), linear-gradient(0deg,#000 20%,transparent 70%); mask-composite: intersect; }
