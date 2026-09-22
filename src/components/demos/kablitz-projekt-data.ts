@@ -1,175 +1,163 @@
-/** Content of the /projekt overview for the Kablitz management. Source: docs/PROJEKTPLAN-DE.md. */
+/** Content of the /projekt document for the Kablitz management. Source: docs/PROJEKTPLAN-DE.md. */
 
-export const GOALS = [
-  { title: "Kompetenz verständlich zeigen", text: "Besucher verstehen in wenigen Sekunden, was Kablitz baut, für wen und mit welchem Vorteil." },
-  { title: "Vertrauen durch Referenzen", text: "Realisierte Anlagen werden als nachvollziehbare Fallstudien mit Herausforderung, Lösung und Ergebnis gezeigt." },
-  { title: "Servicegeschäft stärken", text: "Ersatzteile, Wartung und Modernisierung erhalten einen eigenen Vertriebsbereich mit strukturierter Anfrage." },
-  { title: "Inhalte selbst pflegen", text: "News, Referenzen und Seiteninhalte lassen sich ohne Programmierung über Google-Anmeldung bearbeiten." },
+export type Item = { title: string; text: string };
+export type Group = { id: string; title: string; intro: string; items: Item[] };
+
+export const GOALS: Item[] = [
+  { title: "Kompetenz in Sekunden verständlich machen", text: "Ein Besucher erkennt sofort, was Kablitz baut, für welche Brennstoffe und Branchen – und wie er Kontakt aufnimmt." },
+  { title: "Mehr passende Anfragen gewinnen", text: "Jede Seite führt zu einem klaren nächsten Schritt: Projekt anfragen, Brennstoff besprechen oder Ersatzteil anfragen." },
+  { title: "Vertrauen durch echte Referenzen", text: "Realisierte Anlagen werden als nachvollziehbare Fallstudien gezeigt – mit Ausgangslage, Lösung und Ergebnis." },
+  { title: "Inhalte selbst pflegen", text: "News, Referenzen und Seiteninhalte werden ohne Programmierung über eine Google-Anmeldung aktualisiert." },
 ];
 
-export type RequirementGroup = { id: string; title: string; summary: string; items: string[] };
-
-export const REQUIREMENTS: RequirementGroup[] = [
+export const REQUIREMENTS: Group[] = [
   {
-    id: "startseite", title: "Positionierung und Startseite",
-    summary: "In wenigen Sekunden erklären: Was macht Kablitz, für wen, mit welchem Vorteil – und wie nimmt man Kontakt auf?",
+    id: "startseite", title: "Startseite und Positionierung",
+    intro: "Die Startseite erklärt in wenigen Sekunden, was Kablitz macht, für wen, mit welchem Vorteil – und wie man Kontakt aufnimmt.",
     items: [
-      "Kundenführung: Brennstoff bzw. Kundenproblem → Lösung → Technologie → Referenz → Ergebnis → Service → Kontakt.",
-      "Großes authentisches Industrie-Foto oder Video: Anlagen, Kessel, Rost, Gießerei, Fertigung, Montage oder Mitarbeiter.",
-      "Bevorzugte Headline: „Energie aus dem, was andere als Abfall sehen.“ Alternativen: „Energie gewinnen. Ressourcen nutzen.“, „Wenn aus Reststoffen Energie wird.“, „Aus Biomasse und Reststoffen. Für Energie und Zukunft.“, „Ressourcen nutzen. Energie erzeugen.“, „Energie aus Ressourcen. Seit 1901.“",
-      "Hauptaktion „Projekt anfragen“, zweite Aktion „Mit unseren Ingenieuren sprechen“ oder „Unsere Lösungen“.",
-      "Fakten direkt nach dem Einstieg: Erfahrung, gelieferte Systeme, internationale Präsenz, eigene Fertigung – alle Zahlen nach Freigabe.",
-      "Lösungskarten: Biomasseenergie, Abfall-zu-Energie, industrielle Prozesswärme, Kraft-Wärme-Kopplung, Service und Modernisierung.",
-      "„Warum Kablitz?“: Erfahrung, eigene Gießerei, Engineering und Fertigung aus einer Hand, weltweite Referenzen, Betreuung über den Lebenszyklus.",
-      "Aktuelle Projekte mit Foto, Kurzbeschreibung, zwei bis vier Fakten und „Zum Projekt“.",
-      "Internationale Präsenz „Von Lauda in die Welt“ mit interaktiver Karte und zugänglicher Textliste.",
-      "News, Nachhaltigkeit und Karriere gemäß den Referenzentwürfen integrieren.",
+      { title: "Kundenführung", text: "Die Seite folgt dem Weg eines Interessenten: Brennstoff oder Problem → passende Lösung → Technologie → Referenz → Ergebnis → Service → Kontakt. So findet jeder Besucher vom eigenen Anliegen zur Anfrage." },
+      { title: "Großes Industriebild oder Video", text: "Oben auf der Seite zeigt ein echtes Foto oder Video Anlagen, Kessel, Roste, Gießerei oder Montage. Es vermittelt sofort Größe und Kompetenz." },
+      { title: "Hauptaussage", text: "Bevorzugt: „Energie aus dem, was andere als Abfall sehen.“ Alternativen sind dokumentiert, z. B. „Energie aus Ressourcen. Seit 1901.“ Die endgültige Wahl trifft Kablitz." },
+      { title: "Zwei klare Aktionen", text: "Hauptknopf „Projekt anfragen“ und ein zweiter Knopf „Mit unseren Ingenieuren sprechen“. Beide sind auf jeder Bildschirmgröße sofort sichtbar." },
+      { title: "Kennzahlen", text: "Direkt unter dem Einstieg: Erfahrung, gelieferte Anlagen, Länder, eigene Fertigung. Zahlen erscheinen erst nach Ihrer Bestätigung." },
+      { title: "Lösungskarten", text: "Biomasseenergie, Abfall-zu-Energie, Prozesswärme, Kraft-Wärme-Kopplung sowie Service und Modernisierung – jede Karte führt zu einer eigenen Detailseite." },
+      { title: "„Warum Kablitz?“", text: "Erfahrung seit 1901, eigene Gießerei, Engineering und Fertigung aus einer Hand, weltweite Referenzen und Betreuung über die gesamte Lebensdauer der Anlage." },
+      { title: "Aktuelle Projekte", text: "Ausgewählte Projekte mit Foto, Kurzbeschreibung, zwei bis vier Fakten und Link „Zum Projekt“. Die Auswahl ändert die Redaktion selbst." },
+      { title: "Weltkarte „Von Lauda in die Welt“", text: "Eine interaktive Karte zeigt Projektstandorte. Zusätzlich gibt es eine Textliste, damit die Informationen auch ohne Karte lesbar sind." },
     ],
   },
   {
-    id: "navigation", title: "Navigation und Seiteninhalte",
-    summary: "Klare Hauptnavigation, Suche und Sprachwechsel DE/EN – ohne bestehende Inhalte zu verlieren.",
+    id: "navigation", title: "Navigation und bestehende Inhalte",
+    intro: "Besucher finden jede Information mit höchstens zwei Klicks – auf dem Computer wie auf dem Smartphone.",
     items: [
-      "Hauptnavigation: Lösungen, Technologien, Projekte, Unternehmen, Service, Karriere, News & Insights; dazu Kontakt, Suche und DE/EN.",
-      "Brennstoffe erhalten einen gut erreichbaren Einstieg im Lösungsbereich.",
-      "Mobile Navigation, Tastatur und Touch werden gleichwertig berücksichtigt.",
-      "Bestehende Inhalte bleiben erhalten: Wärmetauscher (Rippenplatten, Glasröhren), wasser-/luftgekühlte Roste, Staubfeuerungen, Heißgaserzeuger, Dampfkessel, Thermalöl- und Heißwasseranlagen.",
+      { title: "Hauptmenü", text: "Lösungen, Technologien, Projekte, Unternehmen, Service, Karriere, News. Dazu Kontakt, Suche und Sprachwechsel Deutsch/Englisch." },
+      { title: "Suche", text: "Eine Suchfunktion durchsucht Leistungen, Brennstoffe, Referenzen und News – nützlich für Kunden, die einen bestimmten Begriff suchen." },
+      { title: "Deutsch und Englisch", text: "Alle Seiten gibt es vollständig in beiden Sprachen. Keine leeren oder automatisch übersetzten englischen Seiten." },
+      { title: "Nichts geht verloren", text: "Alle heutigen Inhalte werden übernommen: Wärmetauscher (Rippenplatten, Glasröhren), wasser- und luftgekühlte Roste, Staubfeuerungen, Heißgaserzeuger, Dampfkessel, Thermalöl- und Heißwasseranlagen." },
+      { title: "Weiterleitungen", text: "Alte Adressen leiten automatisch auf die neuen Seiten weiter. So bleiben Google-Platzierungen und Links von anderen Websites erhalten." },
     ],
   },
   {
     id: "brennstoffe", title: "Brennstoffe als Einstieg",
-    summary: "„Was möchten Sie verbrennen?“ – Kunden finden über ihren Brennstoff zur passenden Technik.",
+    intro: "Viele Kunden denken zuerst an ihren Brennstoff. Deshalb gibt es einen eigenen Einstieg: „Was möchten Sie verbrennen?“",
     items: [
-      "Kategorien: Altholz, RDF/SRF, Waldrestholz, Rinde, feuchte Biomasse, landwirtschaftliche Reststoffe, Stäube/Fasern, industrielle Reststoffe, ggf. Sonderbrennstoffe.",
-      "Jede Brennstoffseite: Eigenschaften, Herausforderungen, Auswahl geeigneter Technik und Roste, belegbare Referenzen, nächster Beratungsschritt.",
-      "Keine pauschale Eignungszusage ohne Kenntnis von Brennstoff und Betriebsbedingungen. Die endgültigen Kategorien bestätigt Kablitz fachlich.",
+      { title: "Brennstoffübersicht", text: "Altholz, RDF/SRF, Waldrestholz, Rinde, feuchte Biomasse, landwirtschaftliche Reststoffe, Stäube und Fasern, industrielle Reststoffe. Die endgültige Liste bestätigt Kablitz fachlich." },
+      { title: "Eine Seite pro Brennstoff", text: "Jede Seite erklärt Eigenschaften und Herausforderungen des Brennstoffs, welche Feuerung und welcher Rost passen, zeigt passende Referenzen und endet mit „Brennstoff besprechen“." },
     ],
   },
   {
     id: "referenzen", title: "Referenzen als Fallstudien",
-    summary: "Jede Referenz erzählt eine Geschichte: Ausgangslage, Herausforderung, Lösung, Ergebnis.",
+    intro: "Referenzen sind der stärkste Vertrauensbeweis. Jede wird als kurze Geschichte erzählt statt als Bild mit Überschrift.",
     items: [
-      "Großes Anlagenfoto, Projekttitel, Kurzbeschreibung und drei bis fünf Kernwerte.",
-      "Ausgangssituation, technische Herausforderung, begründete Lösungswahl, Liefer- und Leistungsumfang, technische Daten, Ergebnisse.",
-      "Lieferumfang z. B. Brennstoffzuführung, Feuerung, Rost, Kessel, Entaschung, Rauchgasreinigung, Steuerung, Montage, Inbetriebnahme.",
-      "Nur belegbare Ergebnisse; Kundendaten bei Bedarf anonymisiert. Goch und das Sägewerk-Beispiel dienen als Vorlagen, bis Daten freigegeben sind.",
+      { title: "Aufbau jeder Fallstudie", text: "Großes Anlagenfoto, Titel, drei bis fünf Kennzahlen, Ausgangssituation, technische Herausforderung, gewählte Lösung, Lieferumfang, technische Daten und Ergebnis." },
+      { title: "Lieferumfang sichtbar", text: "Eine Grafik zeigt, welche Teile Kablitz geliefert hat – z. B. Brennstoffzuführung, Feuerung, Rost, Kessel, Entaschung, Rauchgasreinigung, Montage." },
+      { title: "Nur freigegebene Daten", text: "Kennzahlen und Kundennamen erscheinen nur mit Freigabe; auf Wunsch anonymisiert. Goch und das Sägewerk-Beispiel dienen als erste Vorlagen." },
     ],
   },
   {
     id: "fertigung", title: "Eigene Fertigung und Gießerei",
-    summary: "Die eigene Gießerei ist der zentrale Kundenvorteil – sichtbar gemacht, nicht nur erwähnt.",
+    intro: "Die eigene Gießerei unterscheidet Kablitz von vielen Wettbewerbern. Die Website zeigt sie als klaren Kundenvorteil.",
     items: [
-      "Engineering, Modellbau, Stahlbau, mechanische Bearbeitung, Montage und Qualitätskontrolle zeigen.",
-      "Botschaften: „Eigene Gießerei. Eigene Fertigung. Volle Kontrolle.“ und „Vom Engineering bis zum fertigen Rost – aus einer Hand.“",
-      "Englische Fassung vorgemerkt: „Built in-house. Built to last.“ und „From engineering to casting – critical components under our own control.“",
+      { title: "Fertigungsseite", text: "Engineering, Modellbau, Gießerei, Stahlbau, Bearbeitung, Montage und Qualitätskontrolle – mit echten Fotos aus Lauda." },
+      { title: "Kernbotschaft", text: "„Eigene Gießerei. Eigene Fertigung. Volle Kontrolle.“ Für Kunden bedeutet das: kurze Wege, gleichbleibende Qualität und Ersatzteile aus erster Hand." },
     ],
   },
   {
     id: "service", title: "Service und Ersatzteile",
-    summary: "Eigener Bereich „Ihre Anlage am Laufen halten“ – mit strukturierter Ersatzteilanfrage.",
+    intro: "Ein eigener Bereich „Ihre Anlage am Laufen halten“ stärkt das wiederkehrende Servicegeschäft.",
     items: [
-      "Originalersatzteile, Roststäbe/Gussteile, Inspektion, Wartung, Modernisierung und Leistungsoptimierung.",
-      "Ersatzteilanfrage: Bauteil, Anlagentyp, Hersteller, Baujahr, Zeichnungs-/Teilenummer, Menge, Beschreibung, optionale Fotos/Zeichnungen.",
-      "Teile für Fremdanlagen und 24/7-Support nur im tatsächlich angebotenen Umfang.",
+      { title: "Serviceleistungen", text: "Originalersatzteile, Roststäbe und Gussteile, Inspektion, Wartung, Modernisierung und Leistungsoptimierung – jeweils mit kurzer Erklärung und Ansprechpartner." },
+      { title: "Ersatzteilformular", text: "Der Kunde gibt Bauteil, Anlagentyp, Hersteller, Baujahr, Teilenummer und Menge an und kann ein Foto oder eine Zeichnung anhängen. Der Service erhält eine vollständige Anfrage statt einer vagen E-Mail." },
     ],
   },
   {
-    id: "redaktion", title: "Redaktion, Medien und Bewegung",
-    summary: "Inhalte ohne Programmierung pflegen; echte Kablitz-Bilder statt Stockfotos.",
+    id: "news", title: "News, Medien und Gestaltung",
+    intro: "Die Website bleibt lebendig, weil Ihr Team selbst veröffentlicht – mit echten Bildern statt Stockfotos.",
     items: [
-      "Nachrichtenkategorien: Unternehmen, Projekte, Technologie, Service/Ersatzteile, Nachhaltigkeit, Karriere, Messen.",
-      "Authentische Fotos und Videos haben Vorrang, ggf. Fotoshooting. Bildrechte und Freigaben werden dokumentiert.",
-      "Feuer im Hero, Scrollbewegungen und animierte Kennzahlen – gezielt eingesetzt, mit Pausenmöglichkeit, ohne Autoplay-Ton.",
+      { title: "News-Kategorien", text: "Unternehmen, Projekte, Technologie, Service, Nachhaltigkeit, Karriere, Messen. Jede News hat eine eigene Seite und erscheint automatisch auf der Startseite." },
+      { title: "Echte Bilder", text: "Fotos und Videos von Kablitz haben Vorrang; bei Bedarf organisieren wir ein Fotoshooting. Bildrechte werden dokumentiert." },
+      { title: "Bewegung mit Maß", text: "Feuer im Einstieg, Scroll-Effekte und animierte Kennzahlen – gezielt eingesetzt, ohne die Lesbarkeit zu stören und ohne automatischen Ton." },
     ],
   },
 ];
 
-export const PAGES = [
-  { prio: "P1", path: "/loesungen/biomasseenergie/", need: "Biomasse energetisch nutzen", next: "Projekt anfragen" },
-  { prio: "P1", path: "/loesungen/abfall-zu-energie/", need: "Reststoffe und anspruchsvolle Brennstoffe verwerten", next: "Brennstoff besprechen" },
-  { prio: "P1", path: "/loesungen/prozesswaerme/", need: "Prozesswärme für einen Industriebetrieb", next: "Wärmebedarf besprechen" },
-  { prio: "P1", path: "/loesungen/kraft-waerme-kopplung/", need: "Strom und nutzbare Wärme kombinieren", next: "Einsatzfall prüfen lassen" },
-  { prio: "P1", path: "/technologien/wassergekuehlte-roste/", need: "Rosttechnik für konkrete Bedingungen auswählen", next: "Fachberatung" },
-  { prio: "P1", path: "/technologien/dampfkessel/", need: "Dampfversorgung planen", next: "Technische Anfrage" },
-  { prio: "P1", path: "/service/ersatzteile/", need: "Ersatzteil identifizieren und anfragen", next: "Ersatzteilformular" },
-  { prio: "P1", path: "/service/modernisierung/", need: "Verfügbarkeit oder Leistung verbessern", next: "Serviceanfrage" },
-  { prio: "P1", path: "/unternehmen/giesserei/", need: "Fertigungstiefe und Qualität beurteilen", next: "Referenzen ansehen" },
-  { prio: "P1", path: "/projekte/[projekt]/", need: "Vergleichbare Umsetzung beurteilen", next: "Ähnliches Projekt besprechen" },
-  { prio: "P2", path: "/brennstoffe/[brennstoff]/", need: "Anforderungen eines Brennstoffs verstehen", next: "Geeignete Technik" },
-  { prio: "P2", path: "/wissen/[frage]/", need: "Fachfrage beantworten, Entscheidung vorbereiten", next: "Verwandte Leistung" },
-  { prio: "P2", path: "/news/[beitrag]/", need: "Aktuelle Entwicklungen und Projektfortschritt", next: "Verwandte Fachseite" },
-  { prio: "P2", path: "/karriere/", need: "Aufgaben und Arbeitgeber kennenlernen", next: "Bewerbung" },
+export const PAGE_GROUPS: Item[] = [
+  { title: "Lösungsseiten", text: "Biomasseenergie, Abfall-zu-Energie, Prozesswärme, Kraft-Wärme-Kopplung. Für Kunden, die ein Ziel haben, aber die Technik noch nicht kennen." },
+  { title: "Technologieseiten", text: "Wasser- und luftgekühlte Roste, Staubfeuerungen, Dampfkessel, Heißgaserzeuger, Thermalöl, Heißwasser, Wärmetauscher. Für Ingenieure, die Technik vergleichen." },
+  { title: "Brennstoffseiten", text: "Eine Seite pro Brennstoff. Für Kunden, die wissen, was sie verbrennen wollen." },
+  { title: "Serviceseiten", text: "Ersatzteile, Roststäbe und Gussteile, Wartung, Modernisierung. Für Betreiber bestehender Anlagen." },
+  { title: "Referenzen", text: "Übersicht und eine Seite pro Projekt. Für Kunden, die vergleichbare Anlagen sehen wollen." },
+  { title: "Wissensseiten", text: "Antworten auf konkrete Kundenfragen, z. B. „Worin unterscheiden sich wasser- und luftgekühlte Roste?“ Diese Seiten sind die Grundlage für die KI-Sichtbarkeit (siehe Abschnitt 6)." },
+  { title: "Unternehmen, Karriere, News, Kontakt", text: "Geschichte, Fertigung, Stellenangebote, aktuelle Meldungen und alle Kontaktwege." },
 ];
 
-export const QUESTIONS = [
-  "Welche Angaben benötigt Kablitz für die Planung einer Biomasseanlage?",
-  "Wie beeinflusst die Brennstofffeuchte die Auswahl der Feuerung?",
+export const CMS: Item[] = [
+  { title: "Anmeldung mit Google", text: "Ihr Team meldet sich mit dem vorhandenen Google-Konto an – kein zusätzliches Passwort. Nur Konten, die Sie freischalten, erhalten Zugriff." },
+  { title: "Rollen", text: "Administrator verwaltet Benutzer und Einstellungen, Redaktion schreibt Entwürfe, Freigabe veröffentlicht. Eine Person kann mehrere Rollen haben." },
+  { title: "News-Editor", text: "Titel, Text, Kategorie, Titelbild, Datum und Autor eingeben, speichern, veröffentlichen. Die Adresse der Seite entsteht automatisch aus dem Titel." },
+  { title: "Suchmaschinen-Felder", text: "Zu jedem Beitrag lassen sich Titel und Beschreibung für Google festlegen. Eine Vorschau zeigt, wie der Eintrag in den Suchergebnissen aussieht." },
+  { title: "Referenzen und Seiten bearbeiten", text: "Fallstudien, Kennzahlen, Leistungs- und Brennstoffseiten sowie Startseiteninhalte werden über Formulare gepflegt." },
+  { title: "Medienbibliothek", text: "Alle Bilder an einem Ort, mit Beschreibung, Alternativtext für Barrierefreiheit und Vermerk zu Bildrechten." },
+  { title: "Entwurf, Freigabe, Veröffentlichung", text: "Beiträge können als Entwurf gespeichert, geprüft und zu einem festen Zeitpunkt veröffentlicht werden. Frühere Versionen lassen sich wiederherstellen." },
+];
+
+export const LEGAL: Item[] = [
+  { title: "Impressum", text: "Vollständige Unternehmens-, Register- und Kontaktangaben, von jeder Seite mit einem Klick erreichbar (§ 5 DDG)." },
+  { title: "Datenschutzerklärung", text: "Beschreibt genau die tatsächlich eingesetzten Dienste: Hosting, Formulare, Uploads, Admin-Anmeldung. Wird vor dem Start rechtlich geprüft." },
+  { title: "Einwilligung nur wo nötig", text: "Schriften und Bilder werden vom eigenen Server geladen. Google Maps und Videos laden erst nach Klick des Besuchers – so wie bereits auf der Demo zu sehen (§ 25 TDDDG)." },
+  { title: "Sichere Formulare", text: "Nur notwendige Pflichtfelder, verschlüsselte Übertragung, Spamschutz, geprüfte Datei-Uploads und festgelegte Löschfristen." },
+  { title: "Barrierearm", text: "Bedienbar mit Tastatur, ausreichende Kontraste, Alternativtexte für Bilder. Ob das Barrierefreiheitsstärkungsgesetz greift, wird anhand des Angebots geprüft." },
+  { title: "Bild- und Aussagenrechte", text: "Fotos, Mitarbeiter- und Kundenfreigaben sowie Leistungs- und Umweltaussagen werden vor Veröffentlichung geprüft." },
+];
+
+export const AEO_STEPS: Item[] = [
+  { title: "Antwortseiten zu echten Kundenfragen", text: "Für jede häufige Frage entsteht eine Seite, die sie im ersten Absatz klar beantwortet und dann vertieft. KI-Systeme übernehmen bevorzugt solche direkten, belegten Antworten." },
+  { title: "Eindeutige Fakten über Kablitz", text: "Gründungsjahr, Standort, Leistungen, Brennstoffe und Referenzen stehen überall gleich und maschinenlesbar im Seitencode (strukturierte Daten). So ordnet die KI Kablitz korrekt als Hersteller für diese Themen ein." },
+  { title: "Belege statt Werbesprache", text: "Referenzen mit Zahlen, technische Erklärungen und Fachautoren. KI-Systeme nennen Quellen, die fachlich glaubwürdig wirken – nicht die lautesten." },
+  { title: "Präsenz außerhalb der eigenen Website", text: "Einträge in Branchenverzeichnissen, Fachportalen und Verbandslisten mit einheitlichen Angaben. Je öfter Kablitz an vertrauenswürdigen Stellen im gleichen Zusammenhang erscheint, desto eher wird Kablitz genannt." },
+  { title: "Monatliche Messung", text: "Wir stellen ChatGPT, Gemini, Perplexity und Google-KI jeden Monat dieselben 20–30 Kundenfragen und dokumentieren, ob und wie Kablitz genannt wird. So wird der Fortschritt sichtbar." },
+];
+
+export const AEO_QUESTIONS = [
+  "Welcher Hersteller baut wassergekühlte Roste für Altholz?",
+  "Wer liefert Biomasse-Heizkraftwerke in Deutschland?",
+  "Welche Feuerung eignet sich für RDF und SRF?",
+  "Wo bekomme ich Ersatz-Roststäbe für meine Biomasseanlage?",
   "Worin unterscheiden sich wassergekühlte und luftgekühlte Roste?",
-  "Welche Herausforderungen entstehen bei Rinde und feuchten Holzreststoffen?",
-  "Welche Anforderungen stellen RDF und SRF an die Feuerung?",
-  "Wann eignet sich Kraft-Wärme-Kopplung für einen Industriebetrieb?",
-  "Welche Faktoren bestimmen die Wirtschaftlichkeit einer Biomasseanlage?",
-  "Wie lässt sich eine bestehende Anlage auf andere Brennstoffe anpassen?",
-  "Welche Informationen werden für eine Ersatzteilanfrage benötigt?",
-  "Sind Ersatzteile für Anlagen anderer Hersteller verfügbar?",
-  "Wie werden Inspektion und Wartung einer Anlage geplant?",
-  "Welche Vorteile bietet eine eigene Gießerei bei Ersatzteilen und Komponenten?",
 ];
 
-export const SEO_PRINCIPLES = [
-  { title: "Eine Seite pro echtem Anliegen", text: "Jede eigenständige Leistung und jedes eigenständige Kundenproblem erhält eine hilfreiche Seite. Verwandte Fragen werden auf derselben Seite beantwortet – keine massenhaft erzeugten Varianten." },
-  { title: "Direkte Antworten für KI-Suche (AEO)", text: "Jede Seite beginnt mit einer klaren Antwort, erklärt Voraussetzungen und Grenzen und belegt Erfahrung mit Referenzen. So können Suchmaschinen und KI-Assistenten Kablitz als Quelle heranziehen." },
-  { title: "Technisch sauber", text: "Stabile URLs, individuelle Titel und Beschreibungen, strukturierte Daten (Organization, Breadcrumb, Article), schnelle Ladezeiten, DE/EN mit korrekten Sprachverweisen." },
-  { title: "Messbar statt versprochen", text: "Erfolg wird an qualifizierten Projekt- und Serviceanfragen gemessen. Rankings oder Nennungen in KI-Antworten lassen sich nicht garantieren – wir messen und bauen aus, was wirkt." },
+export type Proposal = { title: string; does: string; benefit: string };
+
+export const PROPOSALS_NOW: Proposal[] = [
+  { title: "Strukturierte Projektanfrage", does: "Statt eines leeren Kontaktformulars fragt die Anfrage gezielt nach Brennstoff, Menge, Wärme- oder Dampfbedarf, Betriebsstunden und Standort. Die Anfrage geht automatisch an den zuständigen Ansprechpartner.", benefit: "Weniger Rückfragen, schnellere Angebote, bessere Einschätzung der Anfrage schon beim ersten Lesen." },
+  { title: "Ersatzteilanfrage mit Foto und Vorgangsnummer", does: "Der Kunde lädt ein Foto oder eine Zeichnung hoch und erhält sofort eine Vorgangsnummer per E-Mail.", benefit: "Teile werden schneller identifiziert; Kunde und Service sprechen über denselben Vorgang." },
+  { title: "Anfrage-Übersicht mit Erinnerungen", does: "Alle Website-Anfragen erscheinen in einer einfachen Liste im Admin-Bereich mit Status (neu, in Bearbeitung, erledigt). Bleibt eine Anfrage zwei Tage unbearbeitet, erinnert das System per E-Mail.", benefit: "Keine Anfrage geht im Postfach verloren." },
+  { title: "KI-Unterstützung für die Redaktion", does: "Aus Stichpunkten entsteht ein erster News-Entwurf; die englische Fassung wird vorgeschlagen. Ihr Team prüft und gibt frei.", benefit: "News und englische Seiten entstehen in Minuten statt Stunden." },
 ];
 
-export const CMS_FEATURES = [
-  { title: "Anmeldung mit Google", text: "Nur ausdrücklich freigeschaltete Konten erhalten Zugriff. Rollen: Administrator, Redaktion, Freigabe." },
-  { title: "News-Editor", text: "Titel, URL, Zusammenfassung, Text, Kategorie, Titelbild mit Alternativtext, Datum, Autor und SEO-Felder mit Suchergebnis-Vorschau." },
-  { title: "Referenzen und Seiten", text: "Fallstudien mit Kennzahlen, Leistungs- und Brennstoffseiten, Startseiteninhalte und Projektkarte pflegen." },
-  { title: "Medienbibliothek", text: "Bilder mit Beschreibung, Alternativtext, Bildnachweis und Freigabevermerk." },
-  { title: "Freigabeablauf", text: "Entwurf → fachliche Prüfung → Vorschau → Freigabe → Veröffentlichung, mit Versionen und geplanter Veröffentlichung." },
-  { title: "Automatisch aktuell", text: "Veröffentlichte Inhalte erscheinen sofort auf der Website und in der Sitemap; Entwürfe bleiben intern." },
+export const PROPOSALS_LATER: Proposal[] = [
+  { title: "CRM-Anbindung", does: "Website-Anfragen landen direkt als Kontakt und Verkaufschance in Ihrem CRM.", benefit: "Setzt voraus, dass wir Ihr CRM und dessen Schnittstelle kennen." },
+  { title: "Anbindung an ERP und Lager", does: "Verfügbarkeit von Ersatzteilen und Beständen wird im Service sichtbar.", benefit: "Setzt eine Prüfung von ERP, Artikelstamm und Abläufen voraus." },
+  { title: "Kundenportal", does: "Kunden sehen Unterlagen, Zeichnungen und den Status ihrer Aufträge in einem geschützten Bereich.", benefit: "Setzt Rollen, Rechte pro Kunde und Anbindung an Ihre Systeme voraus." },
+  { title: "Wartungs- und Ersatzteilerinnerungen", does: "Betreiber werden automatisch an fällige Wartungen und Verschleißteile erinnert.", benefit: "Setzt eine gepflegte Datenbank der installierten Anlagen voraus." },
+  { title: "Interne Wissenssuche", does: "Vertrieb und Service durchsuchen freigegebene Dokumente, Zeichnungen und Angebote in Sekunden.", benefit: "Setzt geordnete Dokumente und Zugriffsrechte voraus." },
+  { title: "Chat-Assistent auf der Website", does: "Beantwortet Besucherfragen rund um die Uhr und übergibt an einen Mitarbeiter.", benefit: "Sinnvoll, sobald genügend gepflegte Fachinhalte vorhanden sind." },
 ];
 
-export const LEGAL = [
-  { title: "Impressum", text: "Vollständige Unternehmens-, Vertretungs-, Register- und Kontaktdaten, von jeder Seite erreichbar (§ 5 DDG)." },
-  { title: "Datenschutzerklärung", text: "Passend zu Hosting, Formularen, Uploads, CMS und Admin-Anmeldung; Auftragsverarbeitung und Drittlandübermittlung geprüft." },
-  { title: "Einwilligung nur wo nötig", text: "Schriften und Medien lokal ausliefern, Karten und Videos ohne unnötige Fremddienste. Falls nötig: Cookie-Banner mit gleichwertigem Ablehnen (§ 25 TDDDG)." },
-  { title: "Sichere Formulare", text: "Nur notwendige Pflichtfelder, verschlüsselte Übertragung, Spamschutz, geprüfte Uploads, festgelegte Löschfristen." },
-  { title: "Barrierearm", text: "Tastaturbedienung, Kontraste, Alternativtexte; Anwendbarkeit des BFSG wird anhand des Angebots geprüft." },
-  { title: "Inhalte und Rechte", text: "Bildrechte, Mitarbeiter- und Kundenfreigaben sowie Leistungs- und Umweltaussagen werden vor Veröffentlichung geprüft." },
-];
-
-export type Proposal = { title: string; benefit: string; effort: string; measure: string; recommended?: boolean };
-
-export const PROPOSALS: Proposal[] = [
-  { title: "Strukturierte Projektanfrage mit interner Zuordnung", benefit: "Weniger Rückfragen, Anfrage landet direkt beim richtigen Ansprechpartner.", effort: "Mittel · Vertrieb definiert Angaben und Zuständigkeiten", measure: "Zeit bis zur qualifizierten Erstreaktion", recommended: true },
-  { title: "Ersatzteilanfrage mit Foto/Zeichnung und Vorgangsnummer", benefit: "Teile schneller identifizieren, Servicekontakte besser nutzen.", effort: "Mittel · sicherer Upload und Bearbeitungsablauf", measure: "Rückfragen je Anfrage, Zeit bis Angebot", recommended: true },
-  { title: "Zentrales Anfrageboard mit Erinnerungen", benefit: "Keine liegen gebliebenen Anfragen mehr.", effort: "Mittel · vorhandenes CRM zuerst prüfen", measure: "Anteil fristgerecht bearbeiteter Anfragen", recommended: true },
-  { title: "CRM-Anbindung", benefit: "Keine doppelte Dateneingabe, nachvollziehbare Herkunft jeder Verkaufschance.", effort: "Mittel bis hoch · abhängig vom bestehenden CRM", measure: "Bearbeitungsaufwand, qualifizierte Chancen" },
-  { title: "Wartungs- und Ersatzteilerinnerungen", benefit: "Wiederkehrendes Servicegeschäft aus der installierten Basis.", effort: "Mittel · verlässliche Anlagendaten nötig", measure: "Serviceaufträge, termingerechte Wartung" },
-  { title: "Interne Wissenssuche für Vertrieb und Service", benefit: "Freigegebene Unterlagen in Sekunden statt Minuten finden.", effort: "Mittel bis hoch · Dokumentqualität und Rechte", measure: "Suchzeit, Nutzungsquote" },
-  { title: "Kundenportal für Unterlagen und Status", benefit: "Weniger Statusnachfragen, bessere Zusammenarbeit.", effort: "Hoch · Rollen und Systemanbindung", measure: "Statusanfragen, Nutzung" },
-  { title: "Redaktionsassistenz für News und Übersetzungen", benefit: "Erste Entwürfe und EN-Fassungen schneller erstellen – immer mit Freigabe.", effort: "Mittel", measure: "Zeit von Entwurf bis Veröffentlichung" },
-  { title: "Anfrageassistent auf der Website", benefit: "Besucher rund um die Uhr zur passenden Leistung führen, Übergabe an Menschen.", effort: "Mittel bis hoch · gepflegte Inhalte nötig", measure: "Qualifizierte Kontakte, Abbruchquote" },
-  { title: "Beschaffungs- und Lagerintegration", benefit: "Bestände und Teileverfügbarkeit im Service nutzen.", effort: "Hoch · ERP und Artikelstamm zuerst prüfen", measure: "Such- und Erfassungszeit" },
-];
-
-export const PHASES = [
-  { title: "Inhalte und Umfang", result: "Seiteninventar, priorisierte Kundenfragen, bestätigter Kernumfang und optionale Erweiterungen." },
-  { title: "Struktur und Vorlagen", result: "Navigation sowie Vorlagen für Leistung, Brennstoff, Referenz, Wissen und Nachricht." },
-  { title: "CMS und Redaktion", result: "Google-Anmeldung, Rechte, Inhalte, Medien und Freigabeablauf." },
-  { title: "Inhalte und Anfragen", result: "Fachlich freigegebene Seiten, Referenzen, Kontakt- und Ersatzteilanfragen." },
-  { title: "Veröffentlichung", result: "Migration, Weiterleitungen, rechtliche Texte, Qualitätsprüfung und Übergabe." },
-  { title: "Weiterentwicklung", result: "Messung, Ausbau wertvoller Themen und ausgewählte Automatisierungen." },
+export const PHASES: Item[] = [
+  { title: "Inhalte und Umfang festlegen", text: "Wir erfassen alle heutigen Seiten, klären den Kernumfang und entscheiden gemeinsam über die Erweiterungen." },
+  { title: "Struktur und Vorlagen", text: "Menü und Seitenvorlagen für Leistung, Brennstoff, Referenz, Wissen und News werden gestaltet und abgestimmt." },
+  { title: "Redaktionssystem", text: "Google-Anmeldung, Rollen, Editor und Medienbibliothek werden eingerichtet; Ihr Team erhält eine Einweisung." },
+  { title: "Inhalte und Formulare", text: "Texte, Referenzen und Bilder werden eingepflegt und fachlich freigegeben; Anfrageformulare werden getestet." },
+  { title: "Veröffentlichung", text: "Weiterleitungen, Rechtstexte, Geschwindigkeits- und Qualitätsprüfung, dann Livegang." },
+  { title: "Weiterentwicklung", text: "Monatliche Auswertung von Anfragen, Google- und KI-Sichtbarkeit; neue Wissensseiten dort, wo sie Wirkung zeigen." },
 ];
 
 export const PREPARE = [
   "Ansprechpartner für Vertrieb, Service und Redaktion sowie die Google-Konten für den Redaktionszugang",
-  "Freigegebene Referenzprojekte mit Fotos, Kennzahlen und Kundenfreigabe",
-  "Bestätigte Unternehmensangaben: Mitarbeiterzahl, Firmenjahre, gelieferte Systeme, Länder",
-  "Impressums- und Registerangaben sowie rechtliche Prüfung der Texte",
-  "Bildmaterial und Videos mit Nutzungsrechten, ggf. Termin für ein Fotoshooting",
-  "Informationen zu bestehendem CRM/ERP, Hosting und gewünschten Sprachen",
+  "Freigegebene Referenzprojekte mit Fotos und Kennzahlen",
+  "Bestätigte Unternehmensangaben: Mitarbeiterzahl, Firmenjahre, gelieferte Anlagen, Länder",
+  "Impressums- und Registerangaben",
+  "Fotos und Videos in Originalqualität, ggf. Termin für ein Fotoshooting",
+  "Häufige Kundenfragen aus Vertrieb und Service – die Grundlage für die KI-Sichtbarkeit",
 ];

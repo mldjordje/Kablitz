@@ -85,6 +85,7 @@ function KablitzHeader({ lead }: { lead: LeadProfile }) {
         {NAV_ITEMS.map((item) => (
           <a key={item.label} href={item.href}>{item.label}</a>
         ))}
+        <Link className="kablitz-nav-projekt" href="/projekt">Projektübersicht</Link>
       </nav>
       <div className="kablitz-header-actions">
         {lead.contact.mapsUrl && (
