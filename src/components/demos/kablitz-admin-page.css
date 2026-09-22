@@ -342,3 +342,63 @@
   .kablitz-foundry-table .kablitz-admin-row { grid-template-columns: 1fr; }
   .kablitz-block-head { align-items: flex-start; }
 }
+
+/* ===== Newsroom ===== */
+.kablitz-news-intro { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; padding: 22px 24px; margin-bottom: 20px; background: #fff; border-radius: 12px; border-left: 4px solid var(--kablitz-red); }
+.kablitz-news-intro strong { font-size: 17px; }
+.kablitz-news-intro p { margin: 6px 0 0; max-width: 640px; color: #555; font-size: 14px; line-height: 1.55; }
+.kablitz-news-intro .kablitz-news-note { font-size: 12.5px; color: #888; }
+.kablitz-news-intro-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+.kablitz-news-btn { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 1px solid #ddd; border-radius: 8px; background: #fff; color: #1a1a1a; font-size: 13.5px; font-weight: 600; cursor: pointer; text-decoration: none; }
+.kablitz-news-btn:hover { border-color: #999; }
+.kablitz-news-btn.is-primary { background: var(--kablitz-red); border-color: var(--kablitz-red); color: #fff; }
+.kablitz-news-btn.is-primary:hover { background: var(--kablitz-red-dark); }
+.kablitz-news-list { display: grid; gap: 10px; }
+.kablitz-news-empty { padding: 30px; background: #fff; border-radius: 12px; color: #666; text-align: center; }
+.kablitz-news-row { display: grid; grid-template-columns: 96px 1fr auto; gap: 18px; align-items: center; padding: 14px; background: #fff; border-radius: 12px; }
+.kablitz-news-thumb { position: relative; width: 96px; height: 64px; border-radius: 8px; overflow: hidden; background: #eee; }
+.kablitz-news-thumb img { object-fit: cover; }
+.kablitz-news-meta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 12px; color: #777; }
+.kablitz-news-status { padding: 2px 8px; border-radius: 999px; background: #eee; color: #555; font-weight: 600; }
+.kablitz-news-status.is-live { background: #e3f5ea; color: #1c7a43; }
+.kablitz-news-row h3 { margin: 6px 0 4px; font-size: 16px; }
+.kablitz-news-row p { margin: 0; font-size: 13px; color: #666; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
+.kablitz-news-row-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.kablitz-news-row-actions :is(button, a) { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 1px solid #e2e2e2; border-radius: 8px; background: #fff; color: #1a1a1a; font-size: 12.5px; cursor: pointer; text-decoration: none; }
+.kablitz-news-row-actions :is(button, a):hover { border-color: #999; }
+.kablitz-news-row-actions .is-danger { color: var(--kablitz-red); }
+.kablitz-news-reset { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; border: 0; background: none; color: #888; font-size: 12.5px; cursor: pointer; }
+
+.kablitz-news-editor { padding: 24px; background: #fff; border-radius: 12px; }
+.kablitz-news-editor-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; }
+.kablitz-news-editor-head h2 { margin: 0; font-size: 20px; }
+.kablitz-news-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: 28px; }
+.kablitz-news-fields, .kablitz-news-side { display: grid; gap: 16px; align-content: start; }
+.kablitz-news-editor label { display: grid; gap: 6px; font-size: 12.5px; font-weight: 600; color: #444; }
+.kablitz-news-editor label small { font-weight: 400; color: #999; margin-left: 6px; }
+.kablitz-news-editor :is(input, textarea, select) { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font: inherit; font-size: 14px; font-weight: 400; color: #1a1a1a; background: #fff; box-sizing: border-box; }
+.kablitz-news-editor :is(input, textarea, select):focus { outline: 2px solid var(--kablitz-red); outline-offset: 0; border-color: transparent; }
+.kablitz-news-editor textarea { resize: vertical; line-height: 1.55; }
+.kablitz-news-slug { display: flex; align-items: center; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+.kablitz-news-slug em { padding: 0 4px 0 12px; font-style: normal; color: #999; font-weight: 400; font-size: 14px; }
+.kablitz-news-slug input { border: 0 !important; padding-left: 0 !important; }
+.kablitz-news-row2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.kablitz-news-side fieldset { display: grid; gap: 12px; margin: 0; padding: 16px; border: 1px solid #eee; border-radius: 10px; }
+.kablitz-news-side legend { padding: 0 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #666; }
+.kablitz-news-images { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.kablitz-news-images button { position: relative; aspect-ratio: 3 / 2; padding: 0; border: 2px solid transparent; border-radius: 8px; overflow: hidden; background: #eee; cursor: pointer; }
+.kablitz-news-images button[aria-pressed="true"] { border-color: var(--kablitz-red); box-shadow: 0 0 0 2px rgba(192,4,24,.2); }
+.kablitz-news-images img { object-fit: cover; }
+.kablitz-news-serp { display: grid; gap: 2px; padding: 12px 14px; border-radius: 8px; background: #f7f8fa; font-family: Arial, sans-serif; }
+.kablitz-news-serp span { font-size: 12px; color: #4d5156; }
+.kablitz-news-serp strong { font-size: 17px; font-weight: 400; color: #1a0dab; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.kablitz-news-serp p { margin: 0; font-size: 13px; color: #4d5156; line-height: 1.45; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.kablitz-news-error { margin: 18px 0 0; padding: 10px 14px; border-radius: 8px; background: #fde8ea; color: var(--kablitz-red); font-size: 13.5px; }
+.kablitz-news-editor-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px solid #eee; }
+@media (max-width: 900px) {
+  .kablitz-news-grid { grid-template-columns: 1fr; }
+  .kablitz-news-row { grid-template-columns: 72px 1fr; }
+  .kablitz-news-thumb { width: 72px; height: 52px; }
+  .kablitz-news-row-actions { grid-column: 1 / -1; justify-content: flex-start; }
+  .kablitz-news-row2 { grid-template-columns: 1fr; }
+}

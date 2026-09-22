@@ -2,17 +2,11 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
-  Factory,
-  Flame,
-  Gauge,
   LayoutDashboard,
   MapPin,
   Phone,
-  ShieldCheck,
-  Thermometer,
-  Wrench,
 } from "lucide-react";
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { LeadProfile, MediaAsset } from "@/lib/lead-schema";
@@ -24,18 +18,18 @@ import { KablitzStats } from "./kablitz-stats";
 import { KablitzFoundryBand } from "./kablitz-foundry-band";
 import { KablitzMotion } from "./kablitz-motion";
 import { KablitzHeroVideo } from "./kablitz-hero-video";
+import { KablitzNewsTeaser } from "./kablitz-news";
+import { KablitzServices } from "./kablitz-services";
+import { KablitzMap } from "./kablitz-map";
 import "./kablitz-page.css";
 
-const NAV_ITEMS = ["Leistungen", "Unternehmen", "Zertifikate", "Kontakt"];
-
-const SERVICE_ICONS: ReactNode[] = [
-  <Flame size={22} key="feuerungen" />,
-  <Gauge size={22} key="energiezentralen" />,
-  <Thermometer size={22} key="waermetauscher" />,
-  <Factory size={22} key="giesserei" />,
-  <Wrench size={22} key="brennstoffe" />,
-  <ShieldCheck size={22} key="service" />,
+const NAV_ITEMS = [
+  { label: "Leistungen", href: "#leistungen" },
+  { label: "Unternehmen", href: "#unternehmen" },
+  { label: "News", href: "/news" },
+  { label: "Kontakt", href: "#kontakt" },
 ];
+
 
 export function KablitzPage({ lead }: { lead: LeadProfile }) {
   const gallery = lead.media?.gallery ? [lead.media.hero, ...lead.media.gallery].filter(Boolean) as MediaAsset[] : [];
@@ -58,7 +52,7 @@ export function KablitzPage({ lead }: { lead: LeadProfile }) {
 
       <KablitzProcessStory />
 
-      <Services />
+      <KablitzServices />
 
       <KablitzFoundryBand />
 
@@ -70,7 +64,11 @@ export function KablitzPage({ lead }: { lead: LeadProfile }) {
 
       <AdminCta />
 
+      <KablitzNewsTeaser />
+
       <ContactBand lead={lead} phoneHref={phoneHref} />
+
+      <KablitzMap address={lead.contact.address ?? lead.city} routeUrl={lead.contact.mapsUrl} />
 
       <KablitzFooter lead={lead} />
     </main>
@@ -85,7 +83,7 @@ function KablitzHeader({ lead }: { lead: LeadProfile }) {
       </a>
       <nav className="kablitz-nav" aria-label="Hauptnavigation">
         {NAV_ITEMS.map((item) => (
-          <a key={item} href={`#${item.toLowerCase()}`}>{item}</a>
+          <a key={item.label} href={item.href}>{item.label}</a>
         ))}
       </nav>
       <div className="kablitz-header-actions">
@@ -145,36 +143,6 @@ function Hero({ lead, heroImage, phoneHref }: { lead: LeadProfile; heroImage?: M
           Offizielle Website · Freigabe ausstehend
         </a>
       )}
-    </section>
-  );
-}
-
-function Services() {
-  const services = [
-    { title: "Feuerungen", description: "Rostfeuerungen mit Luft- oder Wasserkühlung für unterschiedliche Brennstoffe.", path: "feuerungen" },
-    { title: "Energiezentralen", description: "Individuelle Anlagenkonzepte mit Dampf, Thermalöl, Heißgas oder Heißwasser.", path: "energiezentralen" },
-    { title: "Wärmetauscher", description: "Wärme aus Abgasen zurückgewinnen und für den Betrieb nutzbar machen.", path: "waermetauscher" },
-    { title: "Gießerei", description: "Gussteile und eigener Modellbau am Standort Lauda, auch für andere Anlagenhersteller.", path: "wir-giessen-selbst" },
-    { title: "Brennstoffe", description: "Technik für Holz, Agrarreststoffe und Ersatzbrennstoffe, einschließlich Multifuel-Anwendungen.", path: "brennstoffe" },
-    { title: "Service", description: "Originalteile, Inspektion, Instandhaltung und Modernisierung bestehender Anlagen.", path: "service" },
-  ];
-  return (
-    <section className="kablitz-services" id="leistungen">
-      <div className="kablitz-section-head">
-        <p className="kablitz-eyebrow" data-fade="">Leistungen</p>
-        <h2 data-split="">Technik für Ihre Energieversorgung.</h2>
-      </div>
-      <div className="kablitz-service-grid" data-stagger="">
-        {services.map((service, index) => (
-          <a className="kablitz-service-card" key={service.title} href={`https://www.kablitz.de/${service.path}/`} target="_blank" rel="noreferrer">
-            <span className="kablitz-card-index">{String(index + 1).padStart(2, "0")}</span>
-            <span className="kablitz-card-icon">{SERVICE_ICONS[index]}</span>
-            <h3>{service.title}</h3>
-            <p>{service.description}</p>
-            <span className="kablitz-service-link">Mehr über {service.title} <ArrowUpRight size={16} /></span>
-          </a>
-        ))}
-      </div>
     </section>
   );
 }
@@ -307,7 +275,11 @@ function KablitzFooter({ lead }: { lead: LeadProfile }) {
       <p className="kablitz-footer-wordmark" aria-hidden="true" data-chars="">KABLITZ</p>
       <div className="kablitz-footer-bottom">
         <span>© 2026 {lead.businessName}</span>
-        <span>Unverbindliches Designkonzept · Kein offizieller Unternehmensauftritt</span>
+        <span className="kablitz-footer-links">
+          <Link href="/projekt">Projektübersicht</Link>
+          <Link href="/admin">Admin-Vorschau</Link>
+          <span>Unverbindliches Designkonzept · Kein offizieller Unternehmensauftritt</span>
+        </span>
       </div>
     </footer>
   );

@@ -14,6 +14,7 @@ import {
   Globe,
   History,
   LayoutDashboard,
+  Newspaper,
   PackageSearch,
   Settings,
   ShieldCheck,
@@ -26,6 +27,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
 import type { LeadProfile } from "@/lib/lead-schema";
+import { KablitzAdminNews } from "./kablitz-admin-news";
 
 type StockItem = { article: string; onHand: number; min: number; unit: string; reorderQty?: number };
 type Order = {
@@ -108,6 +110,7 @@ const eur = (n: number) => n.toLocaleString("de-DE");
 
 type ViewKey =
   | "dashboard"
+  | "news"
   | "projects"
   | "installed"
   | "foundry"
@@ -124,6 +127,7 @@ type NavItem = { key: ViewKey; label: string; icon: ReactNode; done: boolean };
 
 const NAV: NavItem[] = [
   { key: "dashboard", label: "Übersicht", icon: <LayoutDashboard size={17} />, done: true },
+  { key: "news", label: "News & Beiträge", icon: <Newspaper size={17} />, done: true },
   { key: "projects", label: "Projekte", icon: <FolderKanban size={17} />, done: true },
   { key: "installed", label: "Anlagen-Bestand", icon: <Globe size={17} />, done: true },
   { key: "foundry", label: "Gießerei", icon: <Factory size={17} />, done: true },
@@ -173,6 +177,9 @@ export function KablitzAdminPanel({ lead }: { lead: LeadProfile }) {
             </button>
           ))}
         </nav>
+        <Link className="kablitz-panel-back" href="/projekt">
+          <FolderKanban size={15} /> Projektübersicht
+        </Link>
         <Link className="kablitz-panel-back" href="/">
           <ArrowLeft size={15} /> Zurück zur Demo
         </Link>
@@ -184,11 +191,12 @@ export function KablitzAdminPanel({ lead }: { lead: LeadProfile }) {
             <h1>{active.label}</h1>
             <p>{lead.businessName} · Konzept-Vorschau</p>
           </div>
-          <span className="kablitz-panel-demo-tag">Fiktive Daten · nichts wird gespeichert</span>
+          <span className="kablitz-panel-demo-tag">{view === "news" ? "Vorschau · Speicherung nur in diesem Browser" : "Fiktive Daten · nichts wird gespeichert"}</span>
         </header>
 
         <div className="kablitz-panel-content">
           {view === "dashboard" && <DashboardView onJump={setView} />}
+          {view === "news" && <KablitzAdminNews />}
           {view === "projects" && <ProjectsView />}
           {view === "installed" && <InstalledView />}
           {view === "foundry" && <FoundryView />}

@@ -21,7 +21,13 @@ gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
  */
 export function KablitzMotion() {
   useGSAP(() => {
-    const all = (selector: string) => gsap.utils.toArray<HTMLElement>(selector);
+    // Only rendered elements get a ScrollTrigger: triggers on display:none nodes (e.g. mobile-only
+    // cards on desktop) measure as 0 and break ScrollTrigger's refresh. Those are simply shown.
+    const all = (selector: string) => gsap.utils.toArray<HTMLElement>(selector).filter((el) => {
+      if (el.getClientRects().length) return true;
+      gsap.set(el.matches("[data-stagger]") ? [el, ...el.children] : el, { autoAlpha: 1 });
+      return false;
+    });
     const once = (trigger: Element, start = "top 86%") => ({ trigger, start, once: true });
 
     all("[data-split]").forEach((el) => {
@@ -91,6 +97,20 @@ export function KablitzMotion() {
     // Gallery: vertical scroll drives a horizontal rail on wide screens.
     const mm = gsap.matchMedia();
     mm.add("(min-width: 900px)", () => {
+      // Pins are created in page order (services before gallery) so their spacing is measured correctly.
+      const services = document.querySelector<HTMLElement>(".kx");
+      if (services) {
+        const steps = Number(services.dataset.steps) || 1;
+        let current = -1;
+        ScrollTrigger.create({
+          id: "kx", trigger: services, start: "top top", end: () => `+=${window.innerHeight * 3.2}`, pin: true,
+          onUpdate: (self) => {
+            const index = Math.min(steps - 1, Math.floor(self.progress * steps));
+            if (index !== current) { current = index; services.dispatchEvent(new CustomEvent("kx-step", { detail: index })); }
+          },
+        });
+      }
+
       const section = document.querySelector<HTMLElement>(".kablitz-gallery");
       const track = section?.querySelector<HTMLElement>(".kablitz-gallery-track");
       const bar = section?.querySelector<HTMLElement>(".kablitz-gallery-progress i");
