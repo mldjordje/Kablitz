@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { KablitzFire } from "./kablitz-fire";
+import { scrollToY } from "./kablitz-smooth-scroll";
 
 const STAGES = [
   { label: "Brennstoff", title: "Am Anfang steht der Brennstoff.", description: "Holzhackschnitzel, Rinde oder Reststoffe aus der Holzverarbeitung: Kablitz entwickelt Feuerungslösungen für unterschiedliche Festbrennstoffe, auch in Kombination.", detail: "Biomasse · Agriwaste · RDF / SRF", source: "brennstoffe", x: 12, y: 50 },
@@ -37,7 +38,7 @@ export function KablitzProcessStory() {
     const section = sectionRef.current;
     if (!section) return;
     const top = window.scrollY + section.getBoundingClientRect().top;
-    window.scrollTo({ top: top + (section.offsetHeight - window.innerHeight) * ((index + .18) / 4), behavior: "smooth" });
+    scrollToY(top + (section.offsetHeight - window.innerHeight) * ((index + .18) / 4));
   };
 
   return (

@@ -21,6 +21,10 @@ import { KablitzHeroVideo } from "./kablitz-hero-video";
 import { KablitzNewsTeaser } from "./kablitz-news";
 import { KablitzServices } from "./kablitz-services";
 import { KablitzMap } from "./kablitz-map";
+import { KablitzIntro } from "./kablitz-intro";
+import { KablitzSmoothScroll } from "./kablitz-smooth-scroll";
+import { KablitzReveal } from "./kablitz-reveal";
+import { KablitzMarquee } from "./kablitz-marquee";
 import "./kablitz-page.css";
 
 const NAV_ITEMS = [
@@ -40,17 +44,25 @@ export function KablitzPage({ lead }: { lead: LeadProfile }) {
 
   return (
     <main className="kablitz-page" id="top">
+      <KablitzIntro />
+      <KablitzSmoothScroll />
       <MotionLayer />
       <KablitzMotion />
       <p className="kablitz-disclaimer">Unverbindliches Designkonzept — nicht die offizielle Website des Unternehmens</p>
 
       <KablitzHeader lead={lead} />
 
-      <Hero lead={lead} heroImage={heroImage} phoneHref={phoneHref} />
+      <div className="kablitz-hero-stage">
+        <Hero lead={lead} heroImage={heroImage} phoneHref={phoneHref} />
+      </div>
 
       <KablitzStats />
 
+      <KablitzReveal />
+
       <KablitzProcessStory />
+
+      <KablitzMarquee />
 
       <KablitzServices />
 
@@ -95,6 +107,7 @@ function KablitzHeader({ lead }: { lead: LeadProfile }) {
         )}
         <a className="kablitz-btn kablitz-btn-primary" href="#kontakt">Kontakt</a>
       </div>
+      <span className="kablitz-progress" aria-hidden="true" />
     </header>
   );
 }
@@ -111,19 +124,19 @@ function Hero({ lead, heroImage, phoneHref }: { lead: LeadProfile; heroImage?: M
       )}
       <KablitzFire />
       <div className="kablitz-hero-copy">
-        <p className="kablitz-eyebrow" data-fade="0.1">Seit 1901 · Lauda-Königshofen</p>
+        <p className="kablitz-eyebrow" data-hero-fade="">Seit 1901 · Lauda-Königshofen</p>
         <h1 className="kablitz-hero-title">
           {["Energie", "aus", "Biomasse", "und", "Abfällen."].map((word, i) => (
-            <span className="kablitz-hero-word" style={{ "--w": i } as CSSProperties} key={word + i}>
-              {word}
+            <span className="kablitz-hero-mask" key={word + i}>
+              <span className="kablitz-hero-word" style={{ "--w": i } as CSSProperties}>{word}</span>
             </span>
           ))}
         </h1>
-        <p className="kablitz-hero-desc" data-fade="0.55">
+        <p className="kablitz-hero-desc" data-hero-fade="">
           Kablitz plant und liefert Biomasse-Heizkraftwerke, Kesselanlagen und
           Heißgaserzeuger. Mit eigener Gießerei und Stahlfertigung.
         </p>
-        <div className="kablitz-hero-actions" data-fade="0.7">
+        <div className="kablitz-hero-actions" data-hero-fade="">
           {phoneHref && (
             <a className="kablitz-btn kablitz-btn-primary" href={phoneHref}>
               <Phone size={16} /> Anrufen
@@ -135,7 +148,7 @@ function Hero({ lead, heroImage, phoneHref }: { lead: LeadProfile; heroImage?: M
             </a>
           )}
         </div>
-        <a className="kablitz-scroll-cue" href="#anlage" data-fade="0.85">
+        <a className="kablitz-scroll-cue" href="#anlage" data-hero-fade="">
           <ArrowDown size={15} /> Die Anlage entdecken
         </a>
       </div>
@@ -213,7 +226,7 @@ function Certifications({ lead }: { lead: LeadProfile }) {
       </div>
       <div className="kablitz-cert-grid" data-stagger="">
         {lead.certifications.map((cert, index) => (
-          <article className="kablitz-cert-card" key={cert.title}>
+          <article className="kablitz-cert-card" key={cert.title} data-tilt="">
             <span className="kablitz-card-number">{String(index + 1).padStart(2, "0")}</span>
             <h3>{cert.title}</h3>
             {cert.description && <p>{cert.description}</p>}
@@ -269,18 +282,20 @@ function ContactBand({ lead, phoneHref }: { lead: LeadProfile; phoneHref?: strin
 function KablitzFooter({ lead }: { lead: LeadProfile }) {
   return (
     <footer className="kablitz-footer">
-      <div className="kablitz-footer-top">
-        <Image src="/leads/kablitz-gmbh-r4t9k2/logo-transparent.png" alt="Kablitz Logo" width={110} height={34} unoptimized />
-        <a className="kablitz-back-to-top" href="#top">Nach oben <ArrowRight size={14} /></a>
-      </div>
-      <p className="kablitz-footer-wordmark" aria-hidden="true" data-chars="">KABLITZ</p>
-      <div className="kablitz-footer-bottom">
-        <span>© 2026 {lead.businessName}</span>
-        <span className="kablitz-footer-links">
-          <Link href="/projekt">Projektübersicht</Link>
-          <Link href="/admin">Admin-Vorschau</Link>
-          <span>Unverbindliches Designkonzept · Kein offizieller Unternehmensauftritt</span>
-        </span>
+      <div className="kablitz-footer-inner">
+        <div className="kablitz-footer-top">
+          <Image src="/leads/kablitz-gmbh-r4t9k2/logo-transparent.png" alt="Kablitz Logo" width={110} height={34} unoptimized />
+          <a className="kablitz-back-to-top" href="#top">Nach oben <ArrowRight size={14} /></a>
+        </div>
+        <p className="kablitz-footer-wordmark" aria-hidden="true" data-chars="">KABLITZ</p>
+        <div className="kablitz-footer-bottom">
+          <span>© 2026 {lead.businessName}</span>
+          <span className="kablitz-footer-links">
+            <Link href="/projekt">Projektübersicht</Link>
+            <Link href="/admin">Admin-Vorschau</Link>
+            <span>Unverbindliches Designkonzept · Kein offizieller Unternehmensauftritt</span>
+          </span>
+        </div>
       </div>
     </footer>
   );

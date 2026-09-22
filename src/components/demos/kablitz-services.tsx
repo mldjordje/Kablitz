@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
+import { scrollToY } from "./kablitz-smooth-scroll";
 
 const BASE = "https://www.kablitz.de";
 const IMG = "/leads/kablitz-gmbh-r4t9k2/services";
@@ -38,7 +39,7 @@ export function KablitzServices() {
   const select = (i: number) => {
     const st = ScrollTrigger.getById("kx");
     if (!st) return setActive(i);
-    window.scrollTo({ top: st.start + (st.end - st.start) * ((i + 0.5) / SERVICES.length), behavior: "smooth" });
+    scrollToY(st.start + (st.end - st.start) * ((i + 0.5) / SERVICES.length));
   };
 
   const current = SERVICES[active];

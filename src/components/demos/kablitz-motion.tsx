@@ -29,6 +29,11 @@ export function KablitzMotion() {
       return false;
     });
     const once = (trigger: Element, start = "top 86%") => ({ trigger, start, once: true });
+    const cleanups: Array<() => void> = [];
+    const listen = <K extends keyof HTMLElementEventMap>(el: HTMLElement, type: K, fn: (e: HTMLElementEventMap[K]) => void) => {
+      el.addEventListener(type, fn);
+      cleanups.push(() => el.removeEventListener(type, fn));
+    };
 
     all("[data-split]").forEach((el) => {
       SplitText.create(el, {
@@ -94,6 +99,80 @@ export function KablitzMotion() {
       gsap.fromTo(el, { clipPath: "inset(0% 7% 0% 7% round 32px)" }, { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "top 30%", scrub: true } });
     });
 
+    // Page progress hairline under the header.
+    const progress = document.querySelector(".kablitz-progress");
+    if (progress) gsap.fromTo(progress, { scaleX: 0 }, { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: 0.3 } });
+
+    // Hero leaves as a card: it rounds and insets while its copy lifts away.
+    const hero = document.querySelector<HTMLElement>(".kablitz-hero");
+    if (hero) {
+      const tl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { start: 0, end: () => hero.offsetTop + hero.offsetHeight, scrub: true, invalidateOnRefresh: true } });
+      tl.fromTo(hero, { clipPath: "inset(0% 0% 0% 0% round 0px)" }, { clipPath: "inset(0% 3% 7% 3% round 32px)" }, 0)
+        .to(".kablitz-hero-copy", { yPercent: -28, autoAlpha: 0 }, 0)
+        .to(".kablitz-hero-media", { yPercent: 14 }, 0);
+    }
+
+    // Type bands loop forever; scroll velocity speeds them up, sets their direction and skews them.
+    const bands = gsap.utils.toArray<HTMLElement>("[data-marquee]").map((row) => {
+      const dir = Number(row.dataset.marquee) || 1;
+      const tween = gsap.fromTo(row.children, { xPercent: dir > 0 ? 0 : -100 }, { xPercent: dir > 0 ? -100 : 0, duration: 38, ease: "none", repeat: -1, paused: true });
+      tween.totalTime(tween.duration() * 1000); // headroom so scrolling up can run it backwards
+      return { row, dir, tween };
+    });
+    if (bands.length) {
+      const skew = gsap.quickTo(bands.map((b) => b.row), "skewX", { duration: 0.5, ease: "power3" });
+      let direction = 1;
+      ScrollTrigger.create({
+        trigger: ".kmarquee", start: "top bottom", end: "bottom top",
+        onUpdate: (self) => {
+          const v = self.getVelocity();
+          if (self.direction !== direction) direction = self.direction;
+          const boost = 1 + Math.min(Math.abs(v) / 180, 7);
+          bands.forEach(({ tween }) => gsap.to(tween, { timeScale: boost * direction, duration: 0.2, overwrite: true }));
+          skew(gsap.utils.clamp(-12, 12, v / -160));
+        },
+        onToggle: (self) => bands.forEach(({ tween }) => (self.isActive ? tween.play() : tween.pause())),
+      });
+      // Ease back to cruising speed once scrolling stops.
+      const settle = () => {
+        bands.forEach(({ tween }) => gsap.to(tween, { timeScale: direction, duration: 1.2, ease: "power2.out", overwrite: true }));
+        skew(0);
+      };
+      ScrollTrigger.addEventListener("scrollEnd", settle);
+      cleanups.push(() => ScrollTrigger.removeEventListener("scrollEnd", settle));
+    }
+
+    // Footer content settles up from underneath as the page runs out.
+    const footerInner = document.querySelector(".kablitz-footer-inner");
+    if (footerInner) gsap.fromTo(footerInner, { yPercent: -45, autoAlpha: 0.2 }, { yPercent: 0, autoAlpha: 1, ease: "none", scrollTrigger: { trigger: ".kablitz-footer", start: "top bottom", end: "bottom bottom", scrub: true } });
+
+    // Magnetic buttons and tilting cards (fine pointers only).
+    if (window.matchMedia("(pointer: fine)").matches) {
+      gsap.utils.toArray<HTMLElement>(".kablitz-btn, .kablitz-videoband-btn, .kmap-card a, .kx-more").forEach((el) => {
+        const x = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3" });
+        const y = gsap.quickTo(el, "y", { duration: 0.5, ease: "power3" });
+        listen(el, "mousemove", (e) => {
+          const r = el.getBoundingClientRect();
+          x((e.clientX - r.left - r.width / 2) * 0.35);
+          y((e.clientY - r.top - r.height / 2) * 0.35);
+        });
+        listen(el, "mouseleave", () => { gsap.to(el, { x: 0, y: 0, duration: 0.9, ease: "elastic.out(1, 0.4)", overwrite: true }); });
+      });
+      gsap.utils.toArray<HTMLElement>("[data-tilt]").forEach((el) => {
+        gsap.set(el, { transformPerspective: 900 });
+        const rx = gsap.quickTo(el, "rotateX", { duration: 0.6, ease: "power3" });
+        const ry = gsap.quickTo(el, "rotateY", { duration: 0.6, ease: "power3" });
+        listen(el, "mousemove", (e) => {
+          const r = el.getBoundingClientRect();
+          el.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
+          el.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
+          ry(((e.clientX - r.left) / r.width - 0.5) * 14);
+          rx(((e.clientY - r.top) / r.height - 0.5) * -14);
+        });
+        listen(el, "mouseleave", () => { rx(0); ry(0); });
+      });
+    }
+
     // Gallery: vertical scroll drives a horizontal rail on wide screens.
     const mm = gsap.matchMedia();
     mm.add("(min-width: 900px)", () => {
@@ -126,7 +205,10 @@ export function KablitzMotion() {
     const refresh = () => ScrollTrigger.refresh();
     window.addEventListener("load", refresh);
     document.fonts?.ready.then(refresh);
-    return () => window.removeEventListener("load", refresh);
+    return () => {
+      window.removeEventListener("load", refresh);
+      cleanups.forEach((fn) => fn());
+    };
   });
 
   return null;
