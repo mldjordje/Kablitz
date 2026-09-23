@@ -17,7 +17,6 @@ import { KablitzFire } from "./kablitz-fire";
 import { KablitzStats } from "./kablitz-stats";
 import { KablitzFoundryBand } from "./kablitz-foundry-band";
 import { KablitzMotion } from "./kablitz-motion";
-import { KablitzHeroVideo } from "./kablitz-hero-video";
 import { KablitzNewsTeaser } from "./kablitz-news";
 import { KablitzServices } from "./kablitz-services";
 import { KablitzMap } from "./kablitz-map";
@@ -122,7 +121,6 @@ function Hero({ lead, heroImage, phoneHref }: { lead: LeadProfile; heroImage?: M
       {heroImage && (
         <div className="kablitz-hero-media" data-parallax="0.06">
           <Image src={heroImage.src} alt={heroImage.alt} fill sizes="100vw" unoptimized priority />
-          <KablitzHeroVideo />
           <div className="kablitz-hero-scrim" />
         </div>
       )}

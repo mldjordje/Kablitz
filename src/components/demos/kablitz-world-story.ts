@@ -205,19 +205,44 @@ function chase(route: Route, u: number, c: number, cruise: { dist: number; pitch
 type ShotOut = { cam: Cam; draw?: Record<string, number>; focus?: string; labels?: string[]; counter?: number; centre?: number; free?: boolean; active?: string };
 type Shot = { chapter: number; weight: number; routes?: string[]; run: (t: number) => ShotOut };
 
-/** Take-off, chase, landing: at touchdown the camera swings round to face `next`. */
-function flight(id: string, next: string | null, span: [number, number] = [0.06, 0.8]): (t: number) => ShotOut {
+/** Rotate tangent `v` about the surface normal `n` by `rad` (v ⟂ n). */
+function rotateAbout(v: Vec, n: Vec, rad: number): Vec {
+  return norm(add(scale(v, Math.cos(rad)), scale(cross(n, v), Math.sin(rad))));
+}
+/** Signed angle turning tangent `a` into tangent `b` around `n`. */
+const signedAngle = (a: Vec, b: Vec, n: Vec) => Math.atan2(dot(cross(a, b), n), dot(a, b));
+
+/**
+ * Take-off, chase, landing. The flight itself takes the first ~60% of the shot; the rest is the
+ * arrival: the camera settles in behind the line, then orbits the city — pulling back and rising —
+ * until it faces the next stop, so the following flight leaves exactly from that framing.
+ */
+function flight(id: string, next: string | null, span: [number, number] = [0.05, 0.62]): (t: number) => ShotOut {
   const route = R[id];
   const from = id.split("-")[0];
   const len = routeLength(route);
   const cruise = { dist: 90 + Math.min(len, 1.8) * 45, pitch: 60 - Math.min(len, 1.2) * 20 };
-  const arrive = parked(route.to!, next, 80, 56, 0);
+  const city = V(route.to!);
+  const inbound = tangent(city, sub(city, routeVec(route, 0.96)));
+  const outbound = next ? towards(city, V(next)) : inbound;
+  const swingAngle = signedAngle(inbound, outbound, city);
   return (t) => {
     const d = ease(seg(t, span[0], span[1]));
     const c = Math.sin(Math.PI * d) * Math.min(1, len / 0.5);
-    const land = smooth(seg(t, span[1] - 0.04, 1));
+    const air = chase(route, d, c, cruise);
+    const L = seg(t, span[1] - 0.05, 1);
+    const settle = smooth(seg(L, 0, 0.3));
+    const swing = ease(seg(L, 0.22, 1));
+    const landed: Cam = {
+      target: city,
+      alt: 0,
+      heading: rotateAbout(inbound, city, swingAngle * swing),
+      dist: lerp(72, 98, swing) + Math.sin(Math.PI * swing) * 26,
+      pitch: lerp(64, 52, swing),
+      fov: lerp(36, 34, swing),
+    };
     return {
-      cam: blendCam(chase(route, d, c, cruise), arrive, land),
+      cam: blendCam(air, landed, settle),
       draw: { [id]: d },
       focus: d > 0.8 ? route.to : from,
       labels: [from, route.to!],
@@ -251,8 +276,8 @@ const SHOTS: Shot[] = [
       return { cam, draw: { "riga-moskau": d }, focus: d > 0.8 ? "moskau" : "riga", labels: ["riga", "moskau"], active: d < 1 ? "riga-moskau" : undefined };
     },
   },
-  { chapter: 3, weight: 10, routes: ["riga-wartheland"], run: flight("riga-wartheland", "lauda", [0.14, 0.8]) },
-  { chapter: 4, weight: 10, routes: ["wartheland-lauda"], run: flight("wartheland-lauda", "nordsee") },
+  { chapter: 3, weight: 12, routes: ["riga-wartheland"], run: flight("riga-wartheland", "lauda", [0.14, 0.64]) },
+  { chapter: 4, weight: 12, routes: ["wartheland-lauda"], run: flight("wartheland-lauda", "nordsee") },
   { chapter: 4, weight: 6, run: orbitAt("lauda", "nordsee", 80, 60, 70) },
   // Onassis: over to the North Sea, then ride with a tanker through Suez to the Gulf while the
   // Atlantic lane peels off towards America.
@@ -296,14 +321,14 @@ const SHOTS: Shot[] = [
       return { cam: blendCam(prev, cur, smooth(seg(local, 0, 0.55))), draw, focus: REFERENCE_ORDER[i], labels: ["lauda", REFERENCE_ORDER[i]] };
     },
   },
-  { chapter: 8, weight: 16, routes: ["lauda-pemuco"], run: flight("lauda-pemuco", "nordamerika") },
+  { chapter: 8, weight: 19, routes: ["lauda-pemuco"], run: flight("lauda-pemuco", "nordamerika") },
   // Around the world, westwards, back home.
   {
-    chapter: 9, weight: 34, routes: LOOP_LEGS,
+    chapter: 9, weight: 40, routes: LOOP_LEGS,
     run: (t) => {
       const n = LOOP_LEGS.length;
       const i = Math.min(n - 1, Math.floor(t * n));
-      const out = flight(LOOP_LEGS[i], LOOP[i + 2] ?? null, [0.04, 0.84])(t * n - i);
+      const out = flight(LOOP_LEGS[i], LOOP[i + 2] ?? null, [0.04, 0.66])(t * n - i);
       const draw: Record<string, number> = {};
       LOOP_LEGS.forEach((id, j) => { draw[id] = j < i ? 1 : j === i ? out.draw![id] : 0; });
       return { ...out, draw, counter: Math.round(6500 * ease(t)) };

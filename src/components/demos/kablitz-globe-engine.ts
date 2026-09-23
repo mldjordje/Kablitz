@@ -13,11 +13,19 @@ export type EngineEvents = {
   onState: (s: { chapter: number; focus?: string; free: boolean }) => void;
   /** Fires every rendered frame (cheap DOM updates only). */
   onFrame?: (s: SceneState) => void;
+  /** A place was picked (click/tap on its beacon or card) in the finale, or the pick was cleared. */
+  onSelect?: (id: string | null) => void;
 };
 
 export type GlobeEngine = {
   setProgress: (p: number) => void;
   setLayout: (narrow: boolean) => void;
+  /** Explore mode: the wheel and pinch zoom the globe instead of scrolling the page. */
+  setExplore: (on: boolean) => void;
+  zoomBy: (factor: number) => void;
+  /** Fly to a place (or clear the pick with null). */
+  select: (id: string | null) => void;
+  resetView: () => void;
   dispose: () => void;
 };
 
@@ -59,11 +67,11 @@ const EARTH_FRAGMENT = /* glsl */ `
     vec3 day = texture2D(dayTex, vUv).rgb;
     vec3 night = texture2D(nightTex, vUv).rgb;
     float water = texture2D(waterTex, vUv).r;
-    float glint = pow(max(dot(n, normalize(sunDir + v)), 0.0), 48.0) * water * dayK;
+    float glint = pow(max(dot(n, normalize(sunDir + v)), 0.0), 120.0) * water * dayK;
     float rim = pow(1.0 - max(dot(n, v), 0.0), 3.0);
     vec3 col = day * (0.05 + 1.1 * dayK)
       + night * vec3(1.0, 0.7, 0.42) * 1.8 * (1.0 - dayK)
-      + vec3(1.0, 0.9, 0.8) * glint * 0.55
+      + vec3(1.0, 0.9, 0.8) * glint * 0.35
       + vec3(0.35, 0.6, 1.0) * rim * (0.12 + 0.45 * dayK);
     gl_FragColor = vec4(col, 1.0);
     #include <colorspace_fragment>
@@ -104,12 +112,12 @@ function labelEl(p: WorldPlace) {
 
 /* Beacons: a light pillar, a glow pooled on the ground and a pulsing disc, tinted by kind. */
 const BEACON: Record<WorldPlace["kind"], { color: string; height: number; disc: number }> = {
-  hub: { color: "#ff2b3d", height: 12, disc: 5.5 },
-  origin: { color: "#ffb08a", height: 9, disc: 4 },
-  history: { color: "#ffc9a8", height: 6.5, disc: 3.2 },
-  reference: { color: "#ff7a45", height: 5.5, disc: 3 },
-  port: { color: "#9fd0ff", height: 5.5, disc: 3.4 },
-  region: { color: "#ff9c74", height: 0, disc: 14 },
+  hub: { color: "#ff2b3d", height: 5.5, disc: 2.6 },
+  origin: { color: "#ffb08a", height: 4, disc: 1.8 },
+  history: { color: "#ffc9a8", height: 3, disc: 1.5 },
+  reference: { color: "#ff7a45", height: 2.6, disc: 1.3 },
+  port: { color: "#9fd0ff", height: 2.6, disc: 1.4 },
+  region: { color: "#ff9c74", height: 0, disc: 7 },
 };
 
 function beamTexture(THREE: typeof THREE_NS) {
@@ -148,7 +156,9 @@ function discTexture(THREE: typeof THREE_NS, ring: boolean) {
 
 export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElement, events: EngineEvents, opts: { narrow: boolean; progress: number; instant?: boolean; look?: GlobeLook }): Promise<GlobeEngine> {
   const style = opts.look ?? "real";
-  const res = opts.narrow ? "2k" : "4k";
+  // 4K maps everywhere (phones included); only devices reporting little memory fall back to 2K.
+  const lowMemory = ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) < 4;
+  const res = lowMemory ? "2k" : "4k";
   const [THREE, { default: ThreeGlobe }, countries] = await Promise.all([
     import("three"),
     import("three-globe"),
@@ -162,7 +172,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       loader.loadAsync(`/globe/earth-day-${res}.webp`),
       loader.loadAsync(`/globe/earth-night-${res}.webp`),
       loader.loadAsync("/globe/earth-water.webp"),
-      loader.loadAsync(`/globe/earth-clouds-${opts.narrow ? "1k" : "2k"}.jpg`).catch(() => null),
+      loader.loadAsync(`/globe/earth-clouds-${lowMemory ? "1k" : "2k"}.jpg`).catch(() => null),
     ]);
     clouds = cloudTex;
     day.colorSpace = THREE.SRGBColorSpace;
@@ -176,7 +186,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
 
   let narrow = opts.narrow;
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, narrow ? 1.75 : 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
   renderer.domElement.className = "kw-canvas";
   if (earth) for (const k of ["dayTex", "nightTex"]) (earth.uniforms[k].value as THREE_NS.Texture).anisotropy = renderer.capabilities.getMaxAnisotropy();
@@ -237,7 +247,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     // The cloud map is density only (greyscale), used as an alpha map over white.
     cloudMesh = new THREE.Mesh(
       new THREE.SphereGeometry(R * 1.006, 96, 64),
-      new THREE.MeshLambertMaterial({ color: "#ffffff", alphaMap: clouds, transparent: true, opacity: 0.6, depthWrite: false }),
+      new THREE.MeshLambertMaterial({ color: "#ffffff", alphaMap: clouds, transparent: true, opacity: 0.45, depthWrite: false }),
     );
     // three-globe turns its sphere so lng 0 faces +z; match it.
     cloudMesh.rotation.y = -Math.PI / 2;
@@ -266,8 +276,8 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     let beam: THREE_NS.Mesh | null = null;
     let core: THREE_NS.Mesh | null = null;
     if (spec.height) {
-      beam = add(new THREE.CylinderGeometry(0.1, 0.34, spec.height, 16, 1, true).translate(0, spec.height / 2, 0), beamTex, 0.95);
-      core = add(new THREE.SphereGeometry(0.42, 16, 12), discTex, 1);
+      beam = add(new THREE.CylinderGeometry(0.05, 0.18, spec.height, 12, 1, true).translate(0, spec.height / 2, 0), beamTex, 0.95);
+      core = add(new THREE.SphereGeometry(p.kind === "hub" ? 0.45 : 0.32, 16, 12), discTex, 1);
       (core.material as THREE_NS.MeshBasicMaterial).map = null;
       (core.material as THREE_NS.MeshBasicMaterial).color.set("#ffffff");
     }
@@ -288,7 +298,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       return new THREE.Vector3(x * r, y * r, z * r);
     });
     const curve = new THREE.CatmullRomCurve3(pts);
-    const geometry = new THREE.TubeGeometry(curve, SEGMENTS, route.kind === "sea" ? 0.24 : 0.34, RADIAL, false);
+    const geometry = new THREE.TubeGeometry(curve, SEGMENTS, route.kind === "sea" ? 0.16 : 0.22, RADIAL, false);
     geometry.setDrawRange(0, 0);
     const material = new THREE.MeshBasicMaterial({
       color: route.kind === "sea" ? "#ffc4a6" : "#ff4d2e", transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending,
@@ -300,7 +310,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     ghost.scale.setScalar(0.999);
     globe.add(ghost);
     const head = new THREE.Sprite(new THREE.SpriteMaterial({ map: glow, color: "#ffffff", transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
-    head.scale.setScalar(route.kind === "sea" ? 5 : 7);
+    head.scale.setScalar(route.kind === "sea" ? 4 : 5.5);
     head.visible = false;
     globe.add(mesh, head);
     return { route, curve, geometry, material, ghost, ghostMat, head, total: geometry.index!.count, offset: Math.random() };
@@ -309,6 +319,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
   /* Labels */
   const labels = PLACES.map((p) => {
     const el = labelEl(p);
+    el.addEventListener("click", () => { if (free) select(p.id); });
     labelHost.append(el);
     return { p, el, w: 0, h: 0, shown: false };
   });
@@ -331,29 +342,101 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
   /* Free-explore interaction (finale only) */
   const user = { lat: 0, lng: 0, vLat: 0, vLng: 0, lastInput: 0 };
   let free = false;
+  let explore = false;
+  let zoom = 1;
+  let zoomTarget = 1;
+  let selected: string | null = null;
+  let fly: { lat: number; lng: number } | null = null;
+  let base = { lat: 0, lng: 0 };
+  let aside = 0;
+  const screen = new Map<string, { x: number; y: number; on: boolean }>();
+  const pointers = new Map<number, { x: number; y: number }>();
+  let pinch = 0;
+  let press: { x: number; y: number; t: number } | null = null;
   let dragging: { x: number; y: number; t: number } | null = null;
+  const wrap = (d: number) => ((d % 360) + 540) % 360 - 180;
+
+  const select = (id: string | null) => {
+    selected = id;
+    const p = id ? PLACES.find((pl) => pl.id === id) : undefined;
+    if (p) {
+      fly = { lat: p.lat - base.lat, lng: user.lng + wrap(p.lng - base.lng - user.lng) };
+      zoomTarget = Math.min(zoomTarget, p.kind === "region" ? 0.8 : 0.5);
+      user.vLat = user.vLng = 0;
+    }
+    events.onSelect?.(id);
+  };
+  const pick = (cx: number, cy: number) => {
+    const r = host.getBoundingClientRect();
+    const x = cx - r.left;
+    const y = cy - r.top;
+    let best: string | null = null;
+    let bestScore = Infinity;
+    for (const [id, pt] of screen) {
+      if (!pt.on) continue;
+      const d = Math.hypot(pt.x - x, pt.y - y);
+      if (d > 34) continue;
+      // Near-ties go to the more important place (Lauda over a plant a few km away).
+      const score = d - PRIORITY[PLACES.find((pl) => pl.id === id)!.kind] * 2.5;
+      if (score < bestScore) { bestScore = score; best = id; }
+    }
+    if (best) select(best);
+  };
+
   const onDown = (e: PointerEvent) => {
     if (!free) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      pinch = Math.hypot(a.x - b.x, a.y - b.y);
+      dragging = null;
+      return;
+    }
+    press = { x: e.clientX, y: e.clientY, t: performance.now() };
     dragging = { x: e.clientX, y: e.clientY, t: performance.now() };
     user.vLat = user.vLng = 0;
     host.setPointerCapture(e.pointerId);
     host.dataset.dragging = "true";
   };
   const onMove = (e: PointerEvent) => {
+    if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2 && explore) {
+      const [a, b] = [...pointers.values()];
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (pinch) zoomTarget = Math.max(0.3, Math.min(1.5, zoomTarget * (pinch / d)));
+      pinch = d;
+      return;
+    }
     if (!dragging) return;
+    if (Math.hypot(e.clientX - (press?.x ?? 0), e.clientY - (press?.y ?? 0)) > 5) fly = null;
     const now = performance.now();
     const dx = e.clientX - dragging.x;
     const dy = e.clientY - dragging.y;
-    const k = 0.28 * (500 / Math.max(420, Math.min(width, height)));
+    const k = 0.28 * zoom * (500 / Math.max(420, Math.min(width, height)));
     user.lng -= dx * k;
-    user.lat = Math.max(-50, Math.min(50, user.lat + dy * k * 0.8));
+    user.lat += dy * k * 0.8;
     const dt = Math.max(8, now - dragging.t);
     user.vLng = (-dx * k) / dt;
     user.vLat = (dy * k * 0.8) / dt;
     dragging = { x: e.clientX, y: e.clientY, t: now };
     user.lastInput = now;
   };
-  const onUp = () => { dragging = null; delete host.dataset.dragging; user.lastInput = performance.now(); };
+  const onUp = (e: PointerEvent) => {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) pinch = 0;
+    // A short press that barely moved is a click: pick the nearest place under it.
+    if (press && e.type === "pointerup" && Math.hypot(e.clientX - press.x, e.clientY - press.y) < 6 && performance.now() - press.t < 450) pick(e.clientX, e.clientY);
+    press = null;
+    dragging = null;
+    delete host.dataset.dragging;
+    user.lastInput = performance.now();
+  };
+  const onWheel = (e: WheelEvent) => {
+    if (!explore) return;
+    e.preventDefault();
+    zoomTarget = Math.max(0.3, Math.min(1.5, zoomTarget * Math.exp(e.deltaY * 0.0012)));
+  };
+  host.addEventListener("wheel", onWheel, { passive: false });
   host.addEventListener("pointerdown", onDown);
   host.addEventListener("pointermove", onMove);
   host.addEventListener("pointerup", onUp);
@@ -363,7 +446,6 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
   let target = opts.progress;
   let progress = opts.progress;
   let lastKey = "";
-  let ringsKey = "";
   let raf = 0;
   let visible = true;
   let last = performance.now();
@@ -386,21 +468,33 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       host.dataset.free = String(free);
       if (!free) dragging = null;
     }
+    base = toLatLng(s.cam.target);
     if (free) {
-      if (!dragging) {
+      if (fly) {
+        const kf = opts.instant ? 1 : 1 - Math.exp(-dt / 380);
+        user.lat += (fly.lat - user.lat) * kf;
+        user.lng += (fly.lng - user.lng) * kf;
+        if (Math.abs(fly.lat - user.lat) + Math.abs(fly.lng - user.lng) < 0.01) fly = null;
+      } else if (!dragging) {
         user.lng += user.vLng * dt;
-        user.lat = Math.max(-50, Math.min(50, user.lat + user.vLat * dt));
+        user.lat += user.vLat * dt;
         const decay = Math.exp(-dt / 420);
         user.vLng *= decay;
         user.vLat *= decay;
-        // Drifts slowly on its own once the visitor lets go for a while.
-        if (now - user.lastInput > 2600) user.lng += dt * 0.0035;
+        // Drifts slowly on its own once the visitor lets go for a while (not while exploring).
+        if (!explore && !selected && now - user.lastInput > 2600) user.lng += dt * 0.0035;
       }
+      user.lat = Math.max(-68 - base.lat, Math.min(68 - base.lat, user.lat));
     } else {
       const k = 1 - Math.exp(-dt / 260);
       user.lat -= user.lat * k;
-      user.lng -= ((((user.lng % 360) + 540) % 360) - 180) * k;
+      user.lng -= wrap(user.lng) * k;
+      fly = null;
+      if (selected) select(null);
+      zoomTarget = 1;
     }
+    zoom += (zoomTarget - zoom) * (opts.instant ? 1 : 1 - Math.exp(-dt / 200));
+    const focusId = selected ?? s.focus;
 
     // Camera: a free film camera flying around a globe that stays put.
     const c = s.cam;
@@ -413,7 +507,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     }
     // Portrait screens pull back, fully for top views, only a little for low chase shots.
     const portrait = Math.pow(Math.max(1, 0.85 / camera.aspect), 0.35 + 0.65 * (1 - Math.min(1, c.pitch / 70)));
-    const dist = c.dist * portrait;
+    const dist = c.dist * portrait * zoom;
     const pitch = c.pitch * RAD;
     nrm.set(tgt[0], tgt[1], tgt[2]);
     hdg.set(heading[0], heading[1], heading[2]);
@@ -424,7 +518,9 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     camera.lookAt(look);
     camera.fov = c.fov;
     const side = narrow ? { x: 0, y: -0.16 } : { x: 0.16, y: 0 };
-    camera.setViewOffset(width, height, -width * side.x * (1 - s.centre), -height * side.y * (1 - s.centre), width, height);
+    aside += ((selected ? 1 : 0) - aside) * (opts.instant ? 1 : 1 - Math.exp(-dt / 300));
+    const card = narrow ? { x: 0, y: -0.17 } : { x: -0.15, y: 0 };
+    camera.setViewOffset(width, height, -width * (side.x * (1 - s.centre) + card.x * aside), -height * (side.y * (1 - s.centre) + card.y * aside), width, height);
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
     if (earth) (earth.uniforms.sunDir.value as THREE_NS.Vector3).set(-0.86, 0.4, 0.46).normalize().applyQuaternion(camera.quaternion);
@@ -436,14 +532,15 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       const count = Math.floor((line.total / (6 * RADIAL)) * d) * 6 * RADIAL;
       line.geometry.setDrawRange(0, count);
       // Tanker lanes step back once their chapter is over.
-      const base = line.route.kind === "sea" ? (s.chapter > 5 ? 0.22 : 0.55) : 0.5;
-      line.material.opacity = d <= 0 ? 0 : drawing ? 0.95 : free ? 0.55 : base;
-      line.ghostMat.opacity = s.active === line.route.id ? 0.3 : 0;
+      const rest = line.route.kind === "sea" ? (s.chapter > 5 ? 0.12 : 0.4) : 0.26;
+      const linked = selected && (line.route.to === selected || line.route.id.startsWith(`${selected}-`));
+      line.material.opacity = d <= 0 ? 0 : drawing ? 0.95 : linked ? 0.9 : free ? 0.3 : rest;
+      line.ghostMat.opacity = s.active === line.route.id ? 0.22 : 0;
       if (drawing) {
         line.head.visible = true;
         line.head.position.copy(line.curve.getPointAt(d));
-      } else if (free && line.route.kind === "air") {
-        // Finale: every route keeps a slow pulse travelling along it.
+      } else if (free && line.route.kind === "air" && (!selected || linked)) {
+        // Finale: routes keep a slow pulse travelling along them (only the picked place's while one is open).
         const u = (now / 5200 + line.offset) % 1;
         line.head.visible = true;
         line.head.position.copy(line.curve.getPointAt(u));
@@ -460,46 +557,45 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     for (const b of beacons) {
       const on = reached.has(b.p.id) || (b.p.kind === "region" && (s.free || s.focus === b.p.id));
       b.appear += ((on ? 1 : 0) - b.appear) * k;
-      b.lift += ((s.focus === b.p.id ? 1.45 : 1) - b.lift) * k;
+      const hot = focusId === b.p.id;
+      b.lift += ((hot ? 1.9 : 1) - b.lift) * k;
       const a = b.appear < 0.002 ? 0 : b.appear;
       b.group.visible = a > 0;
       if (!a) continue;
       const pop = a < 1 ? 1 + Math.sin(a * Math.PI) * 0.25 : 1; // slight overshoot as it lands
       b.group.scale.set(pop, a * b.lift, pop);
       const beat = 0.5 + 0.5 * Math.sin(now / 520 + b.phase);
-      (b.glowDisc.material as THREE_NS.MeshBasicMaterial).opacity = (0.55 + 0.35 * beat) * a;
+      // Quiet by default; only the place in focus pulses and glows.
+      (b.glowDisc.material as THREE_NS.MeshBasicMaterial).opacity = (hot ? 0.6 + 0.3 * beat : b.p.kind === "region" ? 0.18 : 0.28) * a;
+      b.glowDisc.scale.setScalar(hot ? 1.6 : 1);
       const cycle = ((now / 1600 + b.phase) % 1);
-      b.pulse.scale.setScalar(0.4 + cycle * 0.9);
-      (b.pulse.material as THREE_NS.MeshBasicMaterial).opacity = (1 - cycle) * 0.8 * a;
-      if (b.beam) (b.beam.material as THREE_NS.MeshBasicMaterial).opacity = (0.7 + 0.25 * beat) * a;
-    }
-    const ringIds = new Set<string>(s.free ? ["lauda", "nordamerika", "asien", "australien", "neuseeland"] : s.focus ? [s.focus] : []);
-    if (reached.has("lauda")) ringIds.add("lauda");
-    const rKey = [...ringIds].sort().join();
-    if (rKey !== ringsKey) {
-      ringsKey = rKey;
-      globe.ringsData(PLACES.filter((p) => ringIds.has(p.id)));
+      b.pulse.visible = hot;
+      b.pulse.scale.setScalar(0.5 + cycle * 1.4);
+      (b.pulse.material as THREE_NS.MeshBasicMaterial).opacity = (1 - cycle) * 0.7 * a;
+      if (b.beam) (b.beam.material as THREE_NS.MeshBasicMaterial).opacity = (hot ? 0.9 : 0.45) * a;
     }
 
     // Labels: project, drop the ones beyond the horizon, then hide overlaps by priority.
     const wanted = new Set(s.labels);
+    if (selected) wanted.add(selected);
     const boxes: Array<[number, number, number, number]> = [];
-    const order = [...labels].sort((a, b) => (b.p.id === s.focus ? 99 : PRIORITY[b.p.kind]) - (a.p.id === s.focus ? 99 : PRIORITY[a.p.kind]));
+    const rank = (id: string, kind: WorldPlace["kind"]) => (id === focusId ? 99 : PRIORITY[kind]);
+    const order = [...labels].sort((a, b) => rank(b.p.id, b.p.kind) - rank(a.p.id, a.p.kind));
     for (const lb of order) {
-      let show = wanted.has(lb.p.id);
-      let x = 0;
-      let y = 0;
-      if (show) {
-        const bc = beacons[PLACES.indexOf(lb.p)];
-        const g = globe.getCoords(lb.p.lat, lb.p.lng, (bc.spec.height * bc.appear * bc.lift + 1.2) / R);
-        v.set(g.x, g.y, g.z);
-        toCam.copy(camera.position).sub(v).normalize();
-        const facing = toCam.dot(nrm.copy(v).normalize());
-        v.project(camera);
-        x = (v.x + 1) / 2 * width;
-        y = (1 - v.y) / 2 * height;
-        show = facing > 0.06 && v.z < 1 && x > -40 && x < width + 40 && y > -20 && y < height + 20;
-      }
+      const bc = beacons[PLACES.indexOf(lb.p)];
+      const g = globe.getCoords(lb.p.lat, lb.p.lng, (bc.spec.height * bc.appear * bc.lift + 1.2) / R);
+      v.set(g.x, g.y, g.z);
+      toCam.copy(camera.position).sub(v).normalize();
+      const facing = toCam.dot(nrm.copy(v).normalize());
+      v.project(camera);
+      const x = (v.x + 1) / 2 * width;
+      const y = (1 - v.y) / 2 * height;
+      const onScreen = facing > 0.06 && v.z < 1 && x > -40 && x < width + 40 && y > -20 && y < height + 20;
+      // Picking uses the dot on the ground, not the top of the (variable-height) pillar.
+      const gp = globe.getCoords(lb.p.lat, lb.p.lng, 0.004);
+      v.set(gp.x, gp.y, gp.z).project(camera);
+      screen.set(lb.p.id, { x: (v.x + 1) / 2 * width, y: (1 - v.y) / 2 * height, on: onScreen && bc.appear > 0.5 });
+      let show = wanted.has(lb.p.id) && onScreen;
       if (show) {
         if (!lb.w) { const r = (lb.el.firstElementChild as HTMLElement).getBoundingClientRect(); lb.w = r.width + 10; lb.h = r.height + 14; }
         const box: [number, number, number, number] = [x - lb.w / 2, y - lb.h, x + lb.w / 2, y];
@@ -508,7 +604,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       }
       if (show) lb.el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
       if (show !== lb.shown) { lb.shown = show; lb.el.dataset.visible = String(show); }
-      lb.el.dataset.focus = String(lb.p.id === s.focus);
+      lb.el.dataset.focus = String(lb.p.id === focusId);
     }
 
     if (cloudMesh) cloudMesh.rotation.y = -Math.PI / 2 + now * 0.0000035;
@@ -529,10 +625,46 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
   io.observe(host);
   host.dataset.ready = "true";
 
+  // Sharper Earth for big screens: once the 4K globe is up and the browser is idle, fetch the 8K
+  // day map, upload it to the GPU ahead of time, then swap it in. Phones, low-memory machines,
+  // GPUs without 8K textures and data-saver visitors keep the 4K map.
+  let alive = true;
+  const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+  const canSharpen = earth && !opts.narrow && !lowMemory && !nav.connection?.saveData
+    && renderer.capabilities.maxTextureSize >= 8192 && (nav.hardwareConcurrency ?? 8) >= 6;
+  let idle = 0;
+  if (canSharpen && earth) {
+    const mat = earth;
+    const upgrade = async () => {
+      try {
+        const tex = await new THREE.TextureLoader().loadAsync("/globe/earth-day-8k.webp");
+        if (!alive) { tex.dispose(); return; }
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        renderer.initTexture(tex);
+        const old = mat.uniforms.dayTex.value as THREE_NS.Texture;
+        mat.uniforms.dayTex.value = tex;
+        old.dispose();
+      } catch {
+        /* keep the 4K map */
+      }
+    };
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number };
+    idle = w.requestIdleCallback ? w.requestIdleCallback(() => void upgrade(), { timeout: 4000 }) : window.setTimeout(() => void upgrade(), 2500);
+  }
+
   return {
     setProgress: (p) => { target = p; },
     setLayout: (n) => { narrow = n; },
+    setExplore: (on) => { explore = on; host.dataset.explore = String(on); if (!on) { zoomTarget = 1; select(null); } },
+    zoomBy: (f) => { zoomTarget = Math.max(0.3, Math.min(1.5, zoomTarget * f)); },
+    select,
+    resetView: () => { fly = { lat: 0, lng: Math.round(user.lng / 360) * 360 }; zoomTarget = 1; select(null); },
     dispose: () => {
+      alive = false;
+      const w = window as Window & { cancelIdleCallback?: (id: number) => void };
+      if (w.cancelIdleCallback) w.cancelIdleCallback(idle);
+      else window.clearTimeout(idle);
       cancelAnimationFrame(raf);
       io.disconnect();
       ro.disconnect();
@@ -540,6 +672,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       host.removeEventListener("pointermove", onMove);
       host.removeEventListener("pointerup", onUp);
       host.removeEventListener("pointercancel", onUp);
+      host.removeEventListener("wheel", onWheel);
       if (earth) { for (const k of ["dayTex", "nightTex", "waterTex"]) (earth.uniforms[k].value as THREE_NS.Texture).dispose(); earth.dispose(); }
       beacons.forEach((b) => b.group.traverse((o) => { const m = o as THREE_NS.Mesh; if (m.isMesh) { m.geometry.dispose(); (m.material as THREE_NS.Material).dispose(); } }));
       beamTex.dispose(); discTex.dispose(); ringTex.dispose();

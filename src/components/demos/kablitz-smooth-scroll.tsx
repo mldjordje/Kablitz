@@ -15,6 +15,15 @@ export function scrollToY(top: number) {
   else window.scrollTo({ top, behavior: "smooth" });
 }
 
+/** Freeze page scrolling (e.g. while the visitor explores the globe) and release it again. */
+export function lockScroll(locked: boolean) {
+  if (lenis) {
+    if (locked) lenis.stop();
+    else lenis.start();
+  }
+  document.documentElement.classList.toggle("kscroll-locked", locked);
+}
+
 /** Inertial page scroll driven from GSAP's ticker, so ScrollTrigger scenes stay in lockstep. */
 export function KablitzSmoothScroll() {
   useEffect(() => {
