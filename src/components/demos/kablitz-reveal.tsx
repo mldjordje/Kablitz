@@ -2,12 +2,13 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { KablitzHeroVideo } from "./kablitz-hero-video";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
 const WORD = "KABLITZ";
 /** The camera flies into this letter; a straight stem fills the screen soonest. */
@@ -53,8 +54,21 @@ export function KablitzReveal() {
       .fromTo(".kreveal-media", { scale: 1.35 }, { scale: 1, duration: 0.7, ease: "power2.out" }, 0)
       .to(".kreveal-cover", { autoAlpha: 0, duration: 0.06 }, 0.62)
       .fromTo(".kreveal-shade", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15 }, 0.7)
-      .fromTo(".kreveal-caption > *", { autoAlpha: 0, y: 70 }, { autoAlpha: 1, y: 0, duration: 0.14, stagger: 0.04, ease: "power2.out" }, 0.74)
-      .to({}, { duration: 0.08 });
+      .fromTo(".kreveal-caption", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01 }, 0.7);
+
+    // Caption: the eyebrow wipes in over a drawn rule, the headline rises word by word out of its
+    // masks, the copy follows in a quick wave, then the whole block drifts up as the scene ends.
+    const title = section.querySelector<HTMLElement>(".kreveal-caption h2");
+    const copy = section.querySelector<HTMLElement>(".kreveal-caption .kreveal-copy");
+    if (title && copy) {
+      const words = SplitText.create(title, { type: "words", mask: "words" }).words;
+      const copyWords = SplitText.create(copy, { type: "words", mask: "words" }).words;
+      tl.fromTo(".kreveal-caption .kablitz-eyebrow", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.07, ease: "power2.out" }, 0.71)
+        .fromTo(".kreveal-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.09, ease: "power3.out" }, 0.72)
+        .fromTo(words, { yPercent: 115, rotate: 5, transformOrigin: "0% 100%" }, { yPercent: 0, rotate: 0, duration: 0.1, stagger: 0.014, ease: "power3.out" }, 0.74)
+        .fromTo(copyWords, { yPercent: 100, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.06, stagger: 0.0025, ease: "power2.out" }, 0.84)
+        .fromTo(".kreveal-caption", { y: 0 }, { y: -40, duration: 0.08, ease: "none" }, 0.92);
+    }
   }, { scope: sectionRef });
 
   return (
@@ -84,8 +98,9 @@ export function KablitzReveal() {
 
         <div className="kreveal-caption">
           <p className="kablitz-eyebrow">Referenzanlage in Betrieb</p>
+          <span className="kreveal-rule" aria-hidden="true" />
           <h2>Aus Reststoffen wird Energie.</h2>
-          <p>Feuerung, Kessel und Rauchgasbehandlung aus einer Hand — geplant, gefertigt und in Betrieb genommen von Kablitz.</p>
+          <p className="kreveal-copy">Feuerung, Kessel und Rauchgasbehandlung aus einer Hand — geplant, gefertigt und in Betrieb genommen von Kablitz.</p>
         </div>
       </div>
     </section>

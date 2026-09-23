@@ -881,6 +881,7 @@ html.lenis { scroll-behavior: auto; }
 .kreveal-intro .kablitz-eyebrow { margin-bottom: 10px; color: #ff9561; }
 .kreveal-caption { position: absolute; left: clamp(20px, 6vw, 96px); right: clamp(20px, 6vw, 96px); bottom: clamp(48px, 11vh, 130px); max-width: 860px; color: #fff; }
 .kreveal-caption .kablitz-eyebrow { color: #ff9561; }
+.kreveal-rule { display: block; width: 72px; height: 2px; margin: 4px 0 22px; background: linear-gradient(90deg, #ff6a3a, #c00418); transform-origin: left; }
 .kreveal-caption h2 { margin: 0 0 24px; font-size: clamp(42px, 7vw, 112px); font-weight: 750; letter-spacing: -.055em; line-height: .96; }
 .kreveal-caption p:not(.kablitz-eyebrow) { margin: 0; max-width: 560px; color: rgba(255,255,255,.75); font-size: clamp(15px, 1.3vw, 19px); line-height: 1.7; }
 
