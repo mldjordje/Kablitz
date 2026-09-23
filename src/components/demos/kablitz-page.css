@@ -934,11 +934,13 @@ html.lenis { scroll-behavior: auto; }
 .ks-route-1 { stroke: #ff6a2a; color: #ff6a2a; }
 .ks-route-2 { stroke: #ffe7c2; color: #ffc27a; }
 .ks-route-3 { stroke: #8fe3ff; color: #8fe3ff; }
-.ks-layer { opacity: 0; transition: opacity .9s ease .3s; }
+/* Hidden stages stop painting once faded out; their loops keep time but cost nothing. */
+.ks-layer { opacity: 0; visibility: hidden; transition: opacity .9s ease .3s, visibility 0s 1.2s; }
 .kablitz-story[data-stage="0"] .ks-layer[data-for="0"],
 .kablitz-story[data-stage="1"] .ks-layer[data-for="1"],
 .kablitz-story[data-stage="2"] .ks-layer[data-for="2"],
-.kablitz-story[data-stage="3"] .ks-layer[data-for="3"] { opacity: 1; }
+.kablitz-story[data-stage="3"] .ks-layer[data-for="3"] { opacity: 1; visibility: visible; transition-delay: .3s, 0s; }
+.kablitz-story[data-offscreen] * { animation-play-state: paused !important; }
 .ks-chip { fill: #e0a060; stroke: #7a4518; stroke-width: 1; }
 .ks-flame { transform-box: fill-box; transform-origin: 50% 90%; mix-blend-mode: screen; animation: ks-flicker 1.1s ease-in-out infinite alternate; }
 .ks-flame-b { animation-duration: .8s; animation-delay: -.3s; }

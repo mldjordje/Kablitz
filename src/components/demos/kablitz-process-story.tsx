@@ -83,19 +83,33 @@ export function KablitzProcessStory() {
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
+    // Scroll-driven vars live on the few nodes that read them, so a scroll frame restyles only those.
+    const bar = section.querySelector<HTMLElement>(".kablitz-story-progress");
+    const scene = section.querySelector<SVGSVGElement>(".kablitz-story-scene");
     let frameId = 0;
+    let last = -1;
     const update = () => {
       frameId = 0;
       const rect = section.getBoundingClientRect();
       const p = Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height - window.innerHeight)));
       progressRef.current = p;
-      section.style.setProperty("--story-progress", String(p));
-      STAGES.forEach((_, i) => section.style.setProperty(`--seg${i}`, String(gsap.utils.clamp(0, 1, (p * 4 - i) * 1.25))));
+      if (p === last) return;
+      last = p;
+      bar?.style.setProperty("--story-progress", String(p));
+      STAGES.forEach((_, i) => scene?.style.setProperty(`--seg${i}`, String(gsap.utils.clamp(0, 1, (p * 4 - i) * 1.25))));
       setActive(Math.min(3, Math.floor(p * 4)));
     };
     const schedule = () => { if (!frameId) frameId = requestAnimationFrame(update); };
+
+    // Off screen, the schematic's SMIL and CSS loops stop ticking.
+    const observer = new IntersectionObserver(([entry]) => {
+      section.toggleAttribute("data-offscreen", !entry.isIntersecting);
+      if (entry.isIntersecting) scene?.unpauseAnimations(); else scene?.pauseAnimations();
+    });
+    observer.observe(section);
+
     update(); window.addEventListener("scroll", schedule, { passive: true }); window.addEventListener("resize", schedule);
-    return () => { cancelAnimationFrame(frameId); window.removeEventListener("scroll", schedule); window.removeEventListener("resize", schedule); };
+    return () => { cancelAnimationFrame(frameId); observer.disconnect(); window.removeEventListener("scroll", schedule); window.removeEventListener("resize", schedule); };
   }, []);
 
   // Camera: glide to the active zone; re-frame instantly when the viewport changes size.

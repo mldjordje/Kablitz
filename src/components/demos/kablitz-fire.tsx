@@ -102,6 +102,7 @@ export function KablitzFire({ progressRef, variant = "hero" }: {
       gl.viewport(0, 0, canvas.width, canvas.height);
     };
     const onScroll = () => {
+      if (!visible) { previousY = window.scrollY; return; }
       const rect = host.getBoundingClientRect();
       targetScroll = Math.min(1, Math.max(0, -rect.top / rect.height));
       targetWind = Math.max(-1, Math.min(1, (window.scrollY - previousY) / 80));
@@ -138,7 +139,7 @@ export function KablitzFire({ progressRef, variant = "hero" }: {
     const wake = () => { if (!frame && visible && !document.hidden) { last = 0; frame = requestAnimationFrame(render); } };
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
-      if (visible) wake(); else { cancelAnimationFrame(frame); frame = 0; }
+      if (visible) { onScroll(); wake(); } else { cancelAnimationFrame(frame); frame = 0; }
     });
     observer.observe(canvas);
     const ro = new ResizeObserver(() => { resize(); wake(); }); ro.observe(canvas);

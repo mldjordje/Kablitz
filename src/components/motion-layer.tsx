@@ -117,16 +117,20 @@ export function MotionLayer() {
       let mouseY = ringY;
       let raf = 0;
 
+      // The loop sleeps once the ring has caught up and wakes on the next mouse move.
       const render = () => {
         ringX += (mouseX - ringX) * 0.16;
         ringY += (mouseY - ringY) * 0.16;
+        const settled = Math.abs(mouseX - ringX) < 0.1 && Math.abs(mouseY - ringY) < 0.1;
+        if (settled) { ringX = mouseX; ringY = mouseY; }
         ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
         dot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
-        raf = requestAnimationFrame(render);
+        raf = settled ? 0 : requestAnimationFrame(render);
       };
       const onMove = (event: MouseEvent) => {
         mouseX = event.clientX;
         mouseY = event.clientY;
+        if (!raf) raf = requestAnimationFrame(render);
         const interactive = (event.target as HTMLElement | null)?.closest(
           "a, button, summary, .service-card, [data-cursor]",
         );
