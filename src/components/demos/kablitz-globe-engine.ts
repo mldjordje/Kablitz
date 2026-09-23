@@ -110,6 +110,11 @@ function labelEl(p: WorldPlace) {
   return el;
 }
 
+/** Marker fill per kind (the dot at the heart of each place). */
+const MARKER: Record<WorldPlace["kind"], string> = {
+  hub: "#e3061f", origin: "#ff9a63", history: "#ffc29e", reference: "#ff6a3a", port: "#6fbcff", region: "#ff9c74",
+};
+
 /* Beacons: a light pillar, a glow pooled on the ground and a pulsing disc, tinted by kind. */
 const BEACON: Record<WorldPlace["kind"], { color: string; height: number; disc: number }> = {
   hub: { color: "#ff2b3d", height: 5.5, disc: 2.6 },
@@ -256,7 +261,6 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
 
   const beamTex = beamTexture(THREE);
   const discTex = discTexture(THREE, false);
-  const ringTex = discTexture(THREE, true);
   const UP = new THREE.Vector3(0, 1, 0);
   const beacons = PLACES.map((p) => {
     const spec = BEACON[p.kind];
@@ -272,29 +276,36 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     };
     const flat = (r: number) => new THREE.CircleGeometry(r, 48).rotateX(-Math.PI / 2);
     const glowDisc = add(flat(spec.disc), discTex, 0.9);
-    const pulse = add(flat(spec.disc * 1.6), ringTex, 0.8);
     let beam: THREE_NS.Mesh | null = null;
-    let core: THREE_NS.Mesh | null = null;
-    if (spec.height) {
-      beam = add(new THREE.CylinderGeometry(0.05, 0.18, spec.height, 12, 1, true).translate(0, spec.height / 2, 0), beamTex, 0.95);
-      core = add(new THREE.SphereGeometry(p.kind === "hub" ? 0.62 : 0.26, 16, 12), discTex, 1);
-      const cm = core.material as THREE_NS.MeshBasicMaterial;
-      cm.map = null;
-      cm.color.set(p.kind === "hub" ? "#e3061f" : "#ffffff");
-      if (p.kind === "hub") { cm.blending = THREE.NormalBlending; cm.depthWrite = true; }
+    if (spec.height) beam = add(new THREE.CylinderGeometry(0.05, 0.18, spec.height, 12, 1, true).translate(0, spec.height / 2, 0), beamTex, 0.95);
+
+    // The marker itself: soft dark shadow, white rim, solid dot in the kind colour, thin outer ring.
+    // Drawn normally (no additive glow) and kept at a constant size on screen, above the clouds.
+    const badge = new THREE.Group();
+    badge.position.y = 0.75;
+    const mat = (color: string, opacity = 1, map: THREE_NS.Texture | null = null) =>
+      new THREE.MeshBasicMaterial({ color, map, transparent: true, opacity, depthWrite: false, side: THREE.DoubleSide });
+    const part = (geo: THREE_NS.BufferGeometry, m: THREE_NS.MeshBasicMaterial, order: number) => {
+      const mesh = new THREE.Mesh(geo.rotateX(-Math.PI / 2), m);
+      mesh.renderOrder = 10 + order;
+      badge.add(mesh);
+      return mesh;
+    };
+    const fill = MARKER[p.kind];
+    let ring: THREE_NS.Mesh;
+    if (p.kind === "region") {
+      ring = part(new THREE.RingGeometry(2.1, 2.24, 72), mat(fill, 0.55), 2);
+    } else {
+      part(new THREE.CircleGeometry(1.05, 40), mat("#000000", 0.32, discTex), 0);
+      part(new THREE.CircleGeometry(0.56, 40), mat("#ffffff"), 1);
+      part(new THREE.CircleGeometry(0.42, 40), mat(fill), 2);
+      ring = part(new THREE.RingGeometry(0.86, 0.94, 56), mat(fill, 0.55), 3);
     }
-    if (p.kind === "hub") {
-      const solid = (geo: THREE_NS.BufferGeometry, color: string) => {
-        const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color, transparent: true, side: THREE.DoubleSide }));
-        group.add(m);
-        return m;
-      };
-      solid(new THREE.RingGeometry(0.62, 0.86, 48).rotateX(-Math.PI / 2).translate(0, 0.05, 0), "#ffffff");
-      solid(new THREE.RingGeometry(1.7, 1.86, 64).rotateX(-Math.PI / 2).translate(0, 0.05, 0), "#ff2b3d");
-    }
+    const halo = part(new THREE.RingGeometry(0.9, 1.02, 56), mat(fill, 0), 4);
+    group.add(badge);
     group.scale.setScalar(0.0001);
     globe.add(group);
-    return { p, spec, group, glowDisc, pulse, beam, core, appear: 0, lift: 1, phase: Math.random() * Math.PI * 2 };
+    return { p, spec, group, glowDisc, beam, badge, ring, halo, world: group.position.clone(), appear: 0, lift: 1, phase: Math.random() * Math.PI * 2 };
   });
 
   /* Flight lines: a tube per route, revealed with drawRange; a glowing head rides the tip. */
@@ -583,11 +594,16 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       // Quiet by default; only the place in focus pulses and glows.
       (b.glowDisc.material as THREE_NS.MeshBasicMaterial).opacity = (hot ? 0.32 + 0.14 * beat : b.p.kind === "region" ? 0.1 : b.p.kind === "hub" ? 0.12 : 0.1) * a;
       b.glowDisc.scale.setScalar(hot ? 1.3 : 1);
-      const cycle = ((now / 1600 + b.phase) % 1);
-      b.pulse.visible = hot;
-      b.pulse.scale.setScalar(0.5 + cycle * 1.4);
-      (b.pulse.material as THREE_NS.MeshBasicMaterial).opacity = (1 - cycle) * 0.45 * a;
-      if (b.beam) (b.beam.material as THREE_NS.MeshBasicMaterial).opacity = (hot ? 0.7 : 0.32) * a;
+      const cycle = ((now / 1700 + b.phase) % 1);
+      // Same size on screen whether the camera is in orbit or skimming the surface.
+      const onScreen = Math.max(0.42, Math.min(2.7, camera.position.distanceTo(b.world) / 125));
+      const size = onScreen * (b.p.kind === "hub" ? 1.4 : 1) * (hot ? 1.3 : 1);
+      b.badge.scale.set(size / pop, size / Math.max(0.001, a * b.lift), size / pop);
+      (b.ring.material as THREE_NS.MeshBasicMaterial).opacity = (hot || b.p.kind === "hub" ? 0.85 : 0.45) * a;
+      b.halo.visible = hot || b.p.kind === "hub";
+      b.halo.scale.setScalar(1 + cycle * (hot ? 1.8 : 1.1));
+      (b.halo.material as THREE_NS.MeshBasicMaterial).opacity = (1 - cycle) * (hot ? 0.7 : 0.35) * a;
+      if (b.beam) (b.beam.material as THREE_NS.MeshBasicMaterial).opacity = (hot ? 0.55 : 0.2) * a;
     }
 
     // Labels: project, drop the ones beyond the horizon, then hide overlaps by priority.
@@ -690,7 +706,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       host.removeEventListener("wheel", onWheel);
       if (earth) { for (const k of ["dayTex", "nightTex", "waterTex"]) (earth.uniforms[k].value as THREE_NS.Texture).dispose(); earth.dispose(); }
       beacons.forEach((b) => b.group.traverse((o) => { const m = o as THREE_NS.Mesh; if (m.isMesh) { m.geometry.dispose(); (m.material as THREE_NS.Material).dispose(); } }));
-      beamTex.dispose(); discTex.dispose(); ringTex.dispose();
+      beamTex.dispose(); discTex.dispose();
       if (cloudMesh) { cloudMesh.geometry.dispose(); (cloudMesh.material as THREE_NS.Material).dispose(); clouds?.dispose(); }
       starGeo.dispose();
       starMat.dispose();
