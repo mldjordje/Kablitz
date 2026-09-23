@@ -82,9 +82,9 @@ function glowTexture(THREE: typeof THREE_NS) {
   c.width = c.height = 64;
   const g = c.getContext("2d")!;
   const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-  grad.addColorStop(0, "rgba(255,255,255,1)");
-  grad.addColorStop(0.18, "rgba(255,214,190,.95)");
-  grad.addColorStop(0.45, "rgba(255,98,52,.45)");
+  grad.addColorStop(0, "rgba(255,240,228,.95)");
+  grad.addColorStop(0.14, "rgba(255,190,150,.7)");
+  grad.addColorStop(0.38, "rgba(255,98,52,.22)");
   grad.addColorStop(1, "rgba(255,60,30,0)");
   g.fillStyle = grad;
   g.fillRect(0, 0, 64, 64);
@@ -277,9 +277,20 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     let core: THREE_NS.Mesh | null = null;
     if (spec.height) {
       beam = add(new THREE.CylinderGeometry(0.05, 0.18, spec.height, 12, 1, true).translate(0, spec.height / 2, 0), beamTex, 0.95);
-      core = add(new THREE.SphereGeometry(p.kind === "hub" ? 0.45 : 0.32, 16, 12), discTex, 1);
-      (core.material as THREE_NS.MeshBasicMaterial).map = null;
-      (core.material as THREE_NS.MeshBasicMaterial).color.set("#ffffff");
+      core = add(new THREE.SphereGeometry(p.kind === "hub" ? 0.62 : 0.26, 16, 12), discTex, 1);
+      const cm = core.material as THREE_NS.MeshBasicMaterial;
+      cm.map = null;
+      cm.color.set(p.kind === "hub" ? "#e3061f" : "#ffffff");
+      if (p.kind === "hub") { cm.blending = THREE.NormalBlending; cm.depthWrite = true; }
+    }
+    if (p.kind === "hub") {
+      const solid = (geo: THREE_NS.BufferGeometry, color: string) => {
+        const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color, transparent: true, side: THREE.DoubleSide }));
+        group.add(m);
+        return m;
+      };
+      solid(new THREE.RingGeometry(0.62, 0.86, 48).rotateX(-Math.PI / 2).translate(0, 0.05, 0), "#ffffff");
+      solid(new THREE.RingGeometry(1.7, 1.86, 64).rotateX(-Math.PI / 2).translate(0, 0.05, 0), "#ff2b3d");
     }
     group.scale.setScalar(0.0001);
     globe.add(group);
@@ -301,7 +312,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     const geometry = new THREE.TubeGeometry(curve, SEGMENTS, route.kind === "sea" ? 0.16 : 0.22, RADIAL, false);
     geometry.setDrawRange(0, 0);
     const material = new THREE.MeshBasicMaterial({
-      color: route.kind === "sea" ? "#ffc4a6" : "#ff4d2e", transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending,
+      color: route.kind === "sea" ? "#ffd2bc" : "#ff5a36", transparent: true, opacity: 0, depthWrite: false,
     });
     const mesh = new THREE.Mesh(geometry, material);
     const ghostMat = new THREE.MeshBasicMaterial({ color: "#ff8a5c", transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
@@ -536,13 +547,17 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       const linked = selected && (line.route.to === selected || line.route.id.startsWith(`${selected}-`));
       line.material.opacity = d <= 0 ? 0 : drawing ? 0.95 : linked ? 0.9 : free ? 0.3 : rest;
       line.ghostMat.opacity = s.active === line.route.id ? 0.22 : 0;
+      const headMat = line.head.material as THREE_NS.SpriteMaterial;
       if (drawing) {
         line.head.visible = true;
+        line.head.scale.setScalar(line.route.kind === "sea" ? 4 : 5.5);
+        headMat.opacity = 1;
         line.head.position.copy(line.curve.getPointAt(d));
       } else if (free && line.route.kind === "air" && (!selected || linked)) {
-        // Finale: routes keep a slow pulse travelling along them (only the picked place's while one is open).
-        const u = (now / 5200 + line.offset) % 1;
+        const u = 0.12 + ((now / 6400 + line.offset) % 1) * 0.8;
         line.head.visible = true;
+        line.head.scale.setScalar(linked ? 3 : 2.2);
+        headMat.opacity = Math.sin(((u - 0.12) / 0.8) * Math.PI) * (linked ? 0.9 : 0.5);
         line.head.position.copy(line.curve.getPointAt(u));
       } else {
         line.head.visible = false;
@@ -566,13 +581,13 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       b.group.scale.set(pop, a * b.lift, pop);
       const beat = 0.5 + 0.5 * Math.sin(now / 520 + b.phase);
       // Quiet by default; only the place in focus pulses and glows.
-      (b.glowDisc.material as THREE_NS.MeshBasicMaterial).opacity = (hot ? 0.6 + 0.3 * beat : b.p.kind === "region" ? 0.18 : 0.28) * a;
-      b.glowDisc.scale.setScalar(hot ? 1.6 : 1);
+      (b.glowDisc.material as THREE_NS.MeshBasicMaterial).opacity = (hot ? 0.32 + 0.14 * beat : b.p.kind === "region" ? 0.1 : b.p.kind === "hub" ? 0.12 : 0.1) * a;
+      b.glowDisc.scale.setScalar(hot ? 1.3 : 1);
       const cycle = ((now / 1600 + b.phase) % 1);
       b.pulse.visible = hot;
       b.pulse.scale.setScalar(0.5 + cycle * 1.4);
-      (b.pulse.material as THREE_NS.MeshBasicMaterial).opacity = (1 - cycle) * 0.7 * a;
-      if (b.beam) (b.beam.material as THREE_NS.MeshBasicMaterial).opacity = (hot ? 0.9 : 0.45) * a;
+      (b.pulse.material as THREE_NS.MeshBasicMaterial).opacity = (1 - cycle) * 0.45 * a;
+      if (b.beam) (b.beam.material as THREE_NS.MeshBasicMaterial).opacity = (hot ? 0.7 : 0.32) * a;
     }
 
     // Labels: project, drop the ones beyond the horizon, then hide overlaps by priority.
