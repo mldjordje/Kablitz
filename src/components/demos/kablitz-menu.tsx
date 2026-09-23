@@ -2,7 +2,7 @@
 
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ArrowUpRight, Phone } from "lucide-react";
+import { ArrowUpRight, LayoutDashboard, Phone } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -51,7 +51,9 @@ export function KablitzMenu({ items, phoneHref, phone }: { items: Item[]; phoneH
         </nav>
         <div className="kmenu-foot">
           {phoneHref && <a href={phoneHref} tabIndex={open ? 0 : -1}><Phone size={16} /> {phone}</a>}
-          <Link href="/admin" tabIndex={open ? 0 : -1} onClick={() => setOpen(false)}>Admin-Vorschau <ArrowUpRight size={16} /></Link>
+          <Link className="kmenu-admin" href="/admin" tabIndex={open ? 0 : -1} onClick={() => setOpen(false)}>
+            <LayoutDashboard size={18} /> <span><small>Konzept</small>Admin-Vorschau</span> <ArrowUpRight size={18} />
+          </Link>
         </div>
       </div>
     </>

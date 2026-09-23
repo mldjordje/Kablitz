@@ -210,7 +210,7 @@ export function KablitzMotion() {
         cards.forEach((card, i) => {
           const next = cards[i + 1];
           gsap.fromTo(card, { autoAlpha: 0, y: 60 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: "expo.out", scrollTrigger: { trigger: card, start: "top 92%", once: true } });
-          if (next) gsap.to(card, { scale: 0.9, filter: "brightness(.55)", ease: "none", scrollTrigger: { trigger: next, start: "top bottom", end: "top 20%", scrub: true } });
+          if (next) gsap.fromTo(card, { scale: 1, filter: "brightness(1)" }, { scale: 0.9, filter: "brightness(0.55)", ease: "none", immediateRender: false, scrollTrigger: { trigger: next, start: "top bottom", end: "top 20%", scrub: true } });
         });
       });
     });

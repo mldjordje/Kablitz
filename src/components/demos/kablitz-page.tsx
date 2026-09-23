@@ -26,6 +26,7 @@ import { KablitzSmoothScroll } from "./kablitz-smooth-scroll";
 import { KablitzReveal } from "./kablitz-reveal";
 import { KablitzMarquee } from "./kablitz-marquee";
 import { KablitzMenu } from "./kablitz-menu";
+import { KablitzWorld } from "./kablitz-world";
 import "./kablitz-page.css";
 
 const NAV_ITEMS = [
@@ -61,6 +62,8 @@ export function KablitzPage({ lead }: { lead: LeadProfile }) {
 
       <KablitzReveal />
 
+      <KablitzWorld />
+
       <KablitzProcessStory />
 
       <KablitzMarquee />
@@ -70,8 +73,6 @@ export function KablitzPage({ lead }: { lead: LeadProfile }) {
       <KablitzFoundryBand />
 
       <Gallery assets={ordered.slice(7, 14)} />
-
-      <Company />
 
       <Certifications lead={lead} />
 
@@ -99,6 +100,7 @@ function KablitzHeader({ lead }: { lead: LeadProfile }) {
           <a key={item.label} href={item.href}>{item.label}</a>
         ))}
         <Link className="kablitz-nav-projekt" href="/projekt">Projektübersicht</Link>
+        <Link className="kablitz-nav-admin" href="/admin"><LayoutDashboard size={14} /> Admin</Link>
       </nav>
       <div className="kablitz-header-actions">
         {lead.contact.mapsUrl && (
@@ -182,37 +184,6 @@ function Gallery({ assets }: { assets: MediaAsset[] }) {
             <figcaption>{String(index + 1).padStart(2, "0")}</figcaption>
           </figure>
         ))}
-      </div>
-    </section>
-  );
-}
-
-function Company() {
-  const milestones = [
-    { year: "1901", text: "Gründung in Riga" },
-    { year: "1950er", text: "Neubeginn in Deutschland, heute in Lauda-Königshofen" },
-    { year: "Heute", text: "Kunden in Europa, Asien, Amerika, Australien und Neuseeland" },
-  ];
-  return (
-    <section className="kablitz-company" id="unternehmen">
-      <span className="kablitz-company-year" aria-hidden="true" data-drift="">1901</span>
-      <div className="kablitz-company-copy">
-        <p className="kablitz-eyebrow" data-fade="">Über uns</p>
-        <h2 data-split="">In Lauda verwurzelt.<br />Weltweit im Einsatz.</h2>
-        <p className="kablitz-company-lead" data-scrub-words="">
-          1901 in Riga gegründet und seit den 1950er-Jahren in Deutschland:
-          Das inhabergeführte Unternehmen verbindet Anlagenbau mit eigener Fertigung.
-          Zu den Kunden gehören Holzverarbeiter, Sägewerke, Energieversorger und Kommunen
-          in Europa, Asien, Amerika, Australien und Neuseeland.
-        </p>
-      </div>
-      <div className="kablitz-timeline">
-        <span className="kablitz-timeline-rule" aria-hidden="true" />
-        <ol>
-          {milestones.map((m) => (
-            <li key={m.year}><strong>{m.year}</strong><span>{m.text}</span></li>
-          ))}
-        </ol>
       </div>
     </section>
   );

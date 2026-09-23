@@ -784,7 +784,7 @@
 .kablitz-footer-links { display: flex; flex-wrap: wrap; gap: 8px 22px; } .kablitz-footer-links a { text-decoration: underline; text-underline-offset: 4px; }
 
 /* Service explorer */
-.kx { position: relative; background: #0a1016; color: #fff; overflow: hidden; }
+.kx { position: relative; background: #0a1016; color: #fff; overflow: hidden; overflow: clip; }
 .kx::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 40%, rgba(192,4,24,.22), transparent 55%); pointer-events: none; }
 .kx-inner { position: relative; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 88px); align-items: center; min-height: 100svh; padding: 110px clamp(20px, 6vw, 96px) 80px; }
 .kx-eyebrow { color: #ff8a5c; }
@@ -851,6 +851,8 @@
   .kablitz-page .kablitz-nav .kablitz-nav-projekt::after { content: "Projekt"; font-size: 12px; margin-left: 7px; }
 }
 .kablitz-page .kablitz-nav { align-items: center; }
+.kablitz-page .kablitz-nav .kablitz-nav-admin { display: inline-flex; align-items: center; gap: 7px; margin-left: -16px; padding: 6px 13px; border: 1px solid rgba(255,255,255,.55); border-radius: 999px; font-weight: 700; letter-spacing: .02em; opacity: 1; transition: background .2s ease, color .2s ease; }
+.kablitz-page .kablitz-nav .kablitz-nav-admin:hover { background: #fff; color: var(--kablitz-red); }
 
 /* Smooth scroll (Lenis) — native smooth scrolling would fight it */
 html.lenis, html.lenis body { height: auto; }
@@ -1003,6 +1005,9 @@ html.lenis { scroll-behavior: auto; }
 .kmenu-link small { font: 500 12px var(--font-geist-mono), monospace; letter-spacing: 0; opacity: .6; }
 .kmenu-foot { display: grid; gap: 12px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.25); }
 .kmenu-foot a { display: inline-flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; }
+.kmenu-foot .kmenu-admin { display: flex; gap: 14px; padding: 14px 18px; border-radius: 16px; background: #fff; color: var(--kablitz-red); }
+.kmenu-admin span { display: grid; flex: 1; line-height: 1.2; }
+.kmenu-admin small { font: 500 11px var(--font-geist-mono), monospace; letter-spacing: .08em; text-transform: uppercase; opacity: .6; }
 html.kmenu-open { overflow: hidden; }
 @media (max-width: 880px) { .kmenu-toggle { display: block; } }
 @media (max-width: 560px) { .kablitz-page .kablitz-header-actions > .kablitz-btn-primary { display: none; } }
@@ -1023,9 +1028,15 @@ html.kmenu-open { overflow: hidden; }
 
 /* Stacked cards on phones */
 @media (max-width: 899px) {
-  .kx-cards[data-stack] { gap: 18px; padding-bottom: 40vh; }
+  /* Equal-height cards + a trailing spacer: the last card sticks too and fully covers the one beneath,
+     so no dimmed card is left peeking out when the stack ends. */
+  .kx-cards[data-stack] { position: relative; grid-auto-rows: 1fr; gap: 18px; padding-top: 110px; padding-bottom: 72px; }
+  .kx-cards[data-stack]::before { position: absolute; top: 72px; left: 20px; }
+  .kx-cards[data-stack]::after, .kablitz-cert-grid[data-stack]::after { content: ""; }
+  .kx-cards[data-stack] > .kx-card { display: flex; flex-direction: column; }
+  .kx-cards[data-stack] > .kx-card .kx-more { align-self: flex-start; margin-top: auto; padding-top: 16px; }
   .kx-cards[data-stack] > .kx-card { position: sticky; top: 90px; padding: 18px; border-radius: 22px; background: #111a22; box-shadow: 0 -20px 40px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.07); transform-origin: 50% 0; will-change: transform; }
-  .kablitz-cert-grid[data-stack] { gap: 18px; padding-bottom: 12vh; }
+  .kablitz-cert-grid[data-stack] { grid-auto-rows: 1fr; gap: 18px; padding-bottom: 12vh; }
   .kablitz-cert-grid[data-stack] > .kablitz-cert-card { position: sticky; top: 100px; background: #fff; box-shadow: 0 -18px 40px -24px rgba(0,0,0,.35); transform-origin: 50% 0; }
 }
 
