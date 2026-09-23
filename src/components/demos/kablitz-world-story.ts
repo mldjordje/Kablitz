@@ -31,6 +31,8 @@ export type SceneState = {
   counter?: number;
   /** Route being flown right now; its whole path shows faintly ahead of the head. */
   active?: string;
+  /** Colour grade by era: 0 = warm sepia (the early years), 1 = full modern colour. */
+  era: number;
 };
 
 const RAD = Math.PI / 180;
@@ -210,14 +212,14 @@ function rotateAbout(v: Vec, n: Vec, rad: number): Vec {
   return norm(add(scale(v, Math.cos(rad)), scale(cross(n, v), Math.sin(rad))));
 }
 /** Signed angle turning tangent `a` into tangent `b` around `n`. */
-const signedAngle = (a: Vec, b: Vec, n: Vec) => Math.atan2(dot(cross(a, b), n), dot(a, b));
+export const signedAngle = (a: Vec, b: Vec, n: Vec) => Math.atan2(dot(cross(a, b), n), dot(a, b));
 
 /**
  * Take-off, chase, landing. The flight itself takes the first ~60% of the shot; the rest is the
  * arrival: the camera settles in behind the line, then orbits the city — pulling back and rising —
  * until it faces the next stop, so the following flight leaves exactly from that framing.
  */
-function flight(id: string, next: string | null, span: [number, number] = [0.05, 0.62]): (t: number) => ShotOut {
+function flight(id: string, next: string | null, span: [number, number] = [0.05, 0.62], dolly = false): (t: number) => ShotOut {
   const route = R[id];
   const from = id.split("-")[0];
   const len = routeLength(route);
@@ -241,6 +243,13 @@ function flight(id: string, next: string | null, span: [number, number] = [0.05,
       pitch: lerp(64, 52, swing),
       fov: lerp(36, 34, swing),
     };
+    if (dolly) {
+      // Dolly zoom on the key arrivals: the lens narrows while the camera backs off, so the city
+      // keeps its size and the world behind it compresses.
+      const fov = lerp(landed.fov, 19, ease(seg(L, 0.3, 1)));
+      landed.dist *= Math.tan((landed.fov / 2) * RAD) / Math.tan((fov / 2) * RAD);
+      landed.fov = fov;
+    }
     return {
       cam: blendCam(air, landed, settle),
       draw: { [id]: d },
@@ -277,7 +286,7 @@ const SHOTS: Shot[] = [
     },
   },
   { chapter: 3, weight: 12, routes: ["riga-wartheland"], run: flight("riga-wartheland", "lauda", [0.14, 0.64]) },
-  { chapter: 4, weight: 12, routes: ["wartheland-lauda"], run: flight("wartheland-lauda", "nordsee") },
+  { chapter: 4, weight: 12, routes: ["wartheland-lauda"], run: flight("wartheland-lauda", "nordsee", undefined, true) },
   { chapter: 4, weight: 6, run: orbitAt("lauda", "nordsee", 80, 60, 70) },
   // Onassis: over to the North Sea, then ride with a tanker through Suez to the Gulf while the
   // Atlantic lane peels off towards America.
@@ -321,7 +330,7 @@ const SHOTS: Shot[] = [
       return { cam: blendCam(prev, cur, smooth(seg(local, 0, 0.55))), draw, focus: REFERENCE_ORDER[i], labels: ["lauda", REFERENCE_ORDER[i]] };
     },
   },
-  { chapter: 8, weight: 19, routes: ["lauda-pemuco"], run: flight("lauda-pemuco", "nordamerika") },
+  { chapter: 8, weight: 19, routes: ["lauda-pemuco"], run: flight("lauda-pemuco", "nordamerika", undefined, true) },
   // Around the world, westwards, back home.
   {
     chapter: 9, weight: 40, routes: LOOP_LEGS,
@@ -340,6 +349,9 @@ const SHOTS: Shot[] = [
     run: (t) => ({ cam: blendCam(parked("lauda", null, 80, 56), space(24, 14, 450), ease(seg(t, 0, 0.5))), centre: ease(seg(t, 0.1, 0.45)), free: t > 0.45, counter: 6500 }),
   },
 ];
+
+/** Grade per chapter: the story travels from sepia (Riga, 1868) to full colour (today). */
+const ERA = [0, 0.05, 0.1, 0.15, 0.3, 0.5, 0.8, 1, 1, 1, 1];
 
 const TOTAL = SHOTS.reduce((s, x) => s + x.weight, 0);
 const ENDS = SHOTS.map((s) => s.run(1).cam);
@@ -364,7 +376,9 @@ export function sceneAt(progress: number): SceneState {
     const cam = i > 0 ? blendCam(ENDS[i - 1], out.cam, smooth(seg(t, 0, 0.22))) : out.cam;
     const persistent = shot.chapter <= 3 ? ["riga"] : ["lauda"];
     const labels = out.free ? PLACES.map((pl) => pl.id) : [...new Set([...persistent, ...(out.labels ?? []), ...(out.focus ? [out.focus] : [])])];
-    return { cam, draw, labels, focus: out.focus, chapter: shot.chapter, centre: out.centre ?? 0, free: out.free ?? false, counter: out.counter, active: out.active };
+    const fromEra = ERA[i > 0 ? SHOTS[i - 1].chapter : 0] ?? 1;
+    const era = lerp(fromEra, ERA[shot.chapter] ?? 1, smooth(seg(t, 0, 0.45)));
+    return { cam, draw, labels, focus: out.focus, chapter: shot.chapter, centre: out.centre ?? 0, free: out.free ?? false, counter: out.counter, active: out.active, era };
   }
   return sceneAt(1);
 }

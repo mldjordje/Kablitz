@@ -1020,3 +1020,36 @@ html.kmenu-open { overflow: hidden; }
   .kablitz-cert-grid[data-stack] > .kablitz-cert-card { position: sticky; top: 100px; background: #fff; box-shadow: 0 -18px 40px -24px rgba(0,0,0,.35); transform-origin: 50% 0; }
 }
 
+
+/* ── Glass header ─────────────────────────────────────────────────────────────
+   Floats over the page (its negative margin cancels its own height in both states, so nothing
+   shifts when it shrinks on scroll). Desktop: smoked glass with a faint red-lit hairline and
+   highlighted nav links. Phones: fully transparent over a soft top scrim. */
+.kablitz-page .kablitz-header { margin-bottom: -78px; background: linear-gradient(180deg, rgba(10,16,22,.62), rgba(10,16,22,.38)); -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%); box-shadow: inset 0 -1px 0 rgba(255,255,255,.08), 0 10px 36px -24px rgba(192,4,24,.55); transition: height .25s ease, margin .25s ease, background .3s ease, box-shadow .3s ease; }
+.kablitz-page .kablitz-header.is-scrolled { margin-bottom: -62px; background: linear-gradient(180deg, rgba(10,16,22,.78), rgba(10,16,22,.55)); box-shadow: inset 0 -1px 0 rgba(255,255,255,.1), 0 14px 40px -22px rgba(192,4,24,.65); }
+.kablitz-page .kablitz-header::after { content: ""; position: absolute; left: 8%; right: 8%; bottom: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,106,58,.85), rgba(255,43,61,.9), rgba(255,106,58,.85), transparent); box-shadow: 0 0 12px 1px rgba(255,60,40,.45); opacity: .7; pointer-events: none; }
+.kablitz-page .kablitz-hero { min-height: calc(100svh - 26px); padding-top: 110px; }
+
+.kablitz-page .kablitz-nav { gap: 6px; }
+.kablitz-page .kablitz-nav a:not(.kablitz-nav-projekt):not(.kablitz-nav-admin) { position: relative; padding: 8px 12px; border-radius: 999px; opacity: .9; font-weight: 600; letter-spacing: .08em; transition: background .25s ease, opacity .25s ease; }
+.kablitz-page .kablitz-nav a:not(.kablitz-nav-projekt):not(.kablitz-nav-admin)::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 3px; height: 1.5px; border-radius: 2px; background: #ff5a36; box-shadow: 0 0 8px rgba(255,90,54,.8); transform: scaleX(0); transform-origin: left; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.kablitz-page .kablitz-nav a:not(.kablitz-nav-projekt):not(.kablitz-nav-admin):hover { opacity: 1; background: rgba(255,255,255,.08); }
+.kablitz-page .kablitz-nav a:not(.kablitz-nav-projekt):not(.kablitz-nav-admin):hover::after { transform: scaleX(1); }
+.kablitz-page .kablitz-nav .kablitz-nav-projekt { margin-left: 10px; box-shadow: 0 0 0 1px rgba(255,255,255,.4), 0 6px 22px -8px rgba(255,255,255,.45); }
+.kablitz-page .kablitz-nav .kablitz-nav-admin { margin-left: 2px; border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.06); }
+.kablitz-page .kablitz-header .kablitz-btn-primary { background: #c00418; color: #fff; box-shadow: 0 8px 24px -10px rgba(192,4,24,.9), inset 0 1px 0 rgba(255,255,255,.2); }
+.kablitz-page .kablitz-header .kablitz-btn-primary:hover { background: #e0142c; }
+.kablitz-page .kablitz-header .kablitz-btn-ghost { border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.05); }
+.kablitz-page .kablitz-header .kablitz-progress { background: linear-gradient(90deg, #ff6a3a, #ff2b3d); }
+
+@media (max-width: 880px) {
+  .kablitz-page .kablitz-header { background: linear-gradient(180deg, rgba(6,10,14,.55), rgba(6,10,14,0)); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; }
+  .kablitz-page .kablitz-header.is-scrolled { background: linear-gradient(180deg, rgba(6,10,14,.6), rgba(6,10,14,0)); box-shadow: none; }
+  .kablitz-page .kablitz-header::after { display: none; }
+  /* Phones: the project link moves into the menu sheet. */
+  .kablitz-page .kablitz-nav { display: none; }
+  .kablitz-page .kablitz-wordmark img { filter: drop-shadow(0 2px 8px rgba(0,0,0,.45)); }
+  .kmenu-toggle { background: rgba(255,255,255,.14); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
+  .kmenu-toggle i { background: #fff; }
+  .kablitz-page .kablitz-hero { padding-top: 96px; }
+}

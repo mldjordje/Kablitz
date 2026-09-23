@@ -11,6 +11,13 @@
 /* Text side gets a soft shade so copy stays readable over the globe; it lifts in the finale. */
 .kworld-vignette { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(10,16,22,.92) 0%, rgba(10,16,22,.7) 26%, transparent 52%), linear-gradient(180deg, rgba(10,16,22,.6), transparent 18%, transparent 82%, rgba(10,16,22,.7)); transition: opacity 1s ease; }
 .kworld[data-finale="true"] .kworld-vignette { opacity: .35; }
+/* Film look: a soft lens vignette and fine, moving grain over the whole stage. */
+.kworld-grain { position: absolute; inset: -50%; z-index: 1; pointer-events: none; opacity: .07; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: kworld-grain 0.9s steps(6) infinite; }
+.kworld-stage::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse 85% 75% at 50% 50%, transparent 55%, rgba(0,0,0,.45) 100%); }
+@keyframes kworld-grain { 0% { transform: translate(0, 0); } 20% { transform: translate(-4%, 3%); } 40% { transform: translate(3%, -5%); } 60% { transform: translate(-6%, -2%); } 80% { transform: translate(5%, 4%); } 100% { transform: translate(0, 0); } }
+@media (prefers-reduced-motion: reduce) { .kworld-grain { animation: none; } }
 
 /* Labels: a card standing on top of each beacon (anchor = top of the light pillar, set from JS). */
 .kworld-labels { position: absolute; inset: 0; pointer-events: none; }

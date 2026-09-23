@@ -1,6 +1,6 @@
 import type * as THREE_NS from "three";
 import { PLACES, type WorldPlace } from "@/data/kablitz-world";
-import { ROUTES, routeLift, routeVec, sceneAt, tangent, toLatLng, toVec, type SceneState } from "./kablitz-world-story";
+import { blendCam, ROUTES, routeLift, routeVec, sceneAt, signedAngle, tangent, toLatLng, toVec, type Cam, type SceneState, type Vec } from "./kablitz-world-story";
 
 /**
  * Renders the globe for a scroll progress value. Land, atmosphere, points and rings come from
@@ -56,6 +56,7 @@ const EARTH_FRAGMENT = /* glsl */ `
   uniform sampler2D nightTex;
   uniform sampler2D waterTex;
   uniform vec3 sunDir;
+  uniform float grade;
   varying vec2 vUv;
   varying vec3 vNormal;
   varying vec3 vWorld;
@@ -73,6 +74,9 @@ const EARTH_FRAGMENT = /* glsl */ `
       + night * vec3(1.0, 0.7, 0.42) * 1.8 * (1.0 - dayK)
       + vec3(1.0, 0.9, 0.8) * glint * 0.35
       + vec3(0.35, 0.6, 1.0) * rim * (0.12 + 0.45 * dayK);
+    // Era grade: the early chapters read like an old print, warm and desaturated.
+    vec3 sepia = vec3(dot(col, vec3(0.393, 0.769, 0.189)), dot(col, vec3(0.349, 0.686, 0.168)), dot(col, vec3(0.272, 0.534, 0.131)));
+    col = mix(mix(col, sepia * vec3(1.0, 0.93, 0.8), 0.82), col, grade);
     gl_FragColor = vec4(col, 1.0);
     #include <colorspace_fragment>
   }`;
@@ -164,10 +168,13 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
   // 4K maps everywhere (phones included); only devices reporting little memory fall back to 2K.
   const lowMemory = ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) < 4;
   const res = lowMemory ? "2k" : "4k";
-  const [THREE, { default: ThreeGlobe }, countries] = await Promise.all([
+  const [THREE, { default: ThreeGlobe }, countries, { Line2 }, { LineGeometry }, { LineMaterial }] = await Promise.all([
     import("three"),
     import("three-globe"),
     style === "hex" ? fetch("/globe/countries-110m.json").then((r) => r.json()) : Promise.resolve(null),
+    import("three/addons/lines/Line2.js"),
+    import("three/addons/lines/LineGeometry.js"),
+    import("three/addons/lines/LineMaterial.js"),
   ]);
   let earth: THREE_NS.ShaderMaterial | null = null;
   let clouds: THREE_NS.Texture | null = null;
@@ -183,7 +190,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     day.colorSpace = THREE.SRGBColorSpace;
     night.colorSpace = THREE.SRGBColorSpace;
     earth = new THREE.ShaderMaterial({
-      uniforms: { dayTex: { value: day }, nightTex: { value: night }, waterTex: { value: water }, sunDir: { value: new THREE.Vector3(0, 0, 1) } },
+      uniforms: { dayTex: { value: day }, nightTex: { value: night }, waterTex: { value: water }, sunDir: { value: new THREE.Vector3(0, 0, 1) }, grade: { value: 1 } },
       vertexShader: EARTH_VERTEX,
       fragmentShader: EARTH_FRAGMENT,
     });
@@ -308,34 +315,42 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     return { p, spec, group, glowDisc, beam, badge, ring, halo, world: group.position.clone(), appear: 0, lift: 1, phase: Math.random() * Math.PI * 2 };
   });
 
-  /* Flight lines: a tube per route, revealed with drawRange; a glowing head rides the tip. */
+  /* Flight lines: screen-space lines (same pixel width on every screen and at every distance),
+     revealed segment by segment; the one being drawn carries a bright trail that fades behind its
+     glowing head. A dashed ghost shows the whole route ahead while it is flown. */
   const glow = glowTexture(THREE);
-  const SEGMENTS = 160;
-  const RADIAL = 6;
+  const N = 97;
   const lines = ROUTES.map((route) => {
-    const pts = Array.from({ length: 97 }, (_, i) => {
-      const u = i / 96;
+    const pts = Array.from({ length: N }, (_, i) => {
+      const u = i / (N - 1);
       const [x, y, z] = routeVec(route, u);
       const r = R * (1 + routeLift(route, u));
       return new THREE.Vector3(x * r, y * r, z * r);
     });
     const curve = new THREE.CatmullRomCurve3(pts);
-    const geometry = new THREE.TubeGeometry(curve, SEGMENTS, route.kind === "sea" ? 0.16 : 0.22, RADIAL, false);
-    geometry.setDrawRange(0, 0);
-    const material = new THREE.MeshBasicMaterial({
-      color: route.kind === "sea" ? "#ffd2bc" : "#ff5a36", transparent: true, opacity: 0, depthWrite: false,
+    // Even arc-length samples, so segment i lines up with curve.getPointAt(i / segs).
+    const flat = new Float32Array(curve.getSpacedPoints(N - 1).flatMap((v) => [v.x, v.y, v.z]));
+    const geometry = new LineGeometry();
+    geometry.setPositions(flat);
+    geometry.setColors(new Float32Array(N * 3).fill(1));
+    const colorData = (geometry.attributes.instanceColorStart as THREE_NS.InterleavedBufferAttribute).data;
+    geometry.instanceCount = 0;
+    const material = new LineMaterial({
+      color: route.kind === "sea" ? 0xffd2bc : 0xff5a36, vertexColors: true, linewidth: 2, worldUnits: false, transparent: true, opacity: 0, depthWrite: false,
     });
-    const mesh = new THREE.Mesh(geometry, material);
-    const ghostMat = new THREE.MeshBasicMaterial({ color: "#ff8a5c", transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
-    const ghost = new THREE.Mesh(geometry.clone(), ghostMat);
-    ghost.geometry.setDrawRange(0, Infinity);
-    ghost.scale.setScalar(0.999);
+    const mesh = new Line2(geometry, material);
+    mesh.renderOrder = 5;
+    const ghostGeo = new LineGeometry();
+    ghostGeo.setPositions(flat);
+    const ghostMat = new LineMaterial({ color: 0xffb08a, linewidth: 1.2, worldUnits: false, transparent: true, opacity: 0, depthWrite: false, dashed: true, dashSize: 1.6, gapSize: 1.4 });
+    const ghost = new Line2(ghostGeo, ghostMat);
+    ghost.computeLineDistances();
     globe.add(ghost);
     const head = new THREE.Sprite(new THREE.SpriteMaterial({ map: glow, color: "#ffffff", transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
     head.scale.setScalar(route.kind === "sea" ? 4 : 5.5);
     head.visible = false;
     globe.add(mesh, head);
-    return { route, curve, geometry, material, ghost, ghostMat, head, total: geometry.index!.count, offset: Math.random() };
+    return { route, curve, geometry, material, ghost, ghostMat, head, colorData, segs: N - 1, trail: false, offset: Math.random() };
   });
 
   /* Labels */
@@ -476,10 +491,36 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
   const hdg = new THREE.Vector3();
   const look = new THREE.Vector3();
   const toCam = new THREE.Vector3();
+  // Camera rig: follows the story's camera through a critically damped spring (an operator's lag),
+  // banks into turns and breathes a little while holding.
+  let rig: Cam | null = null;
+  let prevHeading: Vec | null = null;
+  let roll = 0;
+  // Adaptive resolution: if frames run long, drop the pixel ratio a step; climb back when there is headroom.
+  const maxRatio = Math.min(window.devicePixelRatio, 2);
+  let ratio = maxRatio;
+  let frameAvg = 16;
+  let lastTune = 0;
+  let fastSince = 0;
 
   const frame = (now: number) => {
     const dt = Math.min(64, now - last);
     last = now;
+    if (!opts.instant && dt > 0) {
+      frameAvg += (dt - frameAvg) * 0.05;
+      if (now - lastTune > 1000) {
+        lastTune = now;
+        const slow = frameAvg > 30 && ratio > 1;
+        const fast = frameAvg < 17 && ratio < maxRatio;
+        if (!fast) fastSince = now;
+        if (slow || (fast && now - fastSince > 4000)) {
+          ratio = Math.max(1, Math.min(maxRatio, ratio + (slow ? -0.25 : 0.25)));
+          renderer.setPixelRatio(ratio);
+          renderer.setSize(width, height, false);
+          fastSince = now;
+        }
+      }
+    }
     // Extra inertia on top of Lenis: the camera eases into every scroll position.
     progress = opts.instant ? target : progress + (target - progress) * (1 - Math.exp(-dt / 120));
     if (Math.abs(target - progress) < 1e-5) progress = target;
@@ -527,37 +568,74 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       tgt = toVec({ lat: Math.max(-70, Math.min(70, ll.lat + user.lat)), lng: ll.lng + user.lng });
       heading = tangent(tgt, heading);
     }
+    const want: Cam = { ...c, target: tgt, heading };
+    const lag = opts.instant ? 1 : 1 - Math.exp(-dt / (free ? 90 : 170));
+    rig = rig ? blendCam(rig, want, lag) : want;
+    const r = rig;
+    // Bank into turns: roll follows how fast the heading swings, like an aircraft.
+    if (prevHeading && dt > 0 && !free) {
+      const rate = signedAngle(prevHeading, r.heading, r.target) / dt;
+      const bank = Math.max(-0.14, Math.min(0.14, -rate * 900));
+      roll += (bank - roll) * (opts.instant ? 1 : 1 - Math.exp(-dt / 320));
+    } else {
+      roll *= opts.instant ? 0 : Math.exp(-dt / 300);
+    }
+    prevHeading = r.heading;
     // Portrait screens pull back, fully for top views, only a little for low chase shots.
-    const portrait = Math.pow(Math.max(1, 0.85 / camera.aspect), 0.35 + 0.65 * (1 - Math.min(1, c.pitch / 70)));
-    const dist = c.dist * portrait * zoom;
-    const pitch = c.pitch * RAD;
-    nrm.set(tgt[0], tgt[1], tgt[2]);
-    hdg.set(heading[0], heading[1], heading[2]);
-    look.copy(nrm).multiplyScalar(R * (1 + c.alt));
+    const portrait = Math.pow(Math.max(1, 0.85 / camera.aspect), 0.35 + 0.65 * (1 - Math.min(1, r.pitch / 70)));
+    const dist = r.dist * portrait * zoom;
+    const pitch = r.pitch * RAD;
+    nrm.set(r.target[0], r.target[1], r.target[2]);
+    hdg.set(r.heading[0], r.heading[1], r.heading[2]);
+    look.copy(nrm).multiplyScalar(R * (1 + r.alt));
     camera.position.copy(look).addScaledVector(nrm, dist * Math.cos(pitch)).addScaledVector(hdg, -dist * Math.sin(pitch));
     if (camera.position.length() < R * 1.12) camera.position.setLength(R * 1.12); // never dip into the atmosphere
     camera.up.copy(hdg).multiplyScalar(Math.cos(pitch)).addScaledVector(nrm, Math.sin(pitch));
     camera.lookAt(look);
-    camera.fov = c.fov;
+    camera.rotateZ(roll);
+    if (!free && !opts.instant) {
+      // Handheld breath: a fraction of a degree, never enough to notice, enough to feel alive.
+      const tt = now / 1000;
+      camera.rotateX((Math.sin(tt * 0.61) * 0.6 + Math.sin(tt * 1.37) * 0.25) * 0.0035);
+      camera.rotateY((Math.sin(tt * 0.47 + 1.3) * 0.6 + Math.sin(tt * 1.11) * 0.3) * 0.0035);
+    }
+    camera.fov = r.fov;
     const side = narrow ? { x: 0, y: -0.16 } : { x: 0.16, y: 0 };
     aside += ((selected ? 1 : 0) - aside) * (opts.instant ? 1 : 1 - Math.exp(-dt / 300));
     const card = narrow ? { x: 0, y: -0.17 } : { x: -0.15, y: 0 };
     camera.setViewOffset(width, height, -width * (side.x * (1 - s.centre) + card.x * aside), -height * (side.y * (1 - s.centre) + card.y * aside), width, height);
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
-    if (earth) (earth.uniforms.sunDir.value as THREE_NS.Vector3).set(-0.86, 0.4, 0.46).normalize().applyQuaternion(camera.quaternion);
+    if (earth) {
+      (earth.uniforms.sunDir.value as THREE_NS.Vector3).set(-0.86, 0.4, 0.46).normalize().applyQuaternion(camera.quaternion);
+      earth.uniforms.grade.value = free ? 1 : s.era;
+    }
 
     // Lines and their heads.
     for (const line of lines) {
       const d = s.draw[line.route.id] ?? 0;
       const drawing = d > 0 && d < 1;
-      const count = Math.floor((line.total / (6 * RADIAL)) * d) * 6 * RADIAL;
-      line.geometry.setDrawRange(0, count);
+      line.geometry.instanceCount = Math.floor(line.segs * d);
+      line.material.resolution.set(width, height);
+      line.ghostMat.resolution.set(width, height);
       // Tanker lanes step back once their chapter is over.
       const rest = line.route.kind === "sea" ? (s.chapter > 5 ? 0.12 : 0.4) : 0.26;
       const linked = selected && (line.route.to === selected || line.route.id.startsWith(`${selected}-`));
-      line.material.opacity = d <= 0 ? 0 : drawing ? 0.95 : linked ? 0.9 : free ? 0.3 : rest;
-      line.ghostMat.opacity = s.active === line.route.id ? 0.22 : 0;
+      line.material.opacity = d <= 0 ? 0 : drawing ? 1 : linked ? 0.95 : free ? 0.45 : rest + 0.14;
+      line.material.linewidth = drawing ? 3.2 : linked ? 2.6 : line.route.kind === "sea" ? 1.3 : 1.7;
+      // Trail: bright at the head, fading to a quarter behind it.
+      if (drawing || line.trail) {
+        const arr = line.colorData.array as Float32Array;
+        for (let j = 0; j < line.segs; j++) {
+          const k0 = drawing ? Math.max(0.22, Math.min(1, 1 - (d - j / line.segs) / 0.3)) : 1;
+          const k1 = drawing ? Math.max(0.22, Math.min(1, 1 - (d - (j + 1) / line.segs) / 0.3)) : 1;
+          arr.fill(k0, j * 6, j * 6 + 3);
+          arr.fill(k1, j * 6 + 3, j * 6 + 6);
+        }
+        line.colorData.needsUpdate = true;
+        line.trail = drawing;
+      }
+      line.ghostMat.opacity = s.active === line.route.id ? 0.55 : 0;
       const headMat = line.head.material as THREE_NS.SpriteMaterial;
       if (drawing) {
         line.head.visible = true;
@@ -596,14 +674,14 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       b.glowDisc.scale.setScalar(hot ? 1.3 : 1);
       const cycle = ((now / 1700 + b.phase) % 1);
       // Same size on screen whether the camera is in orbit or skimming the surface.
-      const onScreen = Math.max(0.42, Math.min(2.7, camera.position.distanceTo(b.world) / 125));
-      const size = onScreen * (b.p.kind === "hub" ? 1.4 : 1) * (hot ? 1.3 : 1);
+      const onScreen = Math.max(0.42, Math.min(2.7, camera.position.distanceTo(b.world) / 125)) * Math.tan((camera.fov / 2) * RAD) / Math.tan(17 * RAD); // fov-aware, so the dolly zoom does not inflate markers
+      const size = onScreen * (b.p.kind === "hub" ? 1.75 : 1) * (hot ? 1.3 : 1);
       b.badge.scale.set(size / pop, size / Math.max(0.001, a * b.lift), size / pop);
       (b.ring.material as THREE_NS.MeshBasicMaterial).opacity = (hot || b.p.kind === "hub" ? 0.85 : 0.45) * a;
       b.halo.visible = hot || b.p.kind === "hub";
       b.halo.scale.setScalar(1 + cycle * (hot ? 1.8 : 1.1));
-      (b.halo.material as THREE_NS.MeshBasicMaterial).opacity = (1 - cycle) * (hot ? 0.7 : 0.35) * a;
-      if (b.beam) (b.beam.material as THREE_NS.MeshBasicMaterial).opacity = (hot ? 0.55 : 0.2) * a;
+      (b.halo.material as THREE_NS.MeshBasicMaterial).opacity = (1 - cycle) * (hot ? 0.7 : 0.55) * a;
+      if (b.beam) (b.beam.material as THREE_NS.MeshBasicMaterial).opacity = (hot ? 0.55 : b.p.kind === "hub" ? 0.5 : 0.2) * a;
     }
 
     // Labels: project, drop the ones beyond the horizon, then hide overlaps by priority.

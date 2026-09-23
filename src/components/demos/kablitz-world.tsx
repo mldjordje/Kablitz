@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
 import { ChevronLeft, ChevronRight, Compass, Hand, Minus, Plus, RotateCcw, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PLACES } from "@/data/kablitz-world";
@@ -10,7 +11,7 @@ import { CHAPTERS, FINALE, REFERENCE_ORDER } from "./kablitz-world-story";
 import { lockScroll } from "./kablitz-smooth-scroll";
 import "./kablitz-world.css";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const PLACE = Object.fromEntries(PLACES.map((p) => [p.id, p]));
 const NARROW = "(max-width: 900px)";
@@ -54,6 +55,30 @@ export function KablitzWorld() {
     return () => window.removeEventListener("keydown", onKey);
   }, [explore, selected, toggleExplore]);
   useEffect(() => () => lockScroll(false), []);
+
+  // Chapter titles arrive with the camera: words rise out of masks, the kicker wipes in from the left.
+  const splits = useRef<Map<Element, Element[]>>(new Map());
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const map = splits.current;
+    const made = [...section.querySelectorAll(".kworld-chapter h2")].map((h) => {
+      const split = SplitText.create(h, { type: "words", mask: "words" });
+      map.set(h, split.words);
+      return split;
+    });
+    return () => { made.forEach((m) => m.revert()); map.clear(); };
+  }, []);
+  useEffect(() => {
+    const li = sectionRef.current?.querySelectorAll(".kworld-chapter")[state.chapter];
+    if (!li) return;
+    const words = splits.current.get(li.querySelector("h2")!) ?? [];
+    const tl = gsap.timeline({ delay: 0.12 });
+    tl.fromTo(li.querySelector(".kworld-kicker"), { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.9, ease: "expo.out" }, 0)
+      .fromTo(words, { yPercent: 110, rotate: 4 }, { yPercent: 0, rotate: 0, duration: 0.9, stagger: 0.05, ease: "expo.out" }, 0.08)
+      .fromTo(li.querySelectorAll("p"), { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.08, ease: "power2.out" }, 0.3);
+    return () => { tl.kill(); };
+  }, [state.chapter]);
 
   // Scroll → progress. The engine may not exist yet; it picks up the latest value when it starts.
   useEffect(() => {
@@ -134,6 +159,7 @@ export function KablitzWorld() {
         <div className="kworld-globe" ref={hostRef} aria-hidden="true" />
         <div className="kworld-labels" ref={labelsRef} aria-hidden="true" />
         <div className="kworld-vignette" aria-hidden="true" />
+        <div className="kworld-grain" aria-hidden="true" />
 
         <div className="kworld-copy">
           <p className="kablitz-eyebrow kworld-eyebrow">Unternehmen · Seit 1901</p>
