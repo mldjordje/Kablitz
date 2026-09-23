@@ -219,23 +219,6 @@ export function KablitzMotion() {
       if (grid) gsap.from(grid.children, { autoAlpha: 0, y: 70, rotateX: -14, transformPerspective: 900, transformOrigin: "50% 0%", duration: 1.15, ease: "expo.out", stagger: 0.11, clearProps: "transform", scrollTrigger: once(grid, "top 84%") });
     });
 
-    // Timeline: the rule draws with scroll (vertical on phones) and each milestone lights up as it is reached.
-    const timeline = document.querySelector<HTMLElement>(".kablitz-timeline");
-    if (timeline) {
-      const rule = timeline.querySelector(".kablitz-timeline-rule");
-      const items = gsap.utils.toArray<HTMLElement>(".kablitz-timeline li");
-      mm.add({ narrow: "(max-width: 700px)", wide: "(min-width: 701px)" }, (ctx) => {
-        const narrow = ctx.conditions?.narrow;
-        gsap.fromTo(rule, narrow ? { scaleY: 0, scaleX: 1 } : { scaleX: 0, scaleY: 1 }, { scaleX: 1, scaleY: 1, transformOrigin: "0 0", ease: "none", scrollTrigger: { trigger: timeline, start: "top 80%", end: narrow ? "bottom 60%" : "top 35%", scrub: true } });
-        items.forEach((li, i) => {
-          ScrollTrigger.create({
-            trigger: narrow ? li : timeline, start: narrow ? "top 70%" : `top ${80 - i * 15}%`,
-            onEnter: () => li.classList.add("is-on"), onLeaveBack: () => li.classList.remove("is-on"),
-          });
-        });
-      });
-    }
-
     // Images and fonts change layout after mount; re-measure once they settle.
     const refresh = () => ScrollTrigger.refresh();
     window.addEventListener("load", refresh);
