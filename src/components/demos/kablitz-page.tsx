@@ -2,9 +2,12 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
+  Globe2,
   LayoutDashboard,
   MapPin,
+  MessageSquare,
   Phone,
+  Send,
 } from "lucide-react";
 import type { CSSProperties } from "react";
 import Image from "next/image";
@@ -26,13 +29,17 @@ import { KablitzReveal } from "./kablitz-reveal";
 import { KablitzMarquee } from "./kablitz-marquee";
 import { KablitzMenu } from "./kablitz-menu";
 import { KablitzWorld } from "./kablitz-world";
+import { KablitzInquiry } from "./kablitz-inquiry";
+import { KablitzSpareParts } from "./kablitz-spare-parts";
 import "./kablitz-page.css";
 
 const NAV_ITEMS = [
-  { label: "Leistungen", href: "#leistungen" },
-  { label: "Unternehmen", href: "#unternehmen" },
+  { label: "Leistungen", href: "/#leistungen" },
+  { label: "Unternehmen", href: "/#unternehmen" },
   { label: "News", href: "/news" },
-  { label: "Kontakt", href: "#kontakt" },
+  { label: "Anfrage", href: "/#anfrage" },
+  { label: "Ersatzteile", href: "/#ersatzteile" },
+  { label: "Kontakt", href: "/kontakt" },
 ];
 
 
@@ -54,7 +61,7 @@ export function KablitzPage({ lead }: { lead: LeadProfile }) {
       <KablitzHeader lead={lead} />
 
       <div className="kablitz-hero-stage">
-        <Hero lead={lead} heroImage={heroImage} phoneHref={phoneHref} />
+        <Hero heroImage={heroImage} />
       </div>
 
       <KablitzStats />
@@ -79,6 +86,10 @@ export function KablitzPage({ lead }: { lead: LeadProfile }) {
 
       <KablitzNewsTeaser />
 
+      <KablitzInquiry />
+
+      <KablitzSpareParts />
+
       <ContactBand lead={lead} phoneHref={phoneHref} />
 
       <KablitzMap address={lead.contact.address ?? lead.city} routeUrl={lead.contact.mapsUrl} />
@@ -88,15 +99,15 @@ export function KablitzPage({ lead }: { lead: LeadProfile }) {
   );
 }
 
-function KablitzHeader({ lead }: { lead: LeadProfile }) {
+export function KablitzHeader({ lead }: { lead: LeadProfile }) {
   return (
     <header className="kablitz-header">
-      <a className="kablitz-wordmark" href="#top" aria-label={`${lead.businessName} Startseite`}>
+      <Link className="kablitz-wordmark" href="/#top" aria-label={`${lead.businessName} Startseite`}>
         <Image src="/leads/kablitz-gmbh-r4t9k2/logo-transparent.png" alt="Kablitz Logo" width={150} height={46} priority unoptimized />
-      </a>
+      </Link>
       <nav className="kablitz-nav" aria-label="Hauptnavigation">
         {NAV_ITEMS.map((item) => (
-          <a key={item.label} href={item.href}>{item.label}</a>
+          <Link key={item.label} href={item.href}>{item.label}</Link>
         ))}
         <Link className="kablitz-nav-projekt" href="/projekt">Projektübersicht</Link>
         <Link className="kablitz-nav-admin" href="/admin"><LayoutDashboard size={14} /> Admin</Link>
@@ -107,7 +118,7 @@ function KablitzHeader({ lead }: { lead: LeadProfile }) {
             <MapPin size={15} /> Standort
           </a>
         )}
-        <a className="kablitz-btn kablitz-btn-primary" href="#kontakt">Kontakt</a>
+        <Link className="kablitz-btn kablitz-btn-primary" href="/kontakt">Kontakt</Link>
         <KablitzMenu items={[...NAV_ITEMS, { label: "Projekt", href: "/projekt" }]} phone={lead.contact.phone} phoneHref={telephoneHref(lead.contact.phone)} />
       </div>
       <span className="kablitz-progress" aria-hidden="true" />
@@ -115,7 +126,9 @@ function KablitzHeader({ lead }: { lead: LeadProfile }) {
   );
 }
 
-function Hero({ lead, heroImage, phoneHref }: { lead: LeadProfile; heroImage?: MediaAsset; phoneHref?: string }) {
+const HERO_TITLE = ["„Energie", "aus", "dem,", "was", "andere", "als", "Abfall", "sehen“"];
+
+function Hero({ heroImage }: { heroImage?: MediaAsset }) {
   return (
     <section className="kablitz-hero">
       {heroImage && (
@@ -128,7 +141,7 @@ function Hero({ lead, heroImage, phoneHref }: { lead: LeadProfile; heroImage?: M
       <div className="kablitz-hero-copy">
         <p className="kablitz-eyebrow" data-hero-fade="">Seit 1901 · Lauda-Königshofen</p>
         <h1 className="kablitz-hero-title">
-          {["Energie", "aus", "Biomasse", "und", "Abfällen."].map((word, i) => (
+          {HERO_TITLE.map((word, i) => (
             <span className="kablitz-hero-mask" key={word + i}>
               <span className="kablitz-hero-word" style={{ "--w": i } as CSSProperties}>{word}</span>
             </span>
@@ -139,16 +152,15 @@ function Hero({ lead, heroImage, phoneHref }: { lead: LeadProfile; heroImage?: M
           Heißgaserzeuger. Mit eigener Gießerei und Stahlfertigung.
         </p>
         <div className="kablitz-hero-actions" data-hero-fade="">
-          {phoneHref && (
-            <a className="kablitz-btn kablitz-btn-primary" href={phoneHref}>
-              <Phone size={16} /> Anrufen
-            </a>
-          )}
-          {lead.contact.mapsUrl && (
-            <a className="kablitz-btn kablitz-btn-ghost" href={lead.contact.mapsUrl} target="_blank" rel="noreferrer">
-              <MapPin size={16} /> Standort
-            </a>
-          )}
+          <a className="kablitz-btn kablitz-btn-primary" href="#anfrage">
+            <Send size={16} /> Projekt anfragen
+          </a>
+          <Link className="kablitz-btn kablitz-btn-ghost" href="/kontakt">
+            <MessageSquare size={16} /> Kontakt
+          </Link>
+          <a className="kablitz-btn kablitz-btn-ghost" href="#unternehmen">
+            <Globe2 size={16} /> Unsere Projekte
+          </a>
         </div>
         <a className="kablitz-scroll-cue" href="#anlage" data-hero-fade="">
           <ArrowDown size={15} /> Die Anlage entdecken
@@ -222,7 +234,7 @@ function AdminCta() {
   );
 }
 
-function ContactBand({ lead, phoneHref }: { lead: LeadProfile; phoneHref?: string }) {
+export function ContactBand({ lead, phoneHref }: { lead: LeadProfile; phoneHref?: string }) {
   return (
     <section className="kablitz-contact" id="kontakt">
       <div className="kablitz-contact-copy">
@@ -250,7 +262,7 @@ function ContactBand({ lead, phoneHref }: { lead: LeadProfile; phoneHref?: strin
   );
 }
 
-function KablitzFooter({ lead }: { lead: LeadProfile }) {
+export function KablitzFooter({ lead }: { lead: LeadProfile }) {
   return (
     <footer className="kablitz-footer">
       <div className="kablitz-footer-inner">

@@ -1,0 +1,753 @@
+# 1. Einleitung und Zweck des Dokuments
+
+Wir planen die vollständige Neuentwicklung unseres Internetauftritts sowie einer dazugehörigen internen Plattform für Redaktion und Betrieb. Nach unserer ersten Anforderungsbeschreibung haben wir uns intern mit Geschäftsführung, Vertrieb, Service, Einkauf und Gießerei abgestimmt und dabei viele Punkte genauer festgelegt. Dieses Lastenheft fasst die Ergebnisse zusammen. Es ersetzt die bisher übermittelte Beschreibung und ergänzt sie um alle Leistungen, die wir uns für das Projekt wünschen.
+
+Das Dokument ist die Grundlage für Ihr Angebot. Alle angefragten Agenturen erhalten dasselbe Dokument, damit wir die Angebote fair vergleichen können. Wenn Sie einzelne Punkte nicht anbieten oder anders umsetzen würden, kennzeichnen Sie dies bitte ausdrücklich. Da wir noch nicht abschließend entschieden haben, welche Bausteine wir beauftragen, haben wir den Umfang in einzeln wählbare Module aufgeteilt. Bitte bepreisen Sie jedes Modul separat direkt in den Tabellen in Kapitel 17.
+
+Wir sind selbst keine IT-Fachleute, wissen aber genau, was die neue Website für uns leisten soll. Die technischen Formulierungen in diesem Dokument haben wir deshalb mit Unterstützung von KI-Werkzeugen ausgearbeitet und intern geprüft. Sollte etwas unklar sein oder sich aus Ihrer fachlichen Sicht besser anders lösen lassen, sprechen Sie uns bitte an.
+
+Damit wir uns in Rückfragen und im Angebot leichter auf einzelne Punkte beziehen können, haben wir die Anforderungen nummeriert (z. B. **ANF-START-03**). Die Priorität bedeutet:
+
+| Priorität | Bedeutung |
+| MUSS | Zwingender Bestandteil des jeweiligen Moduls, seines Angebotspreises und seiner Abnahme. |
+| SOLL | Wird erwartet; eine Abweichung ist im Angebot zu begründen und alternativ zu bepreisen. |
+| KANN | Optionale Erweiterung; bitte als separate Position anbieten. |
+
+## 1.1 Ausgangslage
+
+Unsere bestehende Website enthält viele technische Informationen zu Wärmetauschern, Feuerungen, Energiezentralen, Brennstoffen, Gießerei und Service. Sie wirkt aber überwiegend wie ein technischer Katalog: Produkt → technische Daten → Produkt → technische Daten. Unsere Referenzen sehen aus wie Datenblätter, unsere eigene Fertigung und Gießerei kommen als Verkaufsargument zu kurz, und für jede Änderung brauchen wir externe Unterstützung.
+
+## 1.2 Zielbild
+
+Die neue Website soll nicht nur technische Informationen bereitstellen, sondern aktiv verkaufen und Vertrauen aufbauen. Ein potenzieller Kunde soll innerhalb weniger Sekunden verstehen:
+
+- Was macht Kablitz?
+- Welche Probleme löst Kablitz?
+- Welche Anlagen und Technologien bietet Kablitz?
+- Warum sollte ein Kunde Kablitz als Partner wählen?
+- Hat Kablitz bereits ähnliche Projekte erfolgreich umgesetzt?
+- Kann Kablitz auch nach der Inbetriebnahme unterstützen?
+
+Die Website soll nach dem Prinzip **Problem → Lösung → Technologie → Referenz → Ergebnis → Kontakt** funktionieren. Unser Ziel ist eine moderne, hochwertige B2B-Industrieseite, die technische Kompetenz mit Emotion, Vertrauen und klaren Verkaufsargumenten verbindet. Sie soll sich deutlich von den üblichen Websites unserer Branche abheben.
+
+## 1.3 Geltungsbereich
+
+Das Projekt umfasst:
+
+- die öffentliche Unternehmenswebsite in mindestens zwei Sprachen (DE/EN) mit allen in Kapitel 4 bis 8 beschriebenen Inhalten und Funktionen,
+- ein hochwertiges Interaktions- und Animationskonzept einschließlich WebGL-Effekten und scrollgesteuerter Erzählsequenzen (Kapitel 9),
+- ein interaktives 3D-Globus-Modul zur Unternehmensgeschichte und internationalen Präsenz (Kapitel 10),
+- ein Content-Management-System mit News-/Blog-Modul und Google-Anmeldung (Kapitel 11),
+- Suchmaschinenoptimierung (SEO) und Optimierung für KI-Antwortsysteme (AEO) einschließlich Wissensbereich und Sichtbarkeitsmessung (Kapitel 14.5 und 14.6),
+- ein Anfragemanagement für Projekt-, Service-, Ersatzteil- und Chat-Anfragen (Kapitel 12),
+- eine interne Betriebsplattform mit Modulen für Projekte, Anlagenbestand, Gießerei, Lager, Bestellungen, Wareneingang und Lieferanten (Kapitel 13),
+- Hosting, Betrieb, Wartung, Schulung und Dokumentation (Kapitel 14 und 15).
+
+## 1.4 Projektphasen im Überblick
+
+Wir möchten das Projekt in zwei Phasen umsetzen. Beide Phasen gehören zu dieser Anfrage.
+
+| Phase | Inhalt | Zeitliche Einordnung |
+| Phase 1 | Öffentliche Website inkl. Animationskonzept, interaktivem 3D-Globus „Von Riga in die Welt“, Brennstoff-Einstieg, Referenzen als Fallstudien, Service/Ersatzteile, Karriere, Kontakt/Chat, Mehrsprachigkeit, CMS mit News-/Blog-Modul, Anfragemanagement, SEO, Datenschutz, Migration | Start nach Auftragserteilung |
+| Phase 2 | Interne Betriebsplattform (Projekte, Anlagenbestand, Gießerei, Lager, Bestellungen, Wareneingang, Lieferanten, Genehmigungen, Berichte) | Unmittelbar im Anschluss an Phase 1 |
+
+Wichtig ist uns, dass Phase 2 später ohne Neuentwicklung der Website ergänzt werden kann (gleiche Anmeldung und Benutzerverwaltung, gemeinsame Daten, einheitliches Design).
+
+Innerhalb beider Phasen ist der Umfang in Module aufgeteilt (Kapitel 17). Anhand der Modulpreise entscheiden wir, welche Module wir beauftragen.
+
+# 2. Unternehmen und Zielgruppen
+
+## 2.1 Unternehmen
+
+Die Richard Kablitz GmbH in Lauda-Königshofen entwickelt und fertigt seit 1901 Verbrennungs- und Energietechnik: Rostfeuerungen für Biomasse und Reststoffe, Kessel und Energiezentralen, Wärmetauscher sowie Gussteile aus unserer eigenen Gießerei. Weltweit haben wir über 6.000 Anlagen und Systeme geliefert. Die Kennzahlen auf der Website stimmen wir vor der Veröffentlichung intern ab.
+
+## 2.2 Zielgruppen
+
+| Zielgruppe | Hauptanliegen | Erwarteter Einstieg |
+| Betreiber von Sägewerken, Holz- und Papierindustrie | Reststoffe energetisch nutzen, Prozesswärme erzeugen | Brennstoff-Einstieg, Referenzen |
+| Stadtwerke und Energieversorger | Biomasse-Heizkraftwerke, KWK, Fernwärme | Lösungen, Referenzen, Kontakt Ingenieure |
+| Industriebetriebe mit Wärmebedarf | Dampf, Thermalöl, Heißgas, Wärmerückgewinnung | Lösungen, Technologien |
+| Entsorger und Abfallwirtschaft | Altholz, RDF/SRF und Sonderbrennstoffe verwerten | Brennstoff-Einstieg |
+| Bestandskunden und Betreiber von Fremdanlagen | Ersatzteile, Roststäbe, Wartung, Modernisierung | Service, Ersatzteilanfrage |
+| EPC-Unternehmen und Planungsbüros | Technische Unterlagen, Lieferumfang, Referenzen | Technologien, Downloads |
+| Bewerberinnen und Bewerber | Arbeitgeber kennenlernen, Stellen finden | Karriere |
+| Interne Nutzer (Redaktion, Vertrieb, Einkauf, Lager, Gießerei, Geschäftsführung) | Inhalte pflegen, Anfragen bearbeiten, Betriebsdaten führen | Admin-Bereich |
+
+# 3. Informationsarchitektur und Navigation
+
+## 3.1 Hauptnavigation
+
+**ANF-NAV-01 (MUSS):** Die Hauptnavigation enthält die Bereiche Lösungen, Technologien, Projekte, Unternehmen, Service, Karriere sowie News & Insights. Rechts befinden sich Sprachwechsel (DE | EN), Suche und ein visuell deutlich hervorgehobener Kontakt-Button.
+
+**ANF-NAV-02 (MUSS):** Für umfangreiche Bereiche (Lösungen, Technologien, Service) werden Mega-Menüs mit Unterpunkten, Kurzbeschreibung und Vorschaubild umgesetzt.
+
+**ANF-NAV-03 (MUSS):** Der Header bleibt beim Scrollen erreichbar (Sticky Header), verkleinert sich nach dem Einstieg und zeigt eine schmale Lese-Fortschrittsanzeige über die Gesamtseite.
+
+**ANF-NAV-04 (MUSS):** Mobile Navigation als vollflächiges, animiertes Menü mit Telefonnummer und Kontakt-Button; vollständig per Tastatur und Touch bedienbar.
+
+**ANF-NAV-05 (MUSS):** Die Startseite ist als lange Erzählseite aufgebaut; die Hauptnavigation führt jedoch zu eigenständigen Detailseiten. Sprungmarken innerhalb der Startseite werden mit weichem, animiertem Scrollen angesteuert.
+
+## 3.2 Seitenstruktur (Sitemap)
+
+| Bereich | Seiten / Vorlagen |
+| Startseite | Erzählende Startseite mit allen in Kapitel 4 beschriebenen Sektionen |
+| Lösungen | Biomasseenergie, Abfall-zu-Energie, Industrielle Prozesswärme, Kraft-Wärme-Kopplung, Modernisierung |
+| Brennstoffe | Übersicht „Was möchten Sie verbrennen?“ und je Brennstoff eine Detailseite (mind. 8) |
+| Technologien | Wassergekühlte Roste, Luftgekühlte Roste, Staubfeuerungen, Dampfkessel, Thermalöl-Anlagen, Heißwasser, Heißgaserzeuger, Wärmetauscher (Rippenplatten, Glasröhren) |
+| Projekte | Übersicht mit Filter (Land, Brennstoff, Leistung, Technologie) und Fallstudien-Detailseiten |
+| Unternehmen | Über uns, Geschichte, Eigene Fertigung & Gießerei, Qualität & Zertifikate, Nachhaltigkeit, Standort |
+| Service | Wartung, Inspektion, Modernisierung, Leistungsoptimierung, Ersatzteile (inkl. Anfrageformular), Gussteile für Fremdfabrikate |
+| Karriere | Arbeitgeberseite, Stellenübersicht, Stellen-Detailseiten, Bewerbungsformular |
+| News & Insights | Übersicht mit Kategorien, Beitrags-Detailseiten, Fachwissen/FAQ |
+| Kontakt | Kontaktseite mit Ansprechpartnern je Fachgebiet, Anfahrtskarte |
+| Rechtliches | Impressum, Datenschutz, Cookie-Einstellungen, Hinweisgebersystem, Barrierefreiheit |
+| Downloads | Prospekte, Referenzlisten, Zertifikate |
+
+Der Umfang beträgt bei Launch voraussichtlich 60–80 Seiten je Sprache. Alle Vorlagen müssen durch das CMS befüllbar sein; keine Inhalte dürfen fest im Programmcode hinterlegt sein.
+
+# 4. Startseite
+
+Die Startseite ist das wichtigste Verkaufsinstrument. Sie besteht aus den nachfolgenden Sektionen in der angegebenen Reihenfolge. Die Reihenfolge und Sichtbarkeit einzelner Sektionen muss im CMS änderbar sein.
+
+## 4.1 Einstiegs-Animation (Intro)
+
+**ANF-START-01 (MUSS):** Beim ersten Aufruf pro Sitzung erscheint ein kurzer Vorhang mit Logo und einem von 0 auf 100 laufenden Zähler. Anschließend öffnen sich zwei Flächen und geben den Hero-Bereich frei, der mit einer eigenen Einstiegs-Choreografie erscheint. Bei weiteren Aufrufen in derselben Sitzung wird nur der Vorhang kurz angehoben. Das Intro darf die Anzeige der Inhalte um nicht mehr als 1,8 Sekunden verzögern und muss abbrechbar sein.
+
+## 4.2 Hero-Bereich
+
+**ANF-START-02 (MUSS):** Vollflächiger Hero mit Hintergrundvideo (Anlage, Feuerung, Gießerei) und Standbild-Fallback. Das Video wird adaptiv in mehreren Auflösungen ausgeliefert und pausiert, sobald es nicht sichtbar ist.
+
+**ANF-START-03 (MUSS):** Über dem Video liegt ein in Echtzeit berechneter Feuer- und Glut-Effekt (WebGL) in unseren Firmenfarben, der auf Mausbewegung und Scrollposition reagiert (z. B. Flammen neigen sich zur Mausposition, Intensität nimmt beim Scrollen ab). Bei fehlender WebGL-Unterstützung oder aktivierter Einstellung „Bewegung reduzieren“ entfällt der Effekt ohne Funktionsverlust.
+
+**ANF-START-04 (MUSS):** Headline mit zeilenweiser Einblend-Animation. Favorit: „Energie aus dem, was andere als Abfall sehen.“ Weitere Varianten müssen im CMS auswählbar sein: „Energie gewinnen. Ressourcen nutzen.“, „Wenn aus Reststoffen Energie wird.“, „Aus Biomasse und Reststoffen. Für Energie und Zukunft.“, „Ressourcen nutzen. Energie erzeugen.“, „Energie aus Ressourcen. Seit 1901.“
+
+**ANF-START-05 (MUSS):** Zwei klare Handlungsaufforderungen: „Projekt anfragen“ (primär) und „Mit unseren Ingenieuren sprechen“ (sekundär). Der zweite Button öffnet wahlweise ein Kontaktformular oder das Chat-Fenster (siehe 4.12).
+
+## 4.3 Harte Fakten
+
+**ANF-START-06 (MUSS):** Direkt unter dem Hero erscheinen die wichtigsten Kennzahlen als große, animiert hochzählende Zahlen (keine Tabelle), z. B. 125 Jahre Erfahrung in der Verbrennungstechnik, 6.000+ gelieferte Verbrennungssysteme, weltweit Anlagen und Systeme im Betrieb, Engineering, Fertigung und Gießerei aus eigener Hand, 80+ Mitarbeiter. Die Zähler starten erst, wenn der Bereich sichtbar wird. Werte, Einheiten und Beschriftungen sind im CMS pflegbar.
+
+## 4.4 Kinematische Markensequenz
+
+**ANF-START-07 (MUSS):** Scrollgesteuerte, fixierte (gepinnte) Sequenz: Der Schriftzug KABLITZ füllt den Bildschirm; durch die Buchstaben ist Anlagen-Filmmaterial sichtbar. Beim Weiterscrollen fährt die Kamera durch einen Buchstaben hindurch, bis das Video den gesamten Bildschirm füllt. Anschließend erscheint eine Bildunterschrift Wort für Wort. Über dem Video wird ein eigener Maus-Cursor dargestellt, der ein Abspielen in einer Vollbild-Ansicht (Lightbox) anbietet. Die Sequenz folgt direkt der Scrollbewegung und läuft auch beim Zurückscrollen korrekt rückwärts.
+
+## 4.5 Unternehmensgeschichte und internationale Präsenz (Globus)
+
+**ANF-START-08 (MUSS):** Integration des interaktiven 3D-Globus-Moduls „Von Riga in die Welt“ gemäß Kapitel 10 als zentrale Sektion der Startseite. Der Globus ist Bestandteil des Launches der Website in Phase 1.
+
+## 4.6 Prozess-Erzählung „Vom Brennstoff zur Energie“
+
+**ANF-START-09 (MUSS):** Gepinnte, scrollgesteuerte Erzählsequenz in vier Stufen: 01 Brennstoff (Biomasse gelangt auf den Rost), 02 Feuerung (gleichmäßige Zündung auf dem gekühlten Rost), 03 Dampf (Verbrennungswärme erzeugt Hochdruckdampf), 04 Reinigung (mehrstufige Rauchgasreinigung).
+
+**ANF-START-10 (MUSS):** Hintergrund ist eine WebGL-Verbrennungssimulation, die sich abhängig vom Scrollfortschritt durch vier Stimmungen bewegt: kalter Brennstoff → Zündung → volles Feuer mit Dampf → sauberes Abgas. Enthalten sind Flammen, aufsteigende Funken, Hitzeflimmern, Dampf.
+
+**ANF-START-11 (MUSS):** Darüber liegt ein technisches Anlagenschema, in dem die jeweils aktive Anlagenzone hervorgehoben, mit Markierungspunkten und Beschriftungen versehen wird. Ein Fortschrittsbalken und Stufennavigation erlauben das direkte Springen zu einer Stufe. Ein Video der realen Anlage kann in einer Lightbox geöffnet werden.
+
+## 4.7 Leistungsbereiche
+
+**ANF-START-12 (MUSS):** Die sechs Leistungsbereiche (Wärmetauscher, Feuerungen, Energiezentralen, Brennstoffe, Gießerei, Service) werden auf dem Desktop als gepinnte Schrittfolge dargestellt: links eine Liste, die sich beim Scrollen weiterschaltet, rechts Bild, Beschreibung und Unterpunkte mit Übergangsanimation. Auf Mobilgeräten wird dieselbe Information als Kartenfolge dargestellt.
+
+**ANF-START-13 (SOLL):** Zwischen den Sektionen läuft ein Laufband (Marquee) mit Schlagworten, dessen Geschwindigkeit auf die Scrollgeschwindigkeit reagiert.
+
+## 4.8 Brennstoff-Einstieg „Was möchten Sie verbrennen?“
+
+**ANF-START-14 (MUSS):** Visuelle Auswahl der Brennstoffe gemäß Kapitel 5 mit Bildkacheln und Hover-Animation. Ein Klick öffnet eine Vorschau mit Eigenschaften, Herausforderungen, empfohlener Technologie, geeignetem Rost und passenden Referenzen sowie einen Link zur Detailseite.
+
+## 4.9 Eigene Fertigung
+
+**ANF-START-15 (MUSS):** Großflächiger Bereich „Im eigenen Haus gefertigt. Für dauerhafte Leistung entwickelt.“ (Alternative: „Vom Engineering bis zum Guss – kritische Komponenten unter eigener Kontrolle.“) mit Video-Band aus der Gießerei, Bildergalerie mit Wisch-Einblendungen und den Stationen Engineering, Gießerei, Modellbau, Stahlbau, mechanische Bearbeitung, Montage und Qualitätskontrolle.
+
+## 4.10 Aktuelle Projekte
+
+**ANF-START-16 (MUSS):** Mindestens drei hervorgehobene Projekte mit großem Bild, Projekttitel, Kurzbeschreibung, zwei bis vier Kennzahlen und dem Button „Zum Projekt“. Beispiel: Biomasse-Kraftwerk Goch – Flexible Prozesswärme und Stromerzeugung; 28 MW thermische Leistung; 5–7,2 MW elektrische Leistung; 100.000 t Brennstoff/Jahr. Die Auswahl ist im CMS steuerbar und kann zeitgesteuert wechseln.
+
+## 4.11 Zertifikate, News und Kontakt
+
+**ANF-START-17 (MUSS):** Zertifikats- und Qualitätsleiste (z. B. ISO 9001), Teaser der drei neuesten News-Beiträge aus dem CMS, Kontaktband mit Ansprechpartner und Telefonnummer sowie datenschutzfreundliche Standortkarte (Karte wird erst nach Klick bzw. Einwilligung geladen).
+
+## 4.12 Schnellkontakt und Chat
+
+**ANF-START-18 (MUSS):** Auf allen Seiten befindet sich unten rechts ein schwebender Kontakt-Button. Ein Klick öffnet ein Chat-Fenster, in dem Besucher direkt mit uns schreiben können. Nachrichten werden im Anfragemanagement (Kapitel 12) empfangen und von Mitarbeitern beantwortet. Außerhalb der Geschäftszeiten wird ein Formular mit Rückrufoption angezeigt. Besucher erhalten Antworten im Chat, solange die Sitzung besteht, sowie optional per E-Mail.
+
+**ANF-START-19 (KANN):** Ein KI-gestützter Assistent beantwortet einfache Fragen auf Basis freigegebener Website-Inhalte und übergibt an einen Mitarbeiter, sobald eine konkrete Anfrage vorliegt.
+
+# 5. Brennstoffe als Einstieg
+
+Bei uns ist der Brennstoff der entscheidende Ausgangspunkt der technischen Lösung. Der Brennstoff-Einstieg verbindet Kundenproblem, Technologie und Referenzen.
+
+**ANF-BRS-01 (MUSS):** Übersichtsseite „Was möchten Sie verbrennen?“ mit mindestens folgenden Brennstoffen: Altholz, Waldrestholz, Rinde, feuchte Biomasse, landwirtschaftliche Reststoffe, Stäube und Fasern, industrielle Reststoffe (inkl. RDF/SRF) und Sonderbrennstoffe. Die Liste ist im CMS erweiterbar.
+
+**ANF-BRS-02 (MUSS):** Jede Brennstoff-Detailseite enthält die Abschnitte:
+
+- Brennstoffeigenschaften (Heizwert, Feuchte, Aschegehalt, Stückigkeit – als visuelle Kennwerte),
+- Verbrennungsherausforderungen (welche technischen Schwierigkeiten entstehen),
+- Empfohlene Kablitz-Technologie mit Begründung,
+- Geeignetes Rostsystem,
+- Referenzprojekte mit diesem Brennstoff (automatisch aus den Projektdaten verknüpft),
+- Kontaktaufforderung „Brennstoff besprechen“ mit vorausgefülltem Anfrageformular.
+
+**ANF-BRS-03 (MUSS):** Brennstoffe, Technologien und Referenzen werden im CMS als miteinander verknüpfte Inhaltstypen geführt; Verweise werden auf allen Seiten automatisch aktualisiert.
+
+**ANF-BRS-04 (SOLL):** Interaktiver Filter „Brennstoff + gewünschte Leistung + Energieform (Dampf, Heißwasser, Thermalöl, Strom)“, der passende Technologien und Referenzen anzeigt.
+
+# 6. Referenzen und Projekte als Fallstudien
+
+Referenzen sollen nicht wie technische Datenblätter wirken, sondern als visuelle Erfolgsgeschichten aufgebaut sein.
+
+**ANF-REF-01 (MUSS):** Projektübersicht mit Filter nach Land, Brennstoff, Technologie und Leistungsbereich sowie einer Kartenansicht.
+
+**ANF-REF-02 (MUSS):** Jede Fallstudie folgt der Struktur Problem → Lösung → Technologie → Lieferumfang → Ergebnis:
+
+- Ausgangssituation und Kundenherausforderung (anonymisierbar, z. B. „Ein europäischer Sägewerksbetrieb suchte nach einer Möglichkeit, große Mengen feuchter Holzreststoffe energetisch zu verwerten.“),
+- Kablitz-Lösung mit Begründung, warum diese Technologie gewählt wurde,
+- Liefer- und Leistungsumfang als interaktive Grafik (Feuerungsanlage, Rost, Kessel, Brennstoffzuführung, Entaschung, Rauchgasreinigung, Steuerung, Montage, Inbetriebnahme); die gelieferten Komponenten werden in einem Anlagenschema hervorgehoben,
+- Technische Übersicht als große, animierte Kennzahlen statt Tabelle,
+- Ergebnisse als Nutzenaussagen (z. B. flexible Brennstoffnutzung, stabiler Betrieb, Energiegewinnung aus bisher ungenutzten Reststoffen),
+- Bildergalerie: Gesamtansicht, Feuerung/Rost, Kessel, Brennstoff, Fertigung/Montage, Mitarbeiter vor Ort, Prozessdiagramm/Anlagenlayout,
+- Kontaktaufforderung „Ähnliches Projekt besprechen“.
+
+**ANF-REF-03 (MUSS):** Scrollgesteuerte Präsentation der Fallstudie: Kapitel werden beim Scrollen nacheinander eingeblendet, Bilder öffnen sich mit Wisch-Animation, Kennzahlen zählen hoch.
+
+**ANF-REF-04 (MUSS):** Freigabestatus pro Projekt im CMS (öffentlich, anonymisiert, intern). Anonymisierte Projekte zeigen weder Kundennamen noch exakte Standorte.
+
+**ANF-REF-05 (SOLL):** Verknüpfung jedes Projekts mit Standortkoordinaten, sodass das Projekt automatisch auf Karte bzw. Globus erscheint.
+
+# 7. Unternehmen, Fertigung, Service und Karriere
+
+## 7.1 Eigene Fertigung und Gießerei
+
+**ANF-FER-01 (MUSS):** Eigene Seite „Eigene Fertigung. Starke Kompetenz.“ mit den Stationen Engineering, Gießerei, Modellbau, Stahlbau, mechanische Bearbeitung, Schweißarbeiten, Montage, Qualitätskontrolle und Verladung. Jede Station mit echtem Bild- und Videomaterial.
+
+**ANF-FER-02 (MUSS):** Visualisierung des Fertigungsablaufs als scrollgesteuerter Zeitstrahl vom Modell bis zum montierten Rost.
+
+**ANF-FER-03 (SOLL):** Video-Band mit Gießszenen, das sich beim Scrollen in den Vordergrund schiebt und per Klick in voller Länge abspielt.
+
+## 7.2 Geschichte
+
+**ANF-UNT-01 (MUSS):** Seite „Geschichte“ mit interaktivem Zeitstrahl von 1868 (Richard Kablitz in Riga) über die Gründung 1901, das Konstruktionsbüro Moskau, das Patent des Universalrostes 1920, den Standort Lauda ab 1951 mit eigener Gießerei, die Ausstattung von Tankern der Onassis-Flotte, das Nachbrennkammer-Patent 1993 bis zur Erweiterung der Fertigungshallen 2019. Der Zeitstrahl ist mit dem 3D-Globus verknüpft: Ein Klick auf eine Station öffnet die entsprechende Stelle der Globus-Erzählung.
+
+## 7.3 Service und Ersatzteile
+
+**ANF-SRV-01 (MUSS):** Servicebereich „Ihre Anlage am Laufen halten“ mit Wartung, Inspektion, Modernisierung, Leistungsoptimierung sowie Ersatzteilen für eigene und Fremdanlagen.
+
+**ANF-SRV-02 (MUSS):** Ersatzteilkatalog mit den Kategorien Roststäbe, Gussteile, Rostelemente, Verschleißteile und weitere Komponenten. Jeder Artikel mit Bild, Kurzbeschreibung, Anlagentyp-Zuordnung und Button „Ersatzteil anfragen“. Keine Preisangaben, kein Warenkorb mit Bezahlfunktion.
+
+**ANF-SRV-03 (MUSS):** Ersatzteilanfrage mit den Feldern Bauteil, Anlagentyp, Hersteller, Baujahr, Zeichnungs-/Teilenummer, gewünschte Menge, Beschreibung, Foto-/Zeichnungs-Upload (mehrere Dateien, JPG/PNG/PDF/DWG, bis 20 MB) und Kontaktdaten. Die Anfrage wird mit einer Vorgangsnummer bestätigt und im Anfragemanagement angelegt.
+
+**ANF-SRV-04 (SOLL):** Anfragekorb: Besucher können mehrere Ersatzteile sammeln und gemeinsam anfragen.
+
+## 7.4 Karriere
+
+**ANF-KAR-01 (MUSS):** Arbeitgeberseite mit Werten, Bildern, Ausbildung, Stellenangeboten (aus dem CMS) und Online-Bewerbungsformular mit Lebenslauf-Upload. Stellenanzeigen mit strukturierten Daten (JobPosting).
+
+# 8. Weitere Inhalte und Funktionen der Website
+
+## 8.1 News & Insights (Blog)
+
+**ANF-NEWS-01 (MUSS):** Öffentliche Übersichtsseite mit Kategorien (Unternehmen, Projekte, Technologie, Service & Ersatzteile, Nachhaltigkeit, Karriere, Messen), Filter, Suche und Seitennavigation.
+
+**ANF-NEWS-02 (MUSS):** Beitrags-Detailseiten mit Titelbild, Zusammenfassung, formatiertem Text, Bildergalerien, eingebetteten Videos, Autor, Datum, Lesezeit, verwandten Beiträgen und Teilen-Funktion (ohne automatisch ladende Social-Media-Skripte).
+
+**ANF-NEWS-03 (MUSS):** Automatischer Teaser der neuesten Beiträge auf der Startseite und passender Beiträge auf Projekt-, Technologie- und Brennstoffseiten.
+
+**ANF-NEWS-04 (SOLL):** RSS-Feed und optionaler E-Mail-Newsletter mit Double-Opt-in.
+
+## 8.2 Suche
+
+**ANF-SUCH-01 (MUSS):** Seitenweite Volltextsuche über Seiten, Projekte, Brennstoffe, Technologien, News, Ersatzteile und Downloads mit Sofortvorschlägen während der Eingabe, Tippfehlertoleranz und Gruppierung der Ergebnisse nach Inhaltstyp.
+
+## 8.3 Mehrsprachigkeit
+
+**ANF-SPR-01 (MUSS):** Vollständige Sprachfassungen Deutsch und Englisch mit eigenen URLs, wechselseitigen Sprachverweisen (hreflang) und Sprachwechsel auf jeder Seite, der auf die entsprechende Seite der anderen Sprache führt.
+
+**ANF-SPR-02 (KANN):** Erweiterung um Spanisch und Italienisch. Bitte je Sprache als optionale Position anbieten.
+
+**ANF-SPR-03 (SOLL):** Übersetzungs-Workflow im CMS: Status je Sprache, Hinweis auf veraltete Übersetzungen und optionaler maschineller Übersetzungsentwurf, der vor Veröffentlichung geprüft wird.
+
+## 8.4 Downloads
+
+**ANF-DL-01 (MUSS):** Downloadbereich für Prospekte, Referenzlisten, Zertifikate und technische Unterlagen, im CMS pflegbar, mit Sprach- und Kategoriefilter.
+
+# 9. Interaktions- und Animationskonzept
+
+Die Website soll hochwertig und eindrucksvoll animiert sein und in Anmutung mit international ausgezeichneten Premium-Websites mithalten. Animation dient dabei der Erzählung von Technologie und Kompetenz und darf die Lesbarkeit nicht beeinträchtigen. Die in diesem Kapitel beschriebenen Effekte sind verbindlicher Bestandteil des Leistungsumfangs.
+
+## 9.1 Allgemeine Anforderungen
+
+**ANF-ANI-01 (MUSS):** Weiches, trägheitsbasiertes Scrollen (Smooth Scrolling) auf dem Desktop, synchronisiert mit allen scrollgesteuerten Animationen. Auf Touch-Geräten bleibt das native Scrollverhalten erhalten.
+
+**ANF-ANI-02 (MUSS):** Die Scroll-Animationen sollen zentral gesteuert werden, damit unsere Redaktion im CMS für neue Inhaltsblöcke Animationsvarianten wählen können, ohne zu programmieren.
+
+**ANF-ANI-03 (MUSS):** Folgende Standard-Effekte stehen für alle Inhaltsblöcke zur Verfügung:
+
+| Effekt | Beschreibung |
+| Zeilen-Einblendung | Überschriftenzeilen steigen aus einer Maske auf. |
+| Weiches Einblenden | Elemente blenden mit leichter Unschärfe und Bewegung nach oben ein; Verzögerung einstellbar. |
+| Gestaffeltes Einblenden | Kind-Elemente (z. B. Karten) erscheinen nacheinander. |
+| Bild-Wischeffekt | Bilder öffnen sich mit einer Maske; das Bild setzt sich dabei aus einem Zoom. |
+| Linien-Zeichnung | Trennlinien zeichnen sich von links nach rechts. |
+| Wort-für-Wort-Hervorhebung | Wörter eines Absatzes leuchten während des Scrollens nacheinander auf. |
+| Zeichen-Animation | Große Schriftzüge erscheinen Zeichen für Zeichen. |
+| Zähler | Zahlen zählen beim Sichtbarwerden hoch, mit Tausendertrennzeichen und Suffix. |
+| Parallax | Bildebenen bewegen sich mit unterschiedlicher Geschwindigkeit. |
+
+**ANF-ANI-04 (MUSS):** Gepinnte Scroll-Sequenzen (Kapitel 4.4, 4.6, 4.7, 6, 7.1) sind an die Scrollposition gekoppelt, laufen vorwärts wie rückwärts korrekt und bleiben bei Änderung der Fenstergröße stabil.
+
+**ANF-ANI-05 (MUSS):** Seitenübergänge zwischen Unterseiten mit kurzer, markentypischer Übergangsanimation (z. B. Vorhang in Kablitz-Rot oder Gießübergang), ohne die gefühlte Ladezeit zu verlängern.
+
+**ANF-ANI-06 (MUSS):** Eigener Maus-Cursor über Video- und Bildbereichen mit kontextabhängiger Beschriftung (z. B. „Video ansehen“), magnetische Buttons und Hover-Zustände auf allen interaktiven Elementen.
+
+## 9.2 WebGL- und Echtzeiteffekte
+
+**ANF-ANI-07 (MUSS):** Mindestens drei eigenständige Echtzeit-Grafikeffekte auf Basis von WebGL:
+
+- Feuer- und Flammeneffekt im Hero, interaktiv mit Maus und Scroll (siehe ANF-START-03),
+- Glut- und Hitzeflimmer-Ebene, die über Fotos gelegt werden kann,
+- Verbrennungssimulation mit vier scrollgesteuerten Zuständen für die Prozess-Erzählung (siehe ANF-START-10).
+
+**ANF-ANI-08 (MUSS):** Alle WebGL-Effekte pausieren außerhalb des sichtbaren Bereichs sowie bei inaktivem Browser-Tab, passen ihre Auflösung an die Geräteleistung an und bieten einen gleichwertigen statischen Fallback.
+
+## 9.3 Video
+
+**ANF-ANI-09 (MUSS):** Hintergrundvideos werden stumm, adaptiv (mindestens drei Qualitätsstufen, modernes Codec-Format mit Fallback) und erst bei Bedarf geladen. Videos außerhalb des sichtbaren Bereichs pausieren. Lightbox für Videos in voller Länge mit Ton.
+
+## 9.4 Barrierefreiheit und Performance der Animationen
+
+**ANF-ANI-10 (MUSS):** Bei aktivierter Systemeinstellung „Bewegung reduzieren“ werden Animationen auf einfache Einblendungen reduziert und gepinnte Sequenzen als statische Abfolge dargestellt. Alle Inhalte sind ohne Animation vollständig lesbar. Keine Scrollsperren außerhalb bewusst gestarteter Erkundungsmodi, kein Autoplay mit Ton.
+
+**ANF-ANI-11 (MUSS):** Animationen laufen auf aktuellen Desktop-Geräten mit 60 Bildern pro Sekunde und auf Mittelklasse-Smartphones ohne sichtbares Ruckeln. Aufwendige Effekte werden erst nach dem ersten Rendern nachgeladen und dürfen die Kennzahlen in Kapitel 14.2 nicht verschlechtern.
+
+# 10. Interaktiver 3D-Globus „Von Riga in die Welt“
+
+Dieser Bereich erzählt die Unternehmensgeschichte und zeigt die internationale Präsenz auf einem fotorealistischen, interaktiven 3D-Globus. Er ist Bestandteil von Phase 1 und muss zum Launch der Website vollständig funktionsfähig sein.
+
+## 10.1 Darstellung
+
+**ANF-GLB-01 (MUSS):** Fotorealistische 3D-Erde mit Tag- und Nachtseite (weicher Übergang, Stadtlichter auf der Nachtseite) und Atmosphäre. Die Darstellung soll auf großen Bildschirmen gestochen scharf sein (hochauflösende Texturen, auf leistungsstarken Geräten in höchster Auflösung). Es dürfen nur Bilddaten mit geklärter Lizenz verwendet werden.
+
+**ANF-GLB-02 (MUSS):** Standorte werden als pulsierende Leuchtpunkte dargestellt. Verbindungen werden als animierte, sich aufbauende 3D-Bögen gezeichnet; historische Schiffsrouten als Seewege entlang realistischer Verläufe.
+
+**ANF-GLB-03 (SOLL):** Alternative Darstellung im Markenstil (Hexagon-Raster der Kontinente), im CMS umschaltbar.
+
+## 10.2 Scrollgesteuerte Geschichtserzählung
+
+**ANF-GLB-04 (MUSS):** Der Abschnitt ist gepinnt; beim Scrollen fliegt die Kamera wie in einem Film von Station zu Station. Kapitel:
+
+- 1868/1901 Riga – Geburt von Richard Kablitz und Firmengründung,
+- Konstruktionsbüro Moskau,
+- 1939–1945 Umsiedlung,
+- 1951 Lauda – Stammsitz mit eigener Gießerei,
+- Onassis-Tankerflotte – Anlagen auf den Weltmeeren (animierte Seewege),
+- 2009–2018 europäische Referenzanlagen (u. a. Menznau, Sanem, Goch, Rosières-en-Santerre, Bad Mergentheim, Wiesbaden, Brașov, Burgos, Tiszapüspöki),
+- Pemuco (Chile) – Referenz in Südamerika,
+- Weltumrundung über Nordamerika, Neuseeland/Australien und Asien,
+- Rückkehr nach Lauda mit hochzählendem Zähler „6.500+ Anlagen weltweit“.
+
+**ANF-GLB-05 (MUSS):** Zu jedem Kapitel erscheinen Jahr, Titel, Kurztext und Kennwerte synchron zur Kamerafahrt. Die Erzählung läuft vorwärts und rückwärts flüssig. Eine Kapitelleiste erlaubt das direkte Anspringen.
+
+## 10.3 Erkundungsmodus
+
+**ANF-GLB-06 (MUSS):** Über den Button „Globus erkunden“ wechselt der Besucher in einen freien Modus: Seitenscroll wird angehalten, der Globus lässt sich mit Maus, Touch und Tastatur drehen und zoomen. Ein Verlassen ist jederzeit per Button und Escape-Taste möglich.
+
+**ANF-GLB-07 (MUSS):** Ein Klick auf einen Standort öffnet eine Standortkarte mit Bild, Jahr, Leistung, Brennstoff und Kurzbeschreibung sowie dem Link „Zum Projekt“ zur Fallstudie. Über eine Länderliste lassen sich Standorte ansteuern; der gewählte Punkt leuchtet auf und die Kamera fliegt dorthin.
+
+**ANF-GLB-08 (MUSS):** Projektstandorte, historische Stationen, Regionen ohne konkrete Anlage und tatsächliche Niederlassungen werden eindeutig unterschieden.
+
+## 10.4 Pflege, Fallback und Performance
+
+**ANF-GLB-09 (MUSS):** Alle Stationen, Standorte, Texte, Jahreszahlen und Kennwerte sind im CMS pflegbar (inkl. Koordinaten-Auswahl per Karte). Neue Referenzprojekte erscheinen automatisch auf dem Globus.
+
+**ANF-GLB-10 (MUSS):** Der Globus wird erst nachgeladen, wenn sich der Besucher dem Abschnitt nähert, pausiert außerhalb des Sichtbereichs und passt die Qualität an das Gerät an. Ohne WebGL oder bei reduzierter Bewegung wird eine zugängliche Kartenansicht mit Textliste angezeigt.
+
+# 11. Content-Management-System und News-/Blog-Modul
+
+**ANF-CMS-01 (MUSS):** Alle Inhalte der Website (Seiten, Sektionen der Startseite, Brennstoffe, Technologien, Projekte, News, Stellen, Downloads, Ersatzteile, Kennzahlen, Standorte, Menüs, Footer) sind ohne Programmierkenntnisse im CMS pflegbar. Ein interner Mitarbeiter soll nach Schulung Inhalte eigenständig veröffentlichen können.
+
+## 11.1 Anmeldung, Rollen und Rechte
+
+**ANF-CMS-02 (MUSS):** Anmeldung über Google-Konto (OAuth/OIDC) mit ausschließlich freigeschalteten Benutzern; zusätzlich Zwei-Faktor-Absicherung für Administratoren. Keine Anforderung von Gmail- oder Drive-Berechtigungen.
+
+**ANF-CMS-03 (MUSS):** Rollen: Administrator, Redaktion, Freigabe, Vertrieb, Service, Einkauf/Lager, Gießerei, Geschäftsführung (lesend). Rechte werden serverseitig bei jedem Zugriff geprüft. Rollen und Rechte sind durch Administratoren konfigurierbar.
+
+**ANF-CMS-04 (MUSS):** Änderungsprotokoll aller Aktionen (wer, was, wann) sowie Sitzungsverwaltung und sofortiger Benutzerentzug.
+
+## 11.2 Redaktionsfunktionen
+
+**ANF-CMS-05 (MUSS):** Blockbasierter Seiteneditor, in dem Redakteure Seiten aus vorgefertigten Sektionen (Hero, Kennzahlen, Text/Bild, Galerie, Video, Karten, Zitat, Fallstudien-Teaser, Kontaktband usw.) zusammenstellen und je Block eine Animationsvariante wählen.
+
+**ANF-CMS-06 (MUSS):** Redaktionsablauf Entwurf → fachliche Prüfung → Vorschau → Freigabe → Veröffentlichung; geplante Veröffentlichung und Depublizierung; Versionierung mit Vergleich und Wiederherstellung; Archiv.
+
+**ANF-CMS-07 (MUSS):** Live-Vorschau jeder Änderung in Desktop- und Mobilansicht vor der Veröffentlichung.
+
+**ANF-CMS-08 (MUSS):** Medienverwaltung mit Ordnern, Schlagworten, Suche, automatischer Bildoptimierung (moderne Formate, responsive Größen, Fokuspunkt), Videoverarbeitung, Pflichtfeld für Alternativtext, Rechte- und Freigabevermerk sowie Bildnachweis.
+
+## 11.3 News-/Blog-Editor
+
+**ANF-CMS-09 (MUSS):** Der News-Editor enthält die Felder Titel, automatisch erzeugte und editierbare URL, Zusammenfassung, formatierter Text (Überschriften, Listen, Links, Bilder, Zitate, Tabellen, Videos), Kategorie, Titelbild mit Alternativtext, Autor, Datum, Sprache, Status sowie SEO-Titel und Meta-Beschreibung mit Zeichenzähler und Vorschau des Suchergebnisses.
+
+**ANF-CMS-10 (MUSS):** Übersicht aller Beiträge mit Status (Entwurf, geplant, veröffentlicht, archiviert), Filter, Suche und Schnellaktionen (Bearbeiten, Duplizieren, Veröffentlichen, Zurückziehen).
+
+**ANF-CMS-11 (SOLL):** Redaktionsassistent: KI-gestützte Vorschläge für Zusammenfassung, SEO-Texte, Alternativtexte und Übersetzungsentwürfe. Vorschläge werden immer manuell geprüft.
+
+## 11.4 Automatisierungen
+
+**ANF-CMS-12 (MUSS):** Automatische Aktualisierung von Sitemap, Suchindex und strukturierten Daten bei Veröffentlichung; automatische Weiterleitung bei geänderten URLs.
+
+**ANF-CMS-13 (MUSS):** Prüfung vor Veröffentlichung auf fehlende Pflichtfelder (Alternativtexte, SEO-Felder, Übersetzung, Freigabevermerk bei Bildern).
+
+# 12. Anfragemanagement
+
+Alle Kontaktwege der Website laufen in einem zentralen Anfragemanagement im Admin-Bereich zusammen. Ziel ist, dass keine Anfrage verloren geht und jede Anfrage schnell beim richtigen Ansprechpartner landet.
+
+**ANF-ANF-01 (MUSS):** Zentraler Posteingang für Projektanfragen, Ersatzteilanfragen, Serviceanfragen, allgemeine Kontaktanfragen, Chat-Nachrichten und Bewerbungen, jeweils mit Vorgangsnummer, Eingangsdatum, Herkunftsseite, Sprache und Anhängen.
+
+**ANF-ANF-02 (MUSS):** Statusverwaltung (neu, in Bearbeitung, Rückfrage, Angebot erstellt, gewonnen, verloren, abgeschlossen), Zuweisung an Mitarbeiter oder Abteilungen, interne Notizen, Fälligkeiten und Erinnerungen bei ausbleibender Reaktion.
+
+**ANF-ANF-03 (MUSS):** Automatische Vorab-Zuordnung nach Anfrageart, Land und Thema (Regelwerk im Admin-Bereich konfigurierbar) sowie E-Mail-Benachrichtigung der zuständigen Person.
+
+**ANF-ANF-04 (MUSS):** Beantwortung von Chat-Nachrichten direkt aus dem Admin-Bereich in Echtzeit, mit Anzeige „online/offline“ und Textbausteinen. Antworten auf Formularanfragen per E-Mail aus dem System mit Vorlagen, Verlauf wird am Vorgang gespeichert.
+
+**ANF-ANF-05 (MUSS):** Strukturierte Projektanfrage auf der Website in mehreren Schritten (Brennstoff, Menge, Feuchte, gewünschte Energieform und Leistung, Standort, Zeitrahmen, Kontakt), damit Vertrieb und Engineering weniger Rückfragen stellen müssen.
+
+**ANF-ANF-06 (SOLL):** Auswertungen: Anzahl Anfragen je Kanal, Land und Thema, durchschnittliche Reaktionszeit, Umwandlungsquote. Export als CSV/Excel.
+
+**ANF-ANF-07 (KANN):** Schnittstelle zu einem bestehenden CRM-System. Bitte vorhandene Standard-Konnektoren im Angebot benennen.
+
+**ANF-ANF-08 (MUSS):** Spamschutz ohne Tracking-basierte Captchas, Virenprüfung der Uploads, geschützter Zugriff auf Anhänge und definierte Löschfristen.
+
+# 13. Phase 2 – Interne Betriebsplattform
+
+Der Admin-Bereich wird in Phase 2 um eine interne Betriebsplattform erweitert, die Projekte, Anlagenbestand, Gießerei, Lager und Beschaffung abbildet. Sie nutzt dieselbe Anmeldung, dieselbe Rollenverwaltung und dasselbe Designsystem wie das CMS. Die Plattform ist vollständig responsiv; auf Smartphones erfolgt die Bedienung über eine App-ähnliche Tab-Leiste mit den Hauptmodulen und einem Menü „Mehr“ für weitere Module.
+
+## 13.1 Übersicht (Dashboard)
+
+**ANF-OPS-01 (MUSS):** Startseite mit personalisierter Begrüßung und Kennzahlen-Kacheln mit Verlaufskurven: laufende Projekte, Anlagen weltweit, überfällige Serviceeinsätze, Gießerei-Auslastung, Artikel unter Mindestbestand, verspätete Lieferungen, offene Anfragen. Jede Kachel führt direkt in das zugehörige Modul. Kacheln und Auswahl sind je Rolle konfigurierbar.
+
+**ANF-OPS-02 (MUSS):** Aufgaben- und Warnliste („Was braucht heute Aufmerksamkeit?“) mit priorisierten Hinweisen aus allen Modulen.
+
+## 13.2 Projekte
+
+**ANF-OPS-03 (MUSS):** Projektliste mit Name, Kunde, Standort, Phase (Angebot, Auftrag, Fertigung, Montage, Inbetriebnahme, Service), Termin, Budget und bisherigen Kosten mit Fortschrittsbalken und Budgetwarnung. Filter, Suche, Detailansicht mit Dokumenten, Beteiligten und Verlauf.
+
+**ANF-OPS-04 (SOLL):** Phasen-Board (Kanban) mit Verschieben per Drag-and-drop.
+
+**ANF-OPS-05 (MUSS):** Abgeschlossene Projekte lassen sich per Klick als Referenzentwurf in das CMS übernehmen (Freigabe erforderlich).
+
+## 13.3 Anlagenbestand weltweit
+
+**ANF-OPS-06 (MUSS):** Verzeichnis aller installierten Anlagen mit Name, Land, Ort, Inbetriebnahmejahr, Leistung, eingesetztem Brennstoff, verbauten Komponenten und nächstem Servicetermin. Überfällige Servicetermine werden hervorgehoben. Kartenansicht der Anlagen.
+
+**ANF-OPS-07 (SOLL):** Automatische Wartungs- und Ersatzteilerinnerungen an den Service bzw. (nach Einwilligung) an den Betreiber.
+
+## 13.4 Gießerei
+
+**ANF-OPS-08 (MUSS):** Gießplanung mit Bauteil, zugehörigem Projekt, Menge, Gießtermin und Status (geplant, in Fertigung, gegossen, Qualitätsprüfung). Anzeige der Wochenauslastung als Kennzahl und Diagramm.
+
+**ANF-OPS-09 (SOLL):** Kalenderansicht der Gießtermine und Kapazitätswarnung bei Überplanung.
+
+## 13.5 Lagerbestand
+
+**ANF-OPS-10 (MUSS):** Artikelstamm mit Artikelnummer, Bezeichnung, Einheit, Lagerort, Ist-Bestand, Mindestbestand und Standard-Bestellmenge. Artikel unter Mindestbestand werden markiert; per Klick wird ein Bestellvorschlag erzeugt.
+
+**ANF-OPS-11 (MUSS):** Lagerbewegungen (Zugang, Abgang, Umbuchung, Inventurdifferenz) mit lückenloser, exportierbarer Historie für Audits.
+
+**ANF-OPS-12 (SOLL):** Erfassung per Barcode/QR-Code über die Smartphone-Kamera.
+
+## 13.6 Bestellungen und Wareneingang
+
+**ANF-OPS-13 (MUSS):** Bestellübersicht mit Lieferant, Projekt/Kostenstelle, Bestelldatum, erwartetem Liefertermin und Status (bestellt, unterwegs, verspätet, erhalten) inkl. Anzahl Verzugstage. Verspätete Bestellungen lösen eine Benachrichtigung aus.
+
+**ANF-OPS-14 (MUSS):** Wareneingangsprüfung: Abgleich bestellte gegen gelieferte Menge je Position, Kennzeichnung von Abweichungen, Foto-Dokumentation, automatische Bestandsbuchung und Reklamationsvermerk.
+
+**ANF-OPS-15 (MUSS):** Mehrstufige Genehmigung von Bestellungen ab konfigurierbaren Beträgen mit Benachrichtigung und Protokoll.
+
+## 13.7 Lieferanten
+
+**ANF-OPS-16 (MUSS):** Lieferantenverzeichnis mit automatischer Bewertung aus den Bestelldaten: Liefertreue in Prozent, durchschnittliche Verzögerung in Tagen und Reklamationsquote, visualisiert als Rangliste.
+
+## 13.8 Berichte und Einstellungen
+
+**ANF-OPS-17 (MUSS):** Berichte zu Verbrauch, Liefertreue, Beständen, Gießerei-Auslastung, Projektbudgets und Anfragen mit Zeitraumfilter und Export (PDF, CSV/Excel).
+
+**ANF-OPS-18 (MUSS):** Einstellungen für Benutzer, Rollen, Mindestbestände, Benachrichtigungsregeln, Genehmigungsgrenzen und Stammdaten.
+
+**ANF-OPS-19 (KANN):** Schnittstelle zu einem vorhandenen ERP- oder Warenwirtschaftssystem (Import/Export von Artikelstamm, Beständen und Bestellungen). Bitte Vorgehen und Aufwand im Angebot beschreiben.
+
+**ANF-OPS-20 (MUSS):** Einheitliche Animationen im Admin-Bereich: Module blenden gestaffelt ein, Kennzahlen zählen hoch, Balken füllen sich; bei reduzierter Bewegung abgeschaltet.
+
+# 14. Technische Anforderungen
+
+## 14.1 Architektur
+
+**ANF-TEC-01 (MUSS):** Moderne, komponentenbasierte Web-Architektur mit serverseitigem bzw. statischem Rendering aller öffentlichen Inhalte (z. B. React/Next.js oder gleichwertig). Hauptinhalte müssen ohne JavaScript als HTML vorliegen.
+
+**ANF-TEC-14 (MUSS):** Wir wünschen ausdrücklich **keine WordPress-Website** und auch keine Lösung auf Basis vergleichbarer Baukasten-, Theme- oder Page-Builder-Systeme (z. B. WordPress mit Elementor oder Divi, Wix, Jimdo, Squarespace, Webflow-Vorlagen). Hintergrund: Wir haben mit solchen Systemen schlechte Erfahrungen bei Sicherheit, Ladezeit und Abhängigkeit von vielen Plugins gemacht, und die gewünschten Animationen, der 3D-Globus und die interne Plattform lassen sich damit nach unserem Verständnis nicht in der gewünschten Qualität umsetzen. Die Website ist individuell zu entwickeln; das verwendete CMS darf nur für die Pflege der Inhalte dienen und nicht das Aussehen oder die Funktionen der Website bestimmen. Angebote auf WordPress-Basis können wir nicht berücksichtigen.
+
+**ANF-TEC-02 (MUSS):** Headless-CMS oder gleichwertige Lösung, die alle Anforderungen aus Kapitel 11 erfüllt. Die gewählte Lösung ist im Angebot zu benennen und zu begründen (Lizenz- und Betriebskosten separat ausweisen).
+
+**ANF-TEC-03 (MUSS):** Gemeinsame Datenbank bzw. gemeinsames Datenmodell für CMS, Anfragemanagement und Betriebsplattform; dokumentierte Schnittstellen (API).
+
+**ANF-TEC-04 (MUSS):** Wiederverwendbares Designsystem (Farben, Typografie, Abstände, Komponenten, Animationsbausteine) mit Dokumentation.
+
+## 14.2 Performance
+
+**ANF-TEC-05 (MUSS):** Core Web Vitals im grünen Bereich auf mobilen Endgeräten: LCP unter 2,5 s, INP unter 200 ms, CLS unter 0,1. Lighthouse-Werte ab 90 in den Kategorien Performance, Barrierefreiheit, Best Practices und SEO für Startseite und Vorlagenseiten (gemessen mit mobiler Standardkonfiguration).
+
+**ANF-TEC-06 (MUSS):** Aufwendige Module (WebGL-Effekte, Globus, Videos) werden bedarfsgesteuert geladen; das initiale JavaScript-Budget der Startseite ist im Angebot zu nennen.
+
+## 14.3 Kompatibilität
+
+**ANF-TEC-07 (MUSS):** Unterstützung der jeweils zwei letzten Versionen von Chrome, Edge, Firefox und Safari auf Desktop sowie Safari iOS und Chrome Android. Responsive Darstellung von 360 px bis 2560 px Breite.
+
+## 14.4 Sicherheit
+
+**ANF-TEC-08 (MUSS):** Verschlüsselte Übertragung (TLS), Sicherheits-Header, Schutz vor den OWASP Top 10, Rate-Limiting für Formulare und Anmeldung, regelmäßige Sicherheitsupdates, tägliche Backups mit getesteter Wiederherstellung.
+
+**ANF-TEC-09 (MUSS):** Hosting in der EU. Alle Zugänge, Daten, Quellcode und Exporte gehören uns und werden bei Projektende vollständig übergeben.
+
+## 14.5 SEO und AEO
+
+**ANF-TEC-10 (MUSS):** Saubere URL-Struktur, individuelle Seitentitel und Beschreibungen, kanonische URLs, logische Überschriftenstruktur, XML-Sitemap, robots-Steuerung, strukturierte Daten (Organization, BreadcrumbList, Article, JobPosting, ggf. Product/Service ohne erfundene Preise) und Open-Graph-Daten.
+
+**ANF-TEC-11 (MUSS):** Migration: Inventur aller bestehenden URLs, Inhalte, Downloads und Sprachversionen; Weiterleitungskonzept mit 301-Weiterleitungen je URL; Prüfung nach dem Launch.
+
+**ANF-TEC-12 (MUSS):** Suchmaschinen-Grundlagen zum Launch: Einrichtung und Übergabe von Google Search Console und Bing Webmaster Tools, Einreichung der Sitemaps, IndexNow-Unterstützung für sofortige Benachrichtigung bei neuen oder geänderten Inhalten sowie ein SEO-Konzept mit priorisierten Themen und Suchbegriffen je Lösung, Brennstoff und Technologie.
+
+## 14.6 AEO – Optimierung für KI-Antwortsysteme
+
+Kunden recherchieren zunehmend über KI-gestützte Antwortsysteme (z. B. ChatGPT, Google AI Overviews bzw. AI Mode, Perplexity, Microsoft Copilot, Claude). Ziel der Answer Engine Optimization (AEO) ist, dass wir bei fachlichen Fragen zu Rostfeuerungen, Biomasse, Reststoffverwertung, Ersatzteilen und Gießereiprodukten als verlässliche Quelle gefunden, verstanden und zitiert werden kann. AEO ist verbindlicher Bestandteil von Phase 1. Eine Aufnahme in KI-Antworten ist nicht garantierbar; geschuldet sind die nachfolgend beschriebenen Maßnahmen und deren Nachweis.
+
+**ANF-AEO-01 (MUSS):** Wissensbereich „Fachwissen“ mit eigenständigen Frage-Antwort-Seiten zu echten Kundenfragen. Zum Launch mindestens 15 Fragen je Sprache, z. B.: Welche Angaben benötigt Kablitz für die Planung einer Biomasseanlage? Wie beeinflusst die Brennstofffeuchte die Wahl der Feuerung? Worin unterscheiden sich wassergekühlte und luftgekühlte Roste? Welche Anforderungen stellen RDF und SRF an die Feuerung? Wann eignet sich Kraft-Wärme-Kopplung für einen Industriebetrieb? Welche Informationen werden für eine Ersatzteilanfrage benötigt? Sind Ersatzteile für Anlagen anderer Hersteller verfügbar? Welche Vorteile bietet eine eigene Gießerei? Der Fragenkatalog wird mit Vertrieb und Service abgestimmt und ist im CMS erweiterbar.
+
+**ANF-AEO-02 (MUSS):** Antwort-zuerst-Struktur auf allen Lösungs-, Technologie-, Brennstoff-, Service- und Wissensseiten: direkte, in sich verständliche Kurzantwort (2–4 Sätze) am Seitenanfang, danach Details, Voraussetzungen, Grenzen, Kennwerte mit Einheiten, Belege aus Referenzprojekten und passender Kontaktweg. Fragen als Zwischenüberschriften, klar abgegrenzte Absätze, Listen und Vergleichstabellen, die sich einzeln zitieren lassen.
+
+**ANF-AEO-03 (MUSS):** Das CMS stellt dafür eigene Bausteine bereit: Kurzantwort-Block, Frage-Antwort-Block, Kennwerte-Block, Vergleichstabelle, Quellen-/Prüfvermerk sowie Felder für den fachlich verantwortlichen Autor und das Datum der letzten fachlichen Prüfung. Der Editor weist darauf hin, wenn eine Seite keine Kurzantwort enthält.
+
+**ANF-AEO-04 (MUSS):** Erweiterte strukturierte Daten (JSON-LD), automatisch aus den CMS-Feldern erzeugt und mit dem sichtbaren Inhalt übereinstimmend: Organization (inkl. Gründungsjahr, Standort, Kontaktpunkte, sameAs-Verweise auf offizielle Profile), WebSite, BreadcrumbList, Article/BlogPosting, FAQPage bzw. QAPage für Frage-Antwort-Inhalte, Person für fachliche Autoren, Service und Product für Leistungen und Ersatzteilkategorien (ohne erfundene Preise oder Bewertungen), JobPosting, Event (Messen), VideoObject und ImageObject. Validierung ohne Fehler in den gängigen Prüfwerkzeugen.
+
+**ANF-AEO-05 (MUSS):** Einheitliche Darstellung der Marke als Entität: identische Firmenbezeichnung, Adresse, Gründungsjahr und Kernaussagen auf allen Seiten und in allen Sprachversionen; Abgleich des Google-Unternehmensprofils, der Branchenverzeichnis- und LinkedIn-Einträge sowie – sofern möglich – eines Wikidata-Eintrags. Maßnahmen und Zugänge werden dokumentiert übergeben.
+
+**ANF-AEO-06 (MUSS):** Vertrauenssignale (Erfahrung, Expertise, Autorität, Vertrauenswürdigkeit): Autorenprofile der Fachexperten mit Qualifikation, sichtbares Veröffentlichungs- und Prüfdatum, belegbare Referenzen mit Kennzahlen, Zertifikate, Unternehmensgeschichte und Bildmaterial realer Anlagen.
+
+**ANF-AEO-07 (MUSS):** Technische Zugänglichkeit für KI-Crawler: vollständig serverseitig gerenderte Inhalte; keine Kerninhalte ausschließlich in Grafiken, Videos, WebGL oder nachgeladenem JavaScript (Globus- und Animationsinhalte besitzen eine textliche Entsprechung im HTML); schnelle Antwortzeiten; saubere Sprachverweise. Die Zulassung einzelner KI-Crawler (z. B. OAI-SearchBot, GPTBot, PerplexityBot, ClaudeBot, Google-Extended, Bingbot) ist über das CMS bzw. die robots-Steuerung konfigurierbar; die Standardeinstellung legen wir gemeinsam fest.
+
+**ANF-AEO-08 (SOLL):** Bereitstellung einer llms.txt-Datei mit strukturierter Übersicht der wichtigsten Seiten sowie maschinenlesbarer Kurzfassungen (z. B. Markdown-Versionen) der zentralen Leistungs- und Wissensseiten. Es handelt sich um einen ergänzenden Standard ohne zugesicherte Wirkung.
+
+**ANF-AEO-09 (MUSS):** Mehrsprachige AEO: Kurzantworten, Frage-Antwort-Inhalte und strukturierte Daten liegen in allen veröffentlichten Sprachen vollständig und fachlich geprüft vor; keine ungeprüft maschinell übersetzten Antworten.
+
+**ANF-AEO-10 (MUSS):** Messung der Sichtbarkeit in KI-Antworten: Ausgangsmessung vor dem Launch, danach monatliche Überprüfung anhand eines festen Katalogs von mindestens 30 Suchfragen (DE/EN) in mindestens vier KI-Antwortsystemen. Monatlicher Bericht mit Erwähnungen, Zitaten und Verlinkungen der Kablitz-Website, genannten Wettbewerbern und abgeleiteten Inhaltsmaßnahmen; zusätzlich Auswertung des Besucherverkehrs aus KI-Antwortsystemen. Leistungszeitraum mindestens 6 Monate nach Launch, danach als optionale monatliche Position anbieten.
+
+**ANF-AEO-11 (SOLL):** Inhaltsplan für die ersten 12 Monate nach Launch mit weiteren Wissensbeiträgen, Fallstudien und Fachartikeln, priorisiert nach Suchnachfrage, Ergebnissen der KI-Sichtbarkeitsmessung und geschäftlichem Wert.
+
+**ANF-AEO-12 (MUSS):** Keine Spam- oder Manipulationsmuster: keine massenhaft automatisch erzeugten Seiten, keine Städte- oder Doorway-Seiten, keine versteckten Texte für Crawler und keine Inhalte im strukturierten Markup, die auf der Seite nicht sichtbar sind.
+
+## 14.7 Analyse
+
+**ANF-TEC-13 (MUSS):** Datenschutzfreundliche Web-Analyse (vorzugsweise ohne Cookies bzw. nach Einwilligung) mit Messung der Anfragen je Kanal und Seite sowie gesonderter Auswertung der Besucher aus KI-Antwortsystemen.
+
+# 15. Recht, Datenschutz und Barrierefreiheit
+
+**ANF-REC-01 (MUSS):** Umsetzung nach DSGVO, TDDDG und DDG: Impressum, Datenschutzerklärung passend zu allen eingesetzten Diensten, Einwilligungsverwaltung nur soweit erforderlich (mit gleichwertiger Ablehnen-Option und jederzeitigem Widerruf), Auftragsverarbeitungsverträge mit allen Dienstleistern.
+
+**ANF-REC-02 (MUSS):** Lokale Bereitstellung von Schriften und Medien; externe Inhalte (Karten, Videos) erst nach Klick oder Einwilligung.
+
+**ANF-REC-03 (MUSS):** Barrierearme Umsetzung orientiert an WCAG 2.2 Stufe AA: Tastaturbedienbarkeit, sichtbarer Fokus, ausreichende Kontraste, Alternativtexte, Untertitel für Videos mit Sprache, Unterstützung für Bildschirmleser.
+
+**ANF-REC-04 (MUSS):** Die abschließende rechtliche Prüfung der Texte übernehmen wir bzw. unsere Rechtsberatung; der Auftragnehmer liefert die technische Dokumentation der Datenflüsse.
+
+# 16. Leistungsumfang, Angebot und Projektablauf
+
+## 16.1 Erwartete Leistungen
+
+- Projektmanagement mit festem Ansprechpartner und regelmäßigen Abstimmungsterminen,
+- Konzeption, Informationsarchitektur und Wireframes,
+- Screendesign und Designsystem für Desktop, Tablet und Smartphone inkl. klickbarem Prototyp mit Animationen,
+- Umsetzung aller MUSS- und SOLL-Anforderungen der Phasen 1 und 2,
+- Produktion bzw. Nachbearbeitung von Video- und Bildmaterial für Hero, Markensequenz, Fertigung und Fallstudien (optional: Foto- und Videodreh vor Ort in Lauda als separate Position),
+- Inhaltliche Übernahme der bestehenden Inhalte und Einpflege der neuen Inhalte in DE und EN,
+- Texterstellung bzw. -überarbeitung für Startseite, Lösungs-, Brennstoff- und Fallstudienseiten (als separate Position),
+- Test (funktional, Browser, Geräte, Performance, Barrierefreiheit, Sicherheit),
+- Schulung der Redaktion und der internen Anwender (mindestens zwei Termine) sowie schriftliche Anleitung,
+- SEO- und AEO-Umsetzung inkl. Wissensbereich und monatlicher Messung der Sichtbarkeit in KI-Antwortsystemen über 6 Monate,
+- Launch, Migration und Nachbetreuung von mindestens 3 Monaten.
+
+## 16.2 Angebotsstruktur
+
+Das Angebot ist zwingend nach dem Modulkatalog in Kapitel 17 zu gliedern; bitte tragen Sie die Preise direkt in die Tabellen ein und senden Sie sie uns zusätzlich als bearbeitbare Datei (Excel oder Word). Pauschalangebote ohne Aufschlüsselung je Modul können wir nicht berücksichtigen.
+
+## 16.3 Angaben zum Anbieter
+
+- Referenzen vergleichbarer Projekte (insbesondere Websites mit WebGL/3D-Elementen und scrollgesteuerten Animationen sowie individuelle Admin- bzw. Betriebsplattformen),
+- Vorgesehenes Team und Rollen,
+- Technologiestack und gewähltes CMS mit Begründung (kein WordPress, siehe ANF-TEC-14),
+- Zeitplan mit Meilensteinen für Phase 1 und Phase 2,
+- Vorgehensmodell, Abnahmeverfahren und Gewährleistung,
+- Laufende Kosten (Lizenzen, Hosting, Drittanbieter) für drei Jahre.
+
+## 16.4 Projektablauf
+
+| Schritt | Ergebnis | Abnahme |
+| 1. Analyse und Konzept | Inhaltsinventar, Sitemap, Wireframes, Migrationsliste | Freigabe Konzept |
+| 2. Design | Screendesign, Designsystem, animierter Prototyp der Startseite | Freigabe Design |
+| 3. Entwicklung Phase 1 | Website, Animationen, 3D-Globus, CMS, News, Anfragemanagement auf Testumgebung | Funktionsabnahme |
+| 4. Inhalte und Test | Eingepflegte Inhalte DE/EN, Testprotokolle | Inhalts- und Qualitätsabnahme |
+| 5. Launch Phase 1 | Liveschaltung, Weiterleitungen, Schulung | Abnahme Phase 1 |
+| 6. Entwicklung Phase 2 | Betriebsplattform auf Testumgebung | Funktionsabnahme |
+| 7. Launch Phase 2 | Liveschaltung, Schulung der internen Anwender | Abnahme Phase 2 |
+
+# 17. Modulkatalog und Preisangebot
+
+Wir möchten anhand der Angebote entscheiden, welche Leistungen wir beauftragen. Der gesamte Leistungsumfang dieses Lastenhefts ist deshalb in einzeln wählbare Module gegliedert. Jedes Modul ist separat zu bepreisen, damit wir Module hinzunehmen oder weglassen können und für jede Kombination den Gesamtpreis kennen.
+
+## 17.1 Regeln für die Bepreisung
+
+**ANF-MOD-01 (MUSS):** Für jedes Modul ist ein eigener Festpreis (netto, in EUR) anzugeben, zusammen mit dem geschätzten Aufwand in Personentagen, der voraussichtlichen Umsetzungsdauer und etwaigen laufenden Kosten (Lizenzen, Drittanbieter, Hosting-Mehrkosten) pro Monat.
+
+**ANF-MOD-02 (MUSS):** Der Modulpreis muss unabhängig davon gelten, welche anderen Wahlmodule beauftragt werden. Hängt ein Modul technisch von einem anderen ab, ist die Abhängigkeit im Angebot anzugeben. Die im Katalog genannten Abhängigkeiten sind verbindlich; weitere Abhängigkeiten sind zu begründen.
+
+**ANF-MOD-03 (MUSS):** Die Summe der einzelnen Modulpreise ergibt den Gesamtpreis. Gesamtrabatte oder Paketpreise dürfen nur zusätzlich und getrennt ausgewiesen werden; sie dürfen nicht in einzelne Modulpreise eingerechnet sein.
+
+**ANF-MOD-04 (MUSS):** Projektmanagement, Qualitätssicherung, Test, Dokumentation und Schulung sind anteilig im jeweiligen Modulpreis enthalten. Ein Modul gilt erst mit Test, Dokumentation und Einweisung als vollständig geliefert.
+
+**ANF-MOD-05 (MUSS):** Basismodule (Kennzeichnung „Basis“) bilden die Grundlage jeder Beauftragung. Wahlmodule („Wahl“) und Optionen („Option“) können einzeln beauftragt werden. Die Beauftragung kann in mehreren Schritten erfolgen; die angebotenen Modulpreise gelten für eine Beauftragung innerhalb von 12 Monaten nach Angebotsdatum.
+
+**ANF-MOD-06 (MUSS):** Die Architektur ist so anzulegen, dass nicht beauftragte Module später ohne Umbau bestehender Teile ergänzt werden können.
+
+**ANF-MOD-07 (SOLL):** Der Anbieter kann eigene, sinnvolle Zusatzmodule vorschlagen. Diese sind im Angebot als Position „Z“ getrennt aufzuführen.
+
+Alle Module gehören zu Phase 1, mit Ausnahme der Module in Abschnitt 17.8 (Phase 2). In der Spalte „Auswahl“ markieren wir nach der Angebotsprüfung die Module, die wir beauftragen.
+
+## 17.2 Basismodule
+
+| Modul | Inhalt und zugehörige Anforderungen | Art | Preis netto (EUR) | Auswahl |
+| M01 | Projektmanagement, Analyse und Konzeption: Inhaltsinventar, Sitemap, Wireframes, Migrationsliste (Kap. 16.4, Schritte 1) | Basis |  |  |
+| M02 | Screendesign und Designsystem für Desktop, Tablet und Smartphone inkl. klickbarem Prototyp (ANF-TEC-04, Kap. 16.1) | Basis |  |  |
+| M03 | Technische Basis: Architektur, Seitenvorlagen, Navigation und Mega-Menüs, Header, Footer, Kontakt- und Rechtsseiten, Performance, Sicherheit, Kompatibilität, Hosting-Einrichtung, individuelle Entwicklung ohne WordPress (Kap. 3, ANF-TEC-01 bis 09, ANF-TEC-14, Kap. 15) | Basis |  |  |
+| M04 | CMS-Grundsystem: Google-Anmeldung, Rollen und Rechte, Änderungsprotokoll, blockbasierter Seiteneditor, Redaktionsablauf, Vorschau, Medienverwaltung, Automatisierungen (ANF-CMS-01 bis 08, 12, 13) | Basis |  |  |
+| M05 | Mehrsprachigkeit DE/EN inkl. Sprachwechsel und hreflang (ANF-SPR-01) | Basis |  |  |
+| M06 | Test, Launch, Schulung und Nachbetreuung von 3 Monaten (Kap. 16.1, Kap. 18) | Basis |  |  |
+
+## 17.3 Wahlmodule Website-Inhalte
+
+| Modul | Inhalt und zugehörige Anforderungen | Art | Preis netto (EUR) | Auswahl |
+| M07 | Startseite: Hero mit Video, Headline-Varianten, CTAs, harte Fakten mit Zählern, Leistungsbereiche, Eigene Fertigung, Aktuelle Projekte, Zertifikate, News-Teaser, Kontaktband, Karte, Laufband (ANF-START-02, 04 bis 06, 12 bis 17) | Wahl |  |  |
+| M08 | Brennstoff-Einstieg „Was möchten Sie verbrennen?“ mit Übersicht, 8 Detailseiten und Verknüpfung zu Technologien und Referenzen (Kap. 5, ANF-START-14) | Wahl |  |  |
+| M09 | Brennstoff-Filter nach Brennstoff, Leistung und Energieform (ANF-BRS-04) | Option |  |  |
+| M10 | Lösungs- und Technologieseiten (Kap. 3.2: Lösungen und Technologien) | Wahl |  |  |
+| M11 | Referenzen als Fallstudien inkl. Übersicht mit Filter, Liefer-/Leistungsumfang-Grafik und scrollgesteuerter Präsentation (Kap. 6) | Wahl |  |  |
+| M12 | Unternehmen, Eigene Fertigung und Gießerei, Geschichte mit interaktivem Zeitstrahl (Kap. 7.1, 7.2) | Wahl |  |  |
+| M13 | Service und Ersatzteile: Servicebereich, Ersatzteilkatalog und Ersatzteilanfrage mit Upload (ANF-SRV-01 bis 03) | Wahl |  |  |
+| M14 | Anfragekorb für mehrere Ersatzteile (ANF-SRV-04) | Option |  |  |
+| M15 | Karriere mit Stellenangeboten und Online-Bewerbung (Kap. 7.4) | Wahl |  |  |
+| M16 | News & Insights / Blog: öffentliche Übersicht, Beitragsseiten, Teaser, News-Editor im CMS (ANF-NEWS-01 bis 03, ANF-CMS-09, 10) | Wahl |  |  |
+| M17 | RSS-Feed und E-Mail-Newsletter mit Double-Opt-in (ANF-NEWS-04) | Option |  |  |
+| M18 | Redaktionsassistent mit KI-Vorschlägen (ANF-CMS-11) | Option |  |  |
+| M19 | Seitenweite Volltextsuche (ANF-SUCH-01) | Wahl |  |  |
+| M20 | Downloadbereich (ANF-DL-01) | Wahl |  |  |
+
+## 17.4 Wahlmodule Animation und Interaktion
+
+| Modul | Inhalt und zugehörige Anforderungen | Art | Preis netto (EUR) | Auswahl |
+| M21 | Animationssystem: Smooth Scrolling, Standard-Effekte, Seitenübergänge, eigener Cursor, Video-Handling, Barrierefreiheit (ANF-ANI-01 bis 06, 09 bis 11) | Wahl |  |  |
+| M22 | Einstiegs-Animation (Intro) mit Zähler und Vorhang (ANF-START-01) | Wahl |  |  |
+| M23 | WebGL-Feuer- und Glut-Effekt im Hero, interaktiv mit Maus und Scroll (ANF-START-03, ANF-ANI-07, 08) | Wahl |  |  |
+| M24 | Kinematische Markensequenz: Kamerafahrt durch den Schriftzug KABLITZ mit Video, Wort-für-Wort-Bildunterschrift und Lightbox (ANF-START-07) | Wahl |  |  |
+| M25 | Prozess-Erzählung „Vom Brennstoff zur Energie“ mit WebGL-Verbrennungssimulation, Anlagenschema und Beschriftungen (ANF-START-09 bis 11) | Wahl |  |  |
+| M26 | Interaktiver 3D-Globus „Von Riga in die Welt“ mit Geschichtserzählung, Erkundungsmodus, Standortkarten und CMS-Pflege (Kap. 10, ANF-START-08) | Wahl |  |  |
+| M27 | Alternative Globus-Darstellung im Hexagon-Stil (ANF-GLB-03) | Option |  |  |
+
+## 17.5 Wahlmodule Kommunikation und Anfragen
+
+| Modul | Inhalt und zugehörige Anforderungen | Art | Preis netto (EUR) | Auswahl |
+| M28 | Anfragemanagement: zentraler Posteingang, Status, Zuweisung, Regeln, Antworten per E-Mail, mehrstufige Projektanfrage, Spamschutz (ANF-ANF-01 bis 03, 05, 08) | Wahl |  |  |
+| M29 | Live-Chat mit schwebendem Kontakt-Button und Beantwortung in Echtzeit aus dem Admin-Bereich (ANF-START-18, ANF-ANF-04) | Wahl |  |  |
+| M30 | Auswertungen des Anfragemanagements mit Export (ANF-ANF-06) | Option |  |  |
+| M31 | KI-Assistent auf der Website mit Übergabe an Mitarbeiter (ANF-START-19) | Option |  |  |
+| M32 | CRM-Schnittstelle (ANF-ANF-07) | Option |  |  |
+
+## 17.6 Wahlmodule Sichtbarkeit, SEO und AEO
+
+| Modul | Inhalt und zugehörige Anforderungen | Art | Preis netto (EUR) | Auswahl |
+| M33 | SEO und Migration: technische SEO, strukturierte Grunddaten, Weiterleitungskonzept, Search Console, Bing, IndexNow, datenschutzfreundliche Analyse (ANF-TEC-10 bis 13) | Wahl |  |  |
+| M34 | AEO-Umsetzung: Wissensbereich mit 15 Fragen je Sprache, Antwort-zuerst-Struktur, AEO-Bausteine im CMS, erweiterte strukturierte Daten, Entitätspflege, Vertrauenssignale, KI-Crawler-Steuerung, mehrsprachige AEO (ANF-AEO-01 bis 07, 09, 12) | Wahl |  |  |
+| M35 | llms.txt und maschinenlesbare Kurzfassungen (ANF-AEO-08) | Option |  |  |
+| M36 | AEO-Monitoring: Ausgangsmessung und monatlicher Bericht zur Sichtbarkeit in KI-Antwortsystemen, 6 Monate; zusätzlich Preis je weiterem Monat (ANF-AEO-10) | Wahl |  |  |
+| M37 | Inhaltsplan für 12 Monate (ANF-AEO-11) | Option |  |  |
+
+## 17.7 Wahlmodule Sprachen und Inhalte
+
+| Modul | Inhalt und zugehörige Anforderungen | Art | Preis netto (EUR) | Auswahl |
+| M38 | Übersetzungs-Workflow im CMS (ANF-SPR-03) | Option |  |  |
+| M39 | Weitere Sprache Spanisch – technische Einrichtung und Einpflege; Preis je Sprache (ANF-SPR-02) | Option |  |  |
+| M40 | Weitere Sprache Italienisch – technische Einrichtung und Einpflege; Preis je Sprache (ANF-SPR-02) | Option |  |  |
+| M41 | Übernahme bestehender Inhalte und Einpflege neuer Inhalte DE/EN | Wahl |  |  |
+| M42 | Texterstellung bzw. -überarbeitung für Startseite, Lösungs-, Brennstoff- und Fallstudienseiten | Option |  |  |
+| M43 | Foto- und Videodreh vor Ort in Lauda inkl. Nachbearbeitung (Anlagen, Gießerei, Fertigung, Mitarbeiter) | Option |  |  |
+
+## 17.8 Wahlmodule interne Betriebsplattform (Phase 2)
+
+| Modul | Inhalt und zugehörige Anforderungen | Art | Preis netto (EUR) | Auswahl |
+| M44 | Plattform-Basis: Dashboard mit Kennzahlen, Warnliste, mobile Tab-Leiste, Einstellungen, Animationen (ANF-OPS-01, 02, 18, 20); Voraussetzung für M45 bis M51 | Wahl |  |  |
+| M45 | Projekte inkl. Übernahme als Referenzentwurf (ANF-OPS-03, 05) | Wahl |  |  |
+| M46 | Phasen-Board (Kanban) für Projekte (ANF-OPS-04) | Option |  |  |
+| M47 | Anlagenbestand weltweit inkl. Kartenansicht (ANF-OPS-06); Wartungs- und Ersatzteilerinnerungen (ANF-OPS-07) als separater Preis | Wahl |  |  |
+| M48 | Gießerei-Planung inkl. Auslastung (ANF-OPS-08); Kalenderansicht und Kapazitätswarnung (ANF-OPS-09) als separater Preis | Wahl |  |  |
+| M49 | Lagerbestand und Lagerbewegungen (ANF-OPS-10, 11); Barcode-/QR-Erfassung (ANF-OPS-12) als separater Preis | Wahl |  |  |
+| M50 | Bestellungen, Wareneingang und Genehmigungen (ANF-OPS-13 bis 15) | Wahl |  |  |
+| M51 | Lieferantenbewertung (ANF-OPS-16) und Berichte (ANF-OPS-17) | Wahl |  |  |
+| M52 | ERP-/Warenwirtschafts-Schnittstelle (ANF-OPS-19) | Option |  |  |
+
+## 17.9 Laufende Leistungen
+
+| Modul | Inhalt | Art | Preis netto (EUR) | Auswahl |
+| L1 | Hosting und Betrieb in der EU inkl. Backups und Überwachung | Basis | pro Monat: |  |
+| L2 | Wartung, Sicherheitsupdates und Support mit definierten Reaktionszeiten (bitte Servicestufen angeben) | Basis | pro Monat: |  |
+| L3 | Stundensatz für Änderungen und Erweiterungen | Option | pro Stunde: |  |
+
+## 17.10 Abhängigkeiten
+
+- Alle Wahlmodule setzen die Basismodule M01 bis M06 voraus.
+- M09 setzt M08 voraus; M14 setzt M13 voraus; M17 und M18 setzen M16 voraus.
+- M22 bis M25 setzen M21 voraus; M23 bis M25 setzen M07 voraus.
+- M26 benötigt für die Verlinkung auf Fallstudien M11; ohne M11 zeigen die Standortkarten nur Kurzinformationen.
+- M29 bis M32 setzen M28 voraus.
+- M35 bis M37 setzen M34 voraus; M36 setzt zusätzlich M33 voraus.
+- M45 bis M52 setzen M44 voraus; M46 setzt M45 voraus.
+
+Nicht angebotene oder abweichend umgesetzte Anforderungen sind unter Angabe der Anforderungskennung aufzuführen. Ohne solche Angaben gilt der vollständige Leistungsumfang des jeweiligen Moduls als angeboten.
+
+## 17.11 Zusammenfassung des Angebots
+
+| Position | Preis netto (EUR) |
+| Summe Basismodule (M01–M06) |  |
+| Summe Wahlmodule Phase 1 |  |
+| Summe Wahlmodule Phase 2 |  |
+| Summe Optionen |  |
+| Laufende Kosten pro Monat (L1 + L2 + Lizenzen) |  |
+| Optionaler Gesamtrabatt bei Beauftragung aller Module (getrennt) |  |
+| Zusatzvorschläge „Z“ (getrennt) |  |
+
+| Angabe | Eintrag |
+| Agentur / Anbieter |  |
+| Angebotsdatum / gültig bis |  |
+| Zahlungsbedingungen |  |
+| Ort, Datum, Unterschrift |  |
+
+# 18. Abnahmekriterien
+
+1. Alle MUSS-Anforderungen der beauftragten Module sind umgesetzt und im Testprotokoll nachgewiesen.
+2. Die Performance-Kennwerte aus Kapitel 14.2 werden auf Startseite und allen Vorlagenseiten erreicht.
+3. Alle Animationen laufen flüssig auf den definierten Referenzgeräten und besitzen einen funktionierenden Fallback bei reduzierter Bewegung.
+4. Eine geschulte Mitarbeiterin bzw. ein geschulter Mitarbeiter von uns kann ohne Unterstützung einen News-Beitrag, eine Fallstudie und eine Stellenanzeige in beiden Sprachen anlegen, prüfen und veröffentlichen.
+5. Alle Anfragearten gehen im Anfragemanagement ein, werden korrekt zugewiesen und können beantwortet werden.
+6. Alle bestehenden URLs sind weitergeleitet; es existieren keine fehlerhaften internen Links.
+7. Strukturierte Daten sind fehlerfrei validiert, der Wissensbereich mit mindestens 15 Fragen je Sprache ist veröffentlicht und die AEO-Ausgangsmessung liegt vor.
+8. Sofern beauftragt: Globus-Erzählung, Erkundungsmodus und Standortpflege funktionieren auf Desktop und Mobilgeräten (Phase 1).
+9. Phase 2: Alle beauftragten Module der Betriebsplattform sind mit Testdaten vollständig bedienbar.
+10. Quellcode, Zugänge und Dokumentation sind übergeben.
+
+# 19. Mitwirkung des Auftraggebers und offene Punkte
+
+Von unserer Seite stellen wir bereit: Ansprechpartner je Fachbereich, bestätigte Kennzahlen, Referenzdaten und Freigaben, vorhandenes Bild- und Videomaterial, Texte bzw. fachliche Prüfung, Zugang zur bestehenden Website und Informationen zu vorhandenen Systemen (E-Mail, CRM, ERP).
+
+Offene Punkte, die im Projektverlauf gemeinsam geklärt werden: endgültige Headline, Freigabe der Kennzahlen (Mitarbeiterzahl, Anzahl der gelieferten Systeme, Jahre der Erfahrung), Umfang der zu veröffentlichenden Referenzen, Anzahl weiterer Sprachen, Umfang eines Foto-/Videodrehs sowie die Anbindung an vorhandene CRM-/ERP-Systeme.
