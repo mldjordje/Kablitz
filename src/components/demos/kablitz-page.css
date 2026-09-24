@@ -1135,3 +1135,4 @@ html.kmenu-open { overflow: hidden; }
 .ksp-items li div { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
 .ksp-items strong { font-size: 15px; }
 .ksp-items small { color: rgba(255,255,255,.5); font-size: 12.5px; }
+.kablitz-hero-actions button.kablitz-btn { font-family: inherit; cursor: pointer; }
