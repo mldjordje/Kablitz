@@ -169,3 +169,5 @@ html.kscroll-locked { overflow: hidden; }
   .kworld-controls-hint { display: none; }
   .kworld-controls-row .kworld-controls-close { padding: 0 12px; }
 }
+.kworld-info-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; padding: 9px 14px; border-radius: 999px; background: #c00418; color: #fff; font-size: 13px; font-weight: 650; text-decoration: none; transition: background .2s; }
+.kworld-info-link:hover { background: #8f0312; }

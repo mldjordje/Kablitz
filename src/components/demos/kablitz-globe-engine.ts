@@ -659,7 +659,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     if ((s.draw["sea-suez"] ?? 0) > 0 || (s.draw["sea-atlantik"] ?? 0) > 0) reached.add("nordsee");
     const k = opts.instant ? 1 : 1 - Math.exp(-dt / 220);
     for (const b of beacons) {
-      const on = reached.has(b.p.id) || (b.p.kind === "region" && (s.free || s.focus === b.p.id));
+      const on = reached.has(b.p.id) || ((b.p.kind === "region" || b.p.projectId !== undefined) && (s.free || s.focus === b.p.id));
       b.appear += ((on ? 1 : 0) - b.appear) * k;
       const hot = focusId === b.p.id;
       b.lift += ((hot ? 1.9 : 1) - b.lift) * k;

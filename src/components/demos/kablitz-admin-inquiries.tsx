@@ -194,7 +194,7 @@ export function AdminServiceInquiries() {
       type="Ersatzteilanfrage"
       seed={SEED_SERVICE}
       icon={<Wrench size={18} />}
-      title="Service- & Ersatzteilanfragen"
+      title="Ersatzteilanfragen"
       summary={(i) => `${i.parts.length} ${i.parts.length === 1 ? "Position" : "Positionen"} · ${i.parts.map((p) => p.bauteil).join(", ")}`}
       detail={(i) => (
         <ol className="kinbox-parts">

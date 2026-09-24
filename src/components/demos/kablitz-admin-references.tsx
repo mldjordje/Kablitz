@@ -4,6 +4,7 @@ import { FilePlus2, MapPin, Pencil, RotateCcw, Save, Trash2, X } from "lucide-re
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { NEWS_IMAGES } from "@/lib/news-store";
+import { RELEASE, REFERENCE_SEED, loadReferences, saveReferences, type Reference } from "@/lib/references-store";
 
 /**
  * Completed reference projects as case studies (Lastenheft chapter 6): Problem → Lösung → Technologie →
@@ -11,41 +12,19 @@ import { NEWS_IMAGES } from "@/lib/news-store";
  * (ANF-REF-05). Demo storage is this browser only; production writes to the CMS.
  */
 
-const STORAGE_KEY = "kablitz-references";
-const RELEASE = ["Öffentlich", "Anonymisiert", "Intern"] as const;
-type Release = (typeof RELEASE)[number];
 const FUELS = ["Holzhackschnitzel", "Altholz", "Agrarreste", "Ersatzbrennstoffe (RDF/SRF)", "Klärschlamm", "Mischbrennstoffe"];
 const TECH = ["Vorschubrost (luftgekühlt)", "Vorschubrost (wassergekühlt)", "Treppenrost", "Wanderrost", "Heißgaserzeuger", "Kesselanlage"];
 const SCOPE = ["Feuerungsanlage", "Rost", "Kessel", "Brennstoffzuführung", "Entaschung", "Rauchgasreinigung", "Steuerung", "Montage", "Inbetriebnahme"];
 
-type Reference = {
-  id: string; title: string; customer: string; country: string; city: string; lat: string; lng: string; year: string;
-  fuel: string; technology: string; thermal: string; electrical: string; fuelAmount: string;
-  challenge: string; solution: string; result: string; scope: string[]; image: string; release: Release;
-};
-
-const SEED: Reference[] = [
-  { id: "ref-goch", title: "Biomasse-Kraftwerk Goch", customer: "Beispielkunde Energie GmbH", country: "Deutschland", city: "Goch", lat: "51.68", lng: "6.16", year: "2019", fuel: "Altholz", technology: "Vorschubrost (luftgekühlt)", thermal: "28", electrical: "7,2", fuelAmount: "100000", challenge: "Flexible Prozesswärme und Stromerzeugung aus stark schwankenden Altholzqualitäten.", solution: "Luftgekühlter Vorschubrost mit angepasster Luftstufung für wechselnde Heizwerte.", result: "Stabiler Betrieb über das gesamte Brennstoffband, Strom und Prozesswärme aus Reststoffen.", scope: ["Feuerungsanlage", "Rost", "Brennstoffzuführung", "Entaschung", "Steuerung", "Montage", "Inbetriebnahme"], image: NEWS_IMAGES[0].src, release: "Öffentlich" },
-  { id: "ref-saegewerk", title: "Sägewerk Skandinavien", customer: "Europäischer Sägewerksbetrieb", country: "Schweden", city: "Nordschweden", lat: "63.83", lng: "20.26", year: "2022", fuel: "Holzhackschnitzel", technology: "Treppenrost", thermal: "12", electrical: "", fuelAmount: "40000", challenge: "Große Mengen feuchter Holzreststoffe sollten energetisch verwertet werden.", solution: "Treppenrost für Brennstofffeuchten bis 55 %, Wärme direkt für die Trockenkammern.", result: "Energiegewinnung aus bisher ungenutzten Reststoffen, Gaskessel stillgelegt.", scope: ["Feuerungsanlage", "Rost", "Kessel", "Montage", "Inbetriebnahme"], image: NEWS_IMAGES[3].src, release: "Anonymisiert" },
-  { id: "ref-riga", title: "Fernwärme Riga – Retrofit", customer: "Rīgas Siltums (Beispiel)", country: "Lettland", city: "Riga", lat: "56.95", lng: "24.11", year: "2024", fuel: "Holzhackschnitzel", technology: "Vorschubrost (wassergekühlt)", thermal: "20", electrical: "", fuelAmount: "55000", challenge: "Bestehende Feuerung am Ende der Lebensdauer, Stillstand nur im Sommer möglich.", solution: "Austausch des Rostes gegen wassergekühltes System innerhalb von sechs Wochen.", result: "Höhere Verfügbarkeit, geringerer Verschleiß, Anlage termingerecht zurück im Netz.", scope: ["Rost", "Steuerung", "Montage", "Inbetriebnahme"], image: NEWS_IMAGES[4].src, release: "Intern" },
-];
-
 const blank = (): Reference => ({ id: `ref-${Date.now()}`, title: "", customer: "", country: "", city: "", lat: "", lng: "", year: String(new Date().getFullYear()), fuel: FUELS[0], technology: TECH[0], thermal: "", electrical: "", fuelAmount: "", challenge: "", solution: "", result: "", scope: [], image: NEWS_IMAGES[0].src, release: "Öffentlich" });
 
-function load(): Reference[] {
-  try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : SEED; } catch { return SEED; }
-}
-function persist(list: Reference[]) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch {}
-}
-
 export function AdminReferences() {
-  const [list, setList] = useState<Reference[]>(SEED);
+  const [list, setList] = useState<Reference[]>(REFERENCE_SEED);
   const [draft, setDraft] = useState<Reference | null>(null);
   // Browser-only storage: read once on mount.
   // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => setList(load()), []);
-  const commit = (next: Reference[]) => { setList(next); persist(next); };
+  useEffect(() => setList(loadReferences()), []);
+  const commit = (next: Reference[]) => { setList(next); saveReferences(next); };
 
   if (draft) {
     return (
@@ -64,7 +43,7 @@ export function AdminReferences() {
       <div className="kablitz-news-intro">
         <div>
           <strong>Referenzprojekte</strong>
-          <p>Abgeschlossene Anlagen als Fallstudie erfassen: Ausgangslage, Lösung, Lieferumfang, Ergebnis und Kennzahlen. Öffentliche Projekte erscheinen in der Projektübersicht und auf dem Globus.</p>
+          <p>Abgeschlossene Anlagen als Fallstudie erfassen: Ausgangslage, Lösung, Lieferumfang, Ergebnis und Kennzahlen. Öffentliche und anonymisierte Projekte erscheinen unter „Unsere Projekte“ und mit Koordinaten auf dem Globus.</p>
           <p className="kablitz-news-note">Anonymisierte Projekte zeigen weder Kundennamen noch den genauen Standort. In dieser Vorschau werden Projekte nur in diesem Browser gespeichert.</p>
         </div>
         <div className="kablitz-news-intro-actions">
@@ -96,7 +75,7 @@ export function AdminReferences() {
           </article>
         ))}
       </div>
-      <button type="button" className="kablitz-news-reset" onClick={() => { if (window.confirm("Alle Projekte auf die Beispieldaten zurücksetzen?")) commit(SEED); }}><RotateCcw size={14} /> Beispieldaten wiederherstellen</button>
+      <button type="button" className="kablitz-news-reset" onClick={() => { if (window.confirm("Alle Projekte auf die Beispieldaten zurücksetzen?")) commit(REFERENCE_SEED); }}><RotateCcw size={14} /> Beispieldaten wiederherstellen</button>
     </>
   );
 }

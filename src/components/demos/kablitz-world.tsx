@@ -5,7 +5,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { ChevronLeft, ChevronRight, Compass, Hand, Minus, Plus, RotateCcw, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PLACES } from "@/data/kablitz-world";
+import Link from "next/link";
+import { PLACES, type WorldPlace } from "@/data/kablitz-world";
+import { isPublic, loadReferences, referencePlaces } from "@/lib/references-store";
 import type { GlobeEngine } from "./kablitz-globe-engine";
 import { CHAPTERS, FINALE, REFERENCE_ORDER } from "./kablitz-world-story";
 import { lockScroll } from "./kablitz-smooth-scroll";
@@ -15,6 +17,20 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const PLACE = Object.fromEntries(PLACES.map((p) => [p.id, p]));
 const NARROW = "(max-width: 900px)";
+/** Admin reference projects join the globe once, before the engine builds its markers. */
+function addCmsPlaces() {
+  if (PLACES.some((p) => p.id.startsWith("cms-"))) return;
+  PLACES.push(...referencePlaces(PLACES));
+}
+
+/** Case study for a marker: its own project, or a released one at the same spot. */
+function projectFor(p: WorldPlace) {
+  if (p.projectId) return p.projectId;
+  if (p.kind !== "reference") return undefined;
+  const near = (r: { lat: string; lng: string }) => Math.abs(Number(r.lat) - p.lat) < 0.3 && Math.abs(Number(r.lng) - p.lng) < 0.3;
+  return loadReferences().find((r) => isPublic(r) && near(r))?.id;
+}
+
 const KIND: Record<string, string> = { origin: "Gründung", hub: "Stammsitz", history: "Geschichte", reference: "Referenzanlage", region: "Region", port: "Tankerroute" };
 
 /**
@@ -113,6 +129,7 @@ export function KablitzWorld() {
     // `?instant` starts at once and drops the extra camera inertia (automated screenshots, throttled frames).
     const instant = new URLSearchParams(window.location.search).has("instant");
     const start = async () => {
+      addCmsPlaces();
       const { createGlobeEngine } = await import("./kablitz-globe-engine");
       if (disposed) return;
       const engine = await createGlobeEngine(host, labelHost, {
@@ -147,7 +164,8 @@ export function KablitzWorld() {
 
   const { chapter, focus, free } = state;
   const ref = focus && REFERENCE_ORDER.includes(focus) ? PLACE[focus] : undefined;
-  const info = selected ? PLACE[selected] : undefined;
+  const info = selected ? PLACES.find((p) => p.id === selected) : undefined;
+  const project = info ? projectFor(info) : undefined;
   const step = (dir: number) => {
     const i = PLACES.findIndex((p) => p.id === selected);
     engineRef.current?.select(PLACES[(i + dir + PLACES.length) % PLACES.length].id);
@@ -223,7 +241,8 @@ export function KablitzWorld() {
                 {info.kind !== "reference" && info.detail && <><dt>Rolle</dt><dd>{info.detail}</dd></>}
               </dl>
               <p className="kworld-info-text">{info.info}</p>
-              {info.kind === "reference" && <p className="kworld-info-note">Angaben laut Kablitz-Referenzbroschüre · Freigabe ausstehend</p>}
+              {project && <Link className="kworld-info-link" href={`/projekte#${project}`}>Zum Projekt <ChevronRight size={15} /></Link>}
+              {info.kind === "reference" && <p className="kworld-info-note">{info.projectId ? "Aus den Referenzprojekten im Redaktionsbereich" : "Angaben laut Kablitz-Referenzbroschüre · Freigabe ausstehend"}</p>}
               <div className="kworld-info-nav">
                 <button type="button" onClick={() => step(-1)} aria-label="Vorheriger Ort"><ChevronLeft size={16} /></button>
                 <span>{PLACES.findIndex((p) => p.id === info.id) + 1} / {PLACES.length}</span>

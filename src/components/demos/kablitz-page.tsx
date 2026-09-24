@@ -158,10 +158,9 @@ function Hero({ heroImage }: { heroImage?: MediaAsset }) {
           <a className="kablitz-btn kablitz-btn-ghost" href="#ersatzteile">
             <Wrench size={16} /> Ersatzteile anfragen
           </a>
-          {/* Placeholder until reference projects exist; intentionally links nowhere. */}
-          <button type="button" className="kablitz-btn kablitz-btn-ghost">
+          <Link className="kablitz-btn kablitz-btn-ghost" href="/projekte">
             <Globe2 size={16} /> Unsere Projekte
-          </button>
+          </Link>
         </div>
         <a className="kablitz-scroll-cue" href="#anlage" data-hero-fade="">
           <ArrowDown size={15} /> Die Anlage entdecken

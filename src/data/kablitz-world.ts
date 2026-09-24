@@ -16,6 +16,8 @@ export type WorldPlace = {
   /** Text for the info panel in explore mode. */
   info: string;
   kind: "origin" | "hub" | "history" | "reference" | "region" | "port";
+  /** Reference project from the CMS/admin this marker belongs to. */
+  projectId?: string;
 };
 
 export const HQ = { lat: 49.565, lng: 9.707 };
