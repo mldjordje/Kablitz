@@ -13,6 +13,7 @@ import {
   FolderKanban,
   Globe,
   History,
+  Inbox,
   MoreHorizontal,
   X,
   LayoutDashboard,
@@ -24,6 +25,7 @@ import {
   Star,
   Truck,
   Upload,
+  Wrench,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -32,6 +34,7 @@ import { useGSAP } from "@gsap/react";
 import { useRef, useState, type CSSProperties, type ReactNode } from "react";
 import type { LeadProfile } from "@/lib/lead-schema";
 import { KablitzAdminNews } from "./kablitz-admin-news";
+import { AdminProjectInquiries, AdminServiceInquiries } from "./kablitz-admin-inquiries";
 
 type StockItem = { article: string; onHand: number; min: number; unit: string; reorderQty?: number };
 type Order = {
@@ -115,6 +118,8 @@ const eur = (n: number) => n.toLocaleString("de-DE");
 type ViewKey =
   | "dashboard"
   | "news"
+  | "projectInquiries"
+  | "serviceInquiries"
   | "projects"
   | "installed"
   | "foundry"
@@ -131,6 +136,8 @@ type NavItem = { key: ViewKey; label: string; icon: ReactNode; done: boolean };
 
 const NAV: NavItem[] = [
   { key: "dashboard", label: "Übersicht", icon: <LayoutDashboard size={17} />, done: true },
+  { key: "projectInquiries", label: "Projektanfragen", icon: <Inbox size={17} />, done: true },
+  { key: "serviceInquiries", label: "Serviceanfragen", icon: <Wrench size={17} />, done: true },
   { key: "news", label: "News & Beiträge", icon: <Newspaper size={17} />, done: true },
   { key: "projects", label: "Projekte", icon: <FolderKanban size={17} />, done: true },
   { key: "installed", label: "Anlagen-Bestand", icon: <Globe size={17} />, done: true },
@@ -215,12 +222,14 @@ export function KablitzAdminPanel({ lead }: { lead: LeadProfile }) {
             <h1 key={view}>{view === "dashboard" ? "Guten Tag, Werkleitung." : active.label}</h1>
             <p>{lead.businessName} · Konzept-Vorschau</p>
           </div>
-          <span className="kablitz-panel-demo-tag">{view === "news" ? "Vorschau · Speicherung nur in diesem Browser" : "Fiktive Daten · nichts wird gespeichert"}</span>
+          <span className="kablitz-panel-demo-tag">{view === "news" || view.endsWith("Inquiries") ? "Vorschau · Speicherung nur in diesem Browser" : "Fiktive Daten · nichts wird gespeichert"}</span>
         </header>
 
         <div className="kablitz-panel-content" ref={contentRef}>
           {view === "dashboard" && <DashboardView onJump={go} />}
           {view === "news" && <KablitzAdminNews />}
+          {view === "projectInquiries" && <AdminProjectInquiries />}
+          {view === "serviceInquiries" && <AdminServiceInquiries />}
           {view === "projects" && <ProjectsView />}
           {view === "installed" && <InstalledView />}
           {view === "foundry" && <FoundryView />}

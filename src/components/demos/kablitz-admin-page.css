@@ -510,3 +510,82 @@
   .kablitz-admin-row.is-low { background: #fff8f0; }
   .kablitz-admin-row.is-late { background: #fdeeee; }
 }
+
+/* ===== Inquiry inbox (Projekt- & Serviceanfragen) ===== */
+.kinbox-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 22px; }
+.kinbox-kpi { padding: 18px 20px; border-radius: 14px; background: #fff; border: 1px solid #e6e6e6; border-top: 3px solid var(--tone, #888); }
+.kinbox-kpi strong { display: block; font-size: 30px; font-weight: 750; letter-spacing: -0.03em; line-height: 1; }
+.kinbox-kpi span { display: block; margin-top: 8px; color: #777; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+.kinbox-kpi.tone-new { --tone: var(--kablitz-red); }
+.kinbox-kpi.tone-active { --tone: #e39a00; }
+.kinbox-kpi.tone-check { --tone: #1c5aa8; }
+.kinbox-kpi.tone-ok { --tone: #1c8a45; }
+.kablitz-cast-status.tone-new { background: #fde7e9; color: var(--kablitz-red); }
+
+.kinbox .kablitz-block-head { flex-wrap: wrap; gap: 14px; }
+.kinbox-filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.kinbox-filters button { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid #ddd; border-radius: 999px; background: #fff; color: #444; font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.kinbox-filters button em { font-style: normal; color: #999; font-weight: 500; }
+.kinbox-filters button[aria-selected="true"] { background: #161616; border-color: #161616; color: #fff; }
+.kinbox-filters button[aria-selected="true"] em { color: rgba(255,255,255,.6); }
+
+.kinbox-split { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 18px; margin-top: 16px; align-items: start; }
+.kinbox-list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.kinbox-list button { display: flex; flex-direction: column; gap: 5px; width: 100%; padding: 14px 16px; border: 1px solid #e6e6e6; border-left: 3px solid transparent; border-radius: 12px; background: #fff; color: inherit; font: inherit; text-align: left; cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+.kinbox-list button:hover { border-color: #ccc; }
+.kinbox-list button.is-active { border-color: #e6e6e6; border-left-color: var(--kablitz-red); box-shadow: 0 10px 28px -18px rgba(0,0,0,.35); }
+.kinbox-row-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.kinbox-row-top strong { font-size: 14.5px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kinbox-row-top .kablitz-cast-status { flex-shrink: 0; }
+.kinbox-row-sub { color: #555; font-size: 13px; line-height: 1.45; }
+.kinbox-row-meta { display: flex; align-items: center; gap: 8px; color: #999; font-size: 11.5px; }
+.kinbox-row-meta b { padding: 1px 7px; border-radius: 999px; background: #161616; color: #fff; font-size: 10px; font-weight: 600; letter-spacing: .04em; }
+.kinbox-empty { padding: 24px; color: #888; font-size: 14px; }
+
+.kinbox-detail { position: sticky; top: 20px; padding: 24px 26px; border: 1px solid #e6e6e6; border-radius: 14px; background: #fff; animation: kinbox-in .35s ease; }
+@keyframes kinbox-in { from { opacity: 0; transform: translateY(8px); } }
+.kinbox-detail header { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; padding-bottom: 18px; border-bottom: 1px solid #eee; }
+.kinbox-id { margin: 0 0 4px; color: #999; font-size: 12px; letter-spacing: .04em; }
+.kinbox-detail h3 { margin: 0 0 10px; font-size: 22px; font-weight: 750; letter-spacing: -0.02em; }
+.kinbox-contact { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; color: #555; font-size: 13px; }
+.kinbox-contact > * { display: inline-flex; align-items: center; gap: 6px; color: inherit; }
+.kinbox-contact a:hover { color: var(--kablitz-red); }
+.kinbox-contact svg { color: var(--kablitz-red); }
+.kinbox-status { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; color: #777; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; font-weight: 650; }
+.kinbox-status select { height: 36px; padding: 0 10px; border: 1px solid #ddd; border-radius: 8px; background: #fff; color: #1a1a1a; font: inherit; font-size: 13.5px; text-transform: none; letter-spacing: 0; cursor: pointer; }
+
+.kinbox-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin: 18px 0 0; border: 1px solid #eee; border-radius: 12px; overflow: hidden; background: #eee; }
+.kinbox-facts div { padding: 13px 15px; background: #fafafa; }
+.kinbox-facts .is-wide { grid-column: 1 / -1; }
+.kinbox-facts dt { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+.kinbox-facts dd { display: flex; align-items: center; gap: 6px; margin: 5px 0 0; font-size: 14.5px; font-weight: 600; }
+.kinbox-facts dd svg { color: var(--kablitz-red); }
+
+.kinbox-parts { display: flex; flex-direction: column; gap: 10px; margin: 18px 0 0; padding: 0; list-style: none; counter-reset: part; }
+.kinbox-parts > li { padding: 14px 16px; border: 1px solid #eee; border-radius: 12px; background: #fafafa; }
+.kinbox-part-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.kinbox-part-head strong { font-size: 15px; }
+.kinbox-part-head code { padding: 2px 8px; border-radius: 6px; background: #161616; color: #fff; font-size: 12px; }
+.kinbox-part-meta { margin: 4px 0 0; color: #777; font-size: 12.5px; }
+.kinbox-parts p:not(.kinbox-part-meta) { margin: 8px 0 0; color: #333; font-size: 13.5px; line-height: 1.55; }
+.kinbox-files { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; }
+.kinbox-files li { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 1px solid #e3e3e3; border-radius: 8px; background: #fff; font-size: 12.5px; }
+.kinbox-files svg { color: var(--kablitz-red); }
+.kinbox-files small { color: #999; }
+
+.kinbox-message { margin-top: 16px; padding: 14px 16px; border-left: 3px solid var(--kablitz-red); border-radius: 0 10px 10px 0; background: #fafafa; }
+.kinbox-message small { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+.kinbox-message p { margin: 6px 0 0; font-size: 14px; line-height: 1.6; }
+.kinbox-actions { display: flex; align-items: center; gap: 14px; margin-top: 20px; flex-wrap: wrap; }
+.kinbox-note { color: #888; font-size: 12.5px; }
+
+@media (max-width: 1100px) {
+  .kinbox-split { grid-template-columns: 1fr; }
+  .kinbox-detail { position: static; }
+}
+@media (max-width: 700px) {
+  .kinbox-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kinbox-detail { padding: 18px; }
+  .kinbox-detail header { flex-direction: column; }
+  .kinbox-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
