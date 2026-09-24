@@ -589,3 +589,29 @@
   .kinbox-detail header { flex-direction: column; }
   .kinbox-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* ===== Reference projects (Fallstudien) ===== */
+.kref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-top: 20px; }
+.kref-card { display: flex; flex-direction: column; overflow: hidden; border: 1px solid #e6e6e6; border-radius: 14px; background: #fff; }
+.kref-media { position: relative; aspect-ratio: 16 / 9; background: #222; }
+.kref-media img { object-fit: cover; }
+.kref-release { position: absolute; top: 12px; left: 12px; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: .04em; background: #fff; color: #1a1a1a; }
+.kref-release.is-öffentlich { background: #1c8a45; color: #fff; }
+.kref-release.is-anonymisiert { background: #e39a00; color: #fff; }
+.kref-release.is-intern { background: #161616; color: #fff; }
+.kref-body { display: flex; flex-direction: column; gap: 10px; flex: 1; padding: 16px 18px 18px; }
+.kref-meta { display: flex; align-items: center; gap: 6px; margin: 0; color: #888; font-size: 12.5px; }
+.kref-meta svg { color: var(--kablitz-red); }
+.kref-body h3 { margin: 0; font-size: 18px; letter-spacing: -0.01em; }
+.kref-kpis { display: flex; flex-wrap: wrap; gap: 16px; }
+.kref-kpis span { color: #777; font-size: 12px; }
+.kref-kpis strong { margin-right: 3px; color: #1a1a1a; font-size: 20px; font-weight: 750; letter-spacing: -0.02em; }
+.kref-tags { margin: 0; color: #555; font-size: 13px; }
+.kref-body .kablitz-news-row-actions { margin-top: auto; flex-direction: row; }
+.kref-fieldset { margin: 0; padding: 14px 16px 16px; border: 1px solid #eee; border-radius: 10px; }
+.kref-fieldset legend, .kablitz-news-side legend { padding: 0 6px; font-size: 12.5px; font-weight: 700; color: #444; }
+.kref-scope, .kref-release-pick { display: flex; flex-wrap: wrap; gap: 8px; }
+.kref-scope button, .kref-release-pick button { height: 34px; padding: 0 13px; border: 1px solid #ddd; border-radius: 999px; background: #fff; color: #444; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.kref-scope button[aria-pressed="true"], .kref-release-pick button[aria-pressed="true"] { background: var(--kablitz-red); border-color: var(--kablitz-red); color: #fff; }
+.kref-hint { margin: 0; color: #888; font-size: 12px; line-height: 1.5; }
+.kablitz-news-editor .kref-cols { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }

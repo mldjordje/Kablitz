@@ -3,6 +3,7 @@
 import {
   AlertTriangle,
   ArrowLeft,
+  Award,
   BarChart3,
   CheckCircle2,
   ClipboardCheck,
@@ -34,6 +35,7 @@ import { useGSAP } from "@gsap/react";
 import { useRef, useState, type CSSProperties, type ReactNode } from "react";
 import type { LeadProfile } from "@/lib/lead-schema";
 import { KablitzAdminNews } from "./kablitz-admin-news";
+import { AdminReferences } from "./kablitz-admin-references";
 import { AdminProjectInquiries, AdminServiceInquiries } from "./kablitz-admin-inquiries";
 
 type StockItem = { article: string; onHand: number; min: number; unit: string; reorderQty?: number };
@@ -121,6 +123,7 @@ type ViewKey =
   | "projectInquiries"
   | "serviceInquiries"
   | "projects"
+  | "references"
   | "installed"
   | "foundry"
   | "stock"
@@ -140,6 +143,7 @@ const NAV: NavItem[] = [
   { key: "serviceInquiries", label: "Serviceanfragen", icon: <Wrench size={17} />, done: true },
   { key: "news", label: "News & Beiträge", icon: <Newspaper size={17} />, done: true },
   { key: "projects", label: "Projekte", icon: <FolderKanban size={17} />, done: true },
+  { key: "references", label: "Referenzprojekte", icon: <Award size={17} />, done: true },
   { key: "installed", label: "Anlagen-Bestand", icon: <Globe size={17} />, done: true },
   { key: "foundry", label: "Gießerei", icon: <Factory size={17} />, done: true },
   { key: "stock", label: "Lagerbestand", icon: <PackageSearch size={17} />, done: true },
@@ -222,7 +226,7 @@ export function KablitzAdminPanel({ lead }: { lead: LeadProfile }) {
             <h1 key={view}>{view === "dashboard" ? "Guten Tag, Werkleitung." : active.label}</h1>
             <p>{lead.businessName} · Konzept-Vorschau</p>
           </div>
-          <span className="kablitz-panel-demo-tag">{view === "news" || view.endsWith("Inquiries") ? "Vorschau · Speicherung nur in diesem Browser" : "Fiktive Daten · nichts wird gespeichert"}</span>
+          <span className="kablitz-panel-demo-tag">{view === "news" || view.endsWith("Inquiries") || view === "references" ? "Vorschau · Speicherung nur in diesem Browser" : "Fiktive Daten · nichts wird gespeichert"}</span>
         </header>
 
         <div className="kablitz-panel-content" ref={contentRef}>
@@ -231,6 +235,7 @@ export function KablitzAdminPanel({ lead }: { lead: LeadProfile }) {
           {view === "projectInquiries" && <AdminProjectInquiries />}
           {view === "serviceInquiries" && <AdminServiceInquiries />}
           {view === "projects" && <ProjectsView />}
+          {view === "references" && <AdminReferences />}
           {view === "installed" && <InstalledView />}
           {view === "foundry" && <FoundryView />}
           {view === "stock" && <StockView />}
