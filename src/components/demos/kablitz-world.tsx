@@ -3,14 +3,14 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import { ChevronLeft, ChevronRight, Compass, Hand, Minus, Plus, RotateCcw, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Compass, FastForward, Hand, Minus, Plus, RotateCcw, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { PLACES, type WorldPlace } from "@/data/kablitz-world";
 import { isPublic, loadReferences, referencePlaces } from "@/lib/references-store";
-import type { GlobeEngine } from "./kablitz-globe-engine";
+import type { GlobeEngine, GlobeFilter } from "./kablitz-globe-engine";
 import { CHAPTERS, FINALE, REFERENCE_ORDER } from "./kablitz-world-story";
-import { lockScroll } from "./kablitz-smooth-scroll";
+import { lockScroll, scrollToY } from "./kablitz-smooth-scroll";
 import "./kablitz-world.css";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -20,18 +20,24 @@ const NARROW = "(max-width: 900px)";
 /** Admin reference projects join the globe once, before the engine builds its markers. */
 function addCmsPlaces() {
   if (PLACES.some((p) => p.id.startsWith("cms-"))) return;
-  PLACES.push(...referencePlaces(PLACES));
+  PLACES.push(...referencePlaces());
 }
 
 /** Case study for a marker: its own project, or a released one at the same spot. */
 function projectFor(p: WorldPlace) {
   if (p.projectId) return p.projectId;
   if (p.kind !== "reference") return undefined;
+  // A brochure plant that also has a released case study at the same spot links to it.
   const near = (r: { lat: string; lng: string }) => Math.abs(Number(r.lat) - p.lat) < 0.3 && Math.abs(Number(r.lng) - p.lng) < 0.3;
   return loadReferences().find((r) => isPublic(r) && near(r))?.id;
 }
 
-const KIND: Record<string, string> = { origin: "Gründung", hub: "Stammsitz", history: "Geschichte", reference: "Referenzanlage", region: "Region", port: "Tankerroute" };
+const KIND: Record<string, string> = { origin: "Gründung", hub: "Stammsitz", history: "Geschichte", reference: "Referenzanlage", region: "Region", port: "Tankerroute", project: "Referenzprojekt" };
+const FILTERS: Array<{ key: GlobeFilter; label: string }> = [
+  { key: "all", label: "Alle" },
+  { key: "plants", label: "Anlagen" },
+  { key: "projects", label: "Projekte" },
+];
 
 /**
  * "Von Riga in die Welt": a tall section whose sticky stage holds the globe. Scroll progress
@@ -49,6 +55,13 @@ export function KablitzWorld() {
   const [state, setState] = useState<{ chapter: number; focus?: string; free: boolean }>({ chapter: 0, free: false });
   const [explore, setExplore] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
+  const [filter, setFilter] = useState<GlobeFilter>("all");
+  const pickFilter = (f: GlobeFilter) => { setFilter(f); engineRef.current?.setFilter(f); };
+  // Jump straight to the finale: the end of the section is where the story hands over the globe.
+  const skip = () => {
+    const s = sectionRef.current;
+    if (s) scrollToY(s.getBoundingClientRect().top + window.scrollY + s.offsetHeight - window.innerHeight, true);
+  };
 
   // Explore mode freezes the page, so the wheel and pinch can zoom the globe without scrolling the story away.
   const toggleExplore = useCallback((on: boolean) => {
@@ -166,9 +179,11 @@ export function KablitzWorld() {
   const ref = focus && REFERENCE_ORDER.includes(focus) ? PLACE[focus] : undefined;
   const info = selected ? PLACES.find((p) => p.id === selected) : undefined;
   const project = info ? projectFor(info) : undefined;
+  // Card arrows walk the places the current filter shows.
+  const visible = PLACES.filter((p) => !((filter === "plants" && p.kind === "project") || (filter === "projects" && p.kind === "reference")));
   const step = (dir: number) => {
-    const i = PLACES.findIndex((p) => p.id === selected);
-    engineRef.current?.select(PLACES[(i + dir + PLACES.length) % PLACES.length].id);
+    const i = visible.findIndex((p) => p.id === selected);
+    engineRef.current?.select(visible[(i + dir + visible.length) % visible.length].id);
   };
 
   return (
@@ -176,6 +191,20 @@ export function KablitzWorld() {
       <div className="kworld-stage">
         <div className="kworld-globe" ref={hostRef} aria-hidden="true" />
         <div className="kworld-labels" ref={labelsRef} aria-hidden="true" />
+
+        {/* While the story plays: jump to the end. */}
+        <button type="button" className="kworld-skip" onClick={skip} tabIndex={free ? -1 : 0} aria-hidden={free}>
+          Geschichte überspringen <FastForward size={14} />
+        </button>
+
+        {/* Finale: choose which markers the globe shows. */}
+        <div className="kworld-filter" role="radiogroup" aria-label="Anzeige auf dem Globus" aria-hidden={!free}>
+          {FILTERS.map((f) => (
+            <button key={f.key} type="button" role="radio" aria-checked={filter === f.key} tabIndex={free ? 0 : -1} data-key={f.key} onClick={() => pickFilter(f.key)}>
+              {f.key !== "all" && <i aria-hidden="true" />}{f.label}
+            </button>
+          ))}
+        </div>
         <div className="kworld-vignette" aria-hidden="true" />
         <div className="kworld-grain" aria-hidden="true" />
 
@@ -235,17 +264,18 @@ export function KablitzWorld() {
               <h3>{info.label}</h3>
               {info.country && <p className="kworld-info-country">{info.country}</p>}
               <dl>
-                {info.kind === "reference" && info.detail && <><dt>Feuerungswärmeleistung</dt><dd>{info.detail}</dd></>}
+                {(info.kind === "reference" || info.kind === "project") && info.detail && <><dt>Feuerungswärmeleistung</dt><dd>{info.detail}</dd></>}
                 {info.fuel && <><dt>Brennstoff</dt><dd>{info.fuel}</dd></>}
-                {info.kind === "reference" && info.year && <><dt>Inbetriebnahme</dt><dd>{info.year}</dd></>}
-                {info.kind !== "reference" && info.detail && <><dt>Rolle</dt><dd>{info.detail}</dd></>}
+                {(info.kind === "reference" || info.kind === "project") && info.year && <><dt>Inbetriebnahme</dt><dd>{info.year}</dd></>}
+                {info.kind !== "reference" && info.kind !== "project" && info.detail && <><dt>Rolle</dt><dd>{info.detail}</dd></>}
               </dl>
               <p className="kworld-info-text">{info.info}</p>
               {project && <Link className="kworld-info-link" href={`/projekte#${project}`}>Zum Projekt <ChevronRight size={15} /></Link>}
-              {info.kind === "reference" && <p className="kworld-info-note">{info.projectId ? "Aus den Referenzprojekten im Redaktionsbereich" : "Angaben laut Kablitz-Referenzbroschüre · Freigabe ausstehend"}</p>}
+              {info.kind === "reference" && <p className="kworld-info-note">Angaben laut Kablitz-Referenzbroschüre · Freigabe ausstehend</p>}
+              {info.kind === "project" && <p className="kworld-info-note">Beispielprojekt aus dem Redaktionsbereich · fiktive Daten</p>}
               <div className="kworld-info-nav">
                 <button type="button" onClick={() => step(-1)} aria-label="Vorheriger Ort"><ChevronLeft size={16} /></button>
-                <span>{PLACES.findIndex((p) => p.id === info.id) + 1} / {PLACES.length}</span>
+                <span>{visible.findIndex((p) => p.id === info.id) + 1} / {visible.length}</span>
                 <button type="button" onClick={() => step(1)} aria-label="Nächster Ort"><ChevronRight size={16} /></button>
               </div>
             </>

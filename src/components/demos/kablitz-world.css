@@ -171,3 +171,29 @@ html.kscroll-locked { overflow: hidden; }
 }
 .kworld-info-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; padding: 9px 14px; border-radius: 999px; background: #c00418; color: #fff; font-size: 13px; font-weight: 650; text-decoration: none; transition: background .2s; }
 .kworld-info-link:hover { background: #8f0312; }
+
+/* Finished projects (admin) get their own colour, distinct from the orange brochure plants. */
+.kw-label[data-kind="project"] { --kw-accent: #35f0b8; }
+.kw-label[data-kind="reference"] { --kw-accent: #ff7a45; }
+.kworld-info-head[data-kind="project"] .kworld-info-tag { color: #35f0b8; }
+
+/* Skip the history while it plays */
+.kworld-skip { position: absolute; z-index: 5; right: clamp(20px, 4vw, 56px); bottom: clamp(20px, 5vh, 44px); display: inline-flex; align-items: center; gap: 8px; padding: 9px 15px; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; background: rgba(8,12,18,.55); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: rgba(255,255,255,.85); font: 600 12.5px var(--font-geist-sans), Arial, sans-serif; cursor: pointer; transition: opacity .5s ease, transform .5s ease, border-color .2s ease, background .2s ease; }
+.kworld-skip:hover { border-color: #fff; background: rgba(192,4,24,.85); color: #fff; }
+.kworld[data-free="true"] .kworld-skip { opacity: 0; transform: translateY(12px); pointer-events: none; }
+
+/* Finale filter: all markers, plants only or projects only */
+.kworld-filter { position: absolute; z-index: 5; left: 50%; top: clamp(92px, 13vh, 120px); display: flex; gap: 4px; padding: 4px; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; background: rgba(8,12,18,.62); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transform: translate(-50%, -12px); opacity: 0; pointer-events: none; transition: opacity .7s ease, transform .8s cubic-bezier(.2,.8,.2,1); }
+.kworld[data-free="true"] .kworld-filter { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.kworld-filter button { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; border: 0; border-radius: 999px; background: transparent; color: rgba(255,255,255,.72); font: 600 13px var(--font-geist-sans), Arial, sans-serif; cursor: pointer; transition: background .25s ease, color .25s ease; }
+.kworld-filter button:hover { color: #fff; }
+.kworld-filter button[aria-checked="true"] { background: #fff; color: #0b1118; }
+.kworld-filter i { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255,255,255,.85); }
+.kworld-filter [data-key="plants"] i { background: #ff6a3a; }
+.kworld-filter [data-key="projects"] i { background: #1fd6a0; }
+.kworld-filter button[aria-checked="true"] i { box-shadow: 0 0 0 2px rgba(0,0,0,.15); }
+@media (max-width: 900px) {
+  .kworld-filter { top: 76px; }
+  .kworld-filter button { height: 32px; padding: 0 12px; font-size: 12px; }
+  .kworld-skip { right: 16px; bottom: auto; top: 76px; }
+}

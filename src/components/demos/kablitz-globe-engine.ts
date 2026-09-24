@@ -26,14 +26,17 @@ export type GlobeEngine = {
   /** Fly to a place (or clear the pick with null). */
   select: (id: string | null) => void;
   resetView: () => void;
+  /** Finale filter: plants from the brochure, finished projects from the admin, or both. */
+  setFilter: (f: GlobeFilter) => void;
   dispose: () => void;
 };
 
 const RAD = Math.PI / 180;
 const R = 100; // three-globe radius
-const PRIORITY: Record<WorldPlace["kind"], number> = { hub: 6, origin: 5, port: 4, history: 3, region: 2, reference: 1 };
+const PRIORITY: Record<WorldPlace["kind"], number> = { hub: 6, origin: 5, port: 4, history: 3, region: 2, reference: 1, project: 1 };
 
 export type GlobeLook = "real" | "hex";
+export type GlobeFilter = "all" | "plants" | "projects";
 
 /**
  * Photographic Earth: NASA Blue Marble on the lit side, Black Marble city lights on the night side,
@@ -98,7 +101,7 @@ function glowTexture(THREE: typeof THREE_NS) {
 }
 
 const KIND_TAG: Record<WorldPlace["kind"], string> = {
-  origin: "Gründung", hub: "Stammsitz", history: "Geschichte", reference: "Referenz", region: "Region", port: "Tankerroute",
+  origin: "Gründung", hub: "Stammsitz", history: "Geschichte", reference: "Anlage", region: "Region", port: "Tankerroute", project: "Projekt",
 };
 
 function labelEl(p: WorldPlace) {
@@ -116,7 +119,7 @@ function labelEl(p: WorldPlace) {
 
 /** Marker fill per kind (the dot at the heart of each place). */
 const MARKER: Record<WorldPlace["kind"], string> = {
-  hub: "#e3061f", origin: "#ff9a63", history: "#ffc29e", reference: "#ff6a3a", port: "#6fbcff", region: "#ff9c74",
+  hub: "#e3061f", origin: "#ff9a63", history: "#ffc29e", reference: "#ff6a3a", port: "#6fbcff", region: "#ff9c74", project: "#1fd6a0",
 };
 
 /* Beacons: a light pillar, a glow pooled on the ground and a pulsing disc, tinted by kind. */
@@ -127,6 +130,7 @@ const BEACON: Record<WorldPlace["kind"], { color: string; height: number; disc: 
   reference: { color: "#ff7a45", height: 2.6, disc: 1.3 },
   port: { color: "#9fd0ff", height: 2.6, disc: 1.4 },
   region: { color: "#ff9c74", height: 0, disc: 7 },
+  project: { color: "#35f0b8", height: 2.6, disc: 1.3 },
 };
 
 function beamTexture(THREE: typeof THREE_NS) {
@@ -383,6 +387,8 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
   let zoom = 1;
   let zoomTarget = 1;
   let selected: string | null = null;
+  let filter: GlobeFilter = "all";
+  const hidden = (p: WorldPlace) => (filter === "plants" && p.kind === "project") || (filter === "projects" && p.kind === "reference");
   let fly: { lat: number; lng: number } | null = null;
   let base = { lat: 0, lng: 0 };
   let aside = 0;
@@ -659,7 +665,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     if ((s.draw["sea-suez"] ?? 0) > 0 || (s.draw["sea-atlantik"] ?? 0) > 0) reached.add("nordsee");
     const k = opts.instant ? 1 : 1 - Math.exp(-dt / 220);
     for (const b of beacons) {
-      const on = reached.has(b.p.id) || ((b.p.kind === "region" || b.p.projectId !== undefined) && (s.free || s.focus === b.p.id));
+      const on = !hidden(b.p) && (reached.has(b.p.id) || ((b.p.kind === "region" || b.p.kind === "project") && (s.free || s.focus === b.p.id)));
       b.appear += ((on ? 1 : 0) - b.appear) * k;
       const hot = focusId === b.p.id;
       b.lift += ((hot ? 1.9 : 1) - b.lift) * k;
@@ -703,8 +709,8 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
       // Picking uses the dot on the ground, not the top of the (variable-height) pillar.
       const gp = globe.getCoords(lb.p.lat, lb.p.lng, 0.004);
       v.set(gp.x, gp.y, gp.z).project(camera);
-      screen.set(lb.p.id, { x: (v.x + 1) / 2 * width, y: (1 - v.y) / 2 * height, on: onScreen && bc.appear > 0.5 });
-      let show = wanted.has(lb.p.id) && onScreen;
+      screen.set(lb.p.id, { x: (v.x + 1) / 2 * width, y: (1 - v.y) / 2 * height, on: onScreen && bc.appear > 0.5 && !hidden(lb.p) });
+      let show = wanted.has(lb.p.id) && onScreen && !hidden(lb.p);
       if (show) {
         if (!lb.w) { const r = (lb.el.firstElementChild as HTMLElement).getBoundingClientRect(); lb.w = r.width + 10; lb.h = r.height + 14; }
         const box: [number, number, number, number] = [x - lb.w / 2, y - lb.h, x + lb.w / 2, y];
@@ -768,6 +774,7 @@ export async function createGlobeEngine(host: HTMLElement, labelHost: HTMLElemen
     setExplore: (on) => { explore = on; host.dataset.explore = String(on); if (!on) { zoomTarget = 1; select(null); } },
     zoomBy: (f) => { zoomTarget = Math.max(0.3, Math.min(1.5, zoomTarget * f)); },
     select,
+    setFilter: (f) => { filter = f; if (selected && hidden(PLACES.find((pl) => pl.id === selected)!)) select(null); },
     resetView: () => { fly = { lat: 0, lng: Math.round(user.lng / 360) * 360 }; zoomTarget = 1; select(null); },
     dispose: () => {
       alive = false;

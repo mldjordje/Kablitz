@@ -15,7 +15,7 @@ export type WorldPlace = {
   fuel?: string;
   /** Text for the info panel in explore mode. */
   info: string;
-  kind: "origin" | "hub" | "history" | "reference" | "region" | "port";
+  kind: "origin" | "hub" | "history" | "reference" | "region" | "port" | "project";
   /** Reference project from the CMS/admin this marker belongs to. */
   projectId?: string;
 };

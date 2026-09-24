@@ -10,9 +10,9 @@ gsap.registerPlugin(ScrollTrigger);
 let lenis: Lenis | null = null;
 
 /** Scroll to an absolute position, eased by Lenis when it runs. */
-export function scrollToY(top: number) {
-  if (lenis) lenis.scrollTo(top, { duration: 1.4 });
-  else window.scrollTo({ top, behavior: "smooth" });
+export function scrollToY(top: number, immediate = false) {
+  if (lenis) lenis.scrollTo(top, immediate ? { immediate: true } : { duration: 1.4 });
+  else window.scrollTo({ top, behavior: immediate ? "instant" : "smooth" });
 }
 
 /** Freeze page scrolling (e.g. while the visitor explores the globe) and release it again. */
