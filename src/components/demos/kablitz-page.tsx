@@ -5,9 +5,9 @@ import {
   Globe2,
   LayoutDashboard,
   MapPin,
-  MessageSquare,
   Phone,
   Send,
+  Wrench,
 } from "lucide-react";
 import type { CSSProperties } from "react";
 import Image from "next/image";
@@ -126,7 +126,7 @@ export function KablitzHeader({ lead }: { lead: LeadProfile }) {
   );
 }
 
-const HERO_TITLE = ["„Energie", "aus", "dem,", "was", "andere", "als", "Abfall", "sehen“"];
+const HERO_TITLE = ["Energie", "aus", "dem,", "was", "andere", "als", "Abfall", "sehen"];
 
 function Hero({ heroImage }: { heroImage?: MediaAsset }) {
   return (
@@ -155,9 +155,9 @@ function Hero({ heroImage }: { heroImage?: MediaAsset }) {
           <a className="kablitz-btn kablitz-btn-primary" href="#anfrage">
             <Send size={16} /> Projekt anfragen
           </a>
-          <Link className="kablitz-btn kablitz-btn-ghost" href="/kontakt">
-            <MessageSquare size={16} /> Kontakt
-          </Link>
+          <a className="kablitz-btn kablitz-btn-ghost" href="#ersatzteile">
+            <Wrench size={16} /> Ersatzteile anfragen
+          </a>
           <a className="kablitz-btn kablitz-btn-ghost" href="#unternehmen">
             <Globe2 size={16} /> Unsere Projekte
           </a>
