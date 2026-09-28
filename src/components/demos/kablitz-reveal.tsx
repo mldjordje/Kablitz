@@ -76,7 +76,7 @@ export function KablitzReveal() {
       <div className="kreveal-stage">
         <div className="kreveal-media" aria-hidden="true">
           <Image src="/leads/kablitz-gmbh-r4t9k2/01-ec57535860fcda44.webp" alt="" fill sizes="100vw" />
-          {video && <KablitzHeroVideo start={10} />}
+          {video && <KablitzHeroVideo />}
         </div>
         <div className="kreveal-shade" aria-hidden="true" />
 

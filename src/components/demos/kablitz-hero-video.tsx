@@ -2,83 +2,59 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const VIDEO_ID = "EnQW7RSpgVQ";
-const PLAYER_ORIGIN = "https://www.youtube-nocookie.com";
+const SRC_WIDE = "/video/kablitz-anlage-720.mp4";
+const SRC_NARROW = "/video/kablitz-anlage-480.mp4";
 
 /**
- * Muted looping YouTube background. It mounts after hydration and fades in once
- * playback has had time to start, so the poster image underneath covers YouTube's loading chrome.
- * Playback pauses while the player is off screen or the tab is hidden, so an unseen video never
- * keeps decoding. `start` skips an intro: playback begins there and every loop jumps back to it
- * instead of to 0. Uses youtube-nocookie.com; production should self-host a trimmed MP4.
+ * Muted looping background clip, self-hosted (52 s aerial fly-over trimmed from the plant animation,
+ * no audio track). It fades in once the first frame is decoded, so the poster image underneath
+ * covers loading. Playback pauses while the clip is off screen or the tab is hidden, so an unseen
+ * video never keeps decoding. Narrow screens get the lighter 480p file.
  */
-export function KablitzHeroVideo({ start = 0 }: { start?: number }) {
-  const [mounted, setMounted] = useState(false);
+export function KablitzHeroVideo() {
+  const [src, setSrc] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
-  const frameRef = useRef<HTMLIFrameElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    const id = requestAnimationFrame(() => setMounted(true));
+    const id = requestAnimationFrame(() => setSrc(window.matchMedia("(max-width: 820px)").matches ? SRC_NARROW : SRC_WIDE));
     return () => cancelAnimationFrame(id);
   }, []);
 
   useEffect(() => {
-    const iframe = frameRef.current;
-    if (!mounted || !iframe) return;
-    let visible = true;
-    let playing = true;
-    const command = (func: "playVideo" | "pauseVideo" | "seekTo", args: unknown[] = []) =>
-      iframe.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args }), PLAYER_ORIGIN);
+    const video = videoRef.current;
+    if (!src || !video) return;
+    let visible = false;
     const sync = () => {
-      const shouldPlay = visible && !document.hidden;
-      if (shouldPlay === playing) return;
-      playing = shouldPlay;
-      command(shouldPlay ? "playVideo" : "pauseVideo");
+      if (visible && !document.hidden) void video.play().catch(() => {});
+      else video.pause();
     };
     const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); });
-    observer.observe(iframe.parentElement ?? iframe);
+    observer.observe(video.parentElement ?? video);
     document.addEventListener("visibilitychange", sync);
-    // Loop by hand from `start`: when the clip ends (or restarts on its own), seek back past the intro.
-    const onMessage = (e: MessageEvent) => {
-      if (e.origin !== PLAYER_ORIGIN || e.source !== iframe.contentWindow || typeof e.data !== "string") return;
-      let data: { event?: string; info?: number | { playerState?: number; currentTime?: number } };
-      try { data = JSON.parse(e.data); } catch { return; }
-      const info = data.info;
-      const ended = (data.event === "onStateChange" && info === 0) || (typeof info === "object" && info?.playerState === 0);
-      const early = start > 0 && typeof info === "object" && typeof info?.currentTime === "number" && info.currentTime < start - 0.5;
-      if (ended || early) {
-        command("seekTo", [start, true]);
-        if (playing) command("playVideo");
-      }
-    };
-    window.addEventListener("message", onMessage);
-    // The player ignores commands until it has loaded; re-apply the current state once it has,
-    // and subscribe to its events.
-    let settle = 0;
-    const onLoad = () => {
-      iframe.contentWindow?.postMessage(JSON.stringify({ event: "listening", id: VIDEO_ID }), PLAYER_ORIGIN);
-      settle = window.setTimeout(() => { playing = true; sync(); }, 1200);
-    };
-    iframe.addEventListener("load", onLoad);
     return () => {
-      window.removeEventListener("message", onMessage);
-      window.clearTimeout(settle);
       observer.disconnect();
       document.removeEventListener("visibilitychange", sync);
-      iframe.removeEventListener("load", onLoad);
+      video.pause();
+      // Drop the media buffers right away instead of waiting for GC.
+      video.removeAttribute("src");
+      video.load();
     };
-  }, [mounted, start]);
+  }, [src]);
 
-  if (!mounted) return null;
+  if (!src) return null;
   return (
     <div className="kablitz-hero-video" data-ready={ready} aria-hidden="true">
-      <iframe
-        ref={frameRef}
-        src={`${PLAYER_ORIGIN}/embed/${VIDEO_ID}?autoplay=1&mute=1&start=${start}${start ? "" : `&loop=1&playlist=${VIDEO_ID}`}&controls=0&disablekb=1&modestbranding=1&rel=0&playsinline=1&iv_load_policy=3&enablejsapi=1`}
-        title="Kablitz Anlage in Betrieb"
-        allow="autoplay; encrypted-media"
+      <video
+        ref={videoRef}
+        src={src}
+        muted
+        loop
+        playsInline
+        preload="auto"
+        disablePictureInPicture
         tabIndex={-1}
-        onLoad={() => window.setTimeout(() => setReady(true), 1800)}
+        onLoadedData={() => setReady(true)}
       />
     </div>
   );
