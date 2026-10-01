@@ -70,3 +70,32 @@
 .offer-value dd { margin:0; color:#58616a; font-size:12px; line-height:1.75; }
 @media(max-width:600px) { .offer-value dl { grid-template-columns:1fr; gap:18px; } }
 @media print { .offer-value { break-inside:avoid; margin-top:20px; padding-top:16px; } .offer-value dd { font-size:9pt; line-height:1.6; } .offer-cover-body { padding:30px 0; } .offer-cover-rule { margin-top:26px; } }
+/* Refined offer hierarchy: readable paper, prominent outcomes, distinct operational details. */
+.offer-toolbar { position:sticky; top:0; z-index:10; max-width:none; padding:17px max(24px,calc((100vw - 940px)/2)); background:#e9e8e4ed; backdrop-filter:blur(12px); border-bottom:1px solid #d8dad7; }
+.offer-toolbar a { font-weight:600; }
+.offer-document { padding-top:28px; }
+.offer-sheet { scroll-margin-top:82px; border-radius:2px; box-shadow:0 12px 36px #1823310b; }
+.offer-cover { background:linear-gradient(140deg,#fff 60%,#faf3f2); }
+.offer-cover-body { padding-top:48px; }
+.offer h1 { font-size:clamp(43px,6.5vw,70px); line-height:1.08; letter-spacing:-.055em; }
+.offer p,.offer li { font-size:15px; line-height:1.8; }
+.offer h3 { font-size:17px; }
+.offer p.offer-lead { font-size:19px; line-height:1.7; }
+.offer-section-title { margin-bottom:16px; }
+.offer p.offer-chapter-benefit { font-size:18px; line-height:1.5; color:var(--offer-red); font-weight:550; padding-bottom:22px; border-bottom:1px solid #e2e5e7; margin-bottom:24px; max-width:680px; }
+.offer-value dl > div { border-left:2px solid #d5a6ab; padding-left:15px; }
+.offer-value dt { font-size:15px; }
+.offer-value dd { font-size:13px; }
+.offer p.offer-assurance { font-size:12px; line-height:1.8; margin-bottom:22px; color:#68717a; }
+.offer-table tbody tr:nth-child(even) { background:#f8f9fa; }
+.offer-table { font-size:13px; }
+.offer-callout { border-radius:0 5px 5px 0; }
+.offer-timeline { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px; border:0; padding:0; }
+.offer-timeline > div { border-top:3px solid var(--offer-red); padding-top:14px; }
+.offer-timeline p { font-size:13px; }
+.offer-next { margin:30px 0; padding:26px; background:var(--offer-ink); color:#fff; }
+.offer-next p { color:#d5dce1; font-size:14px; }
+.offer-next a { display:inline-flex; align-items:center; gap:22px; padding:12px 16px; background:#fff; color:var(--offer-ink); font-size:13px; font-weight:600; margin-top:6px; }
+.offer-fine a { text-decoration:underline; text-underline-offset:3px; }
+@media(max-width:600px) { .offer-toolbar { margin:0 -10px; padding:16px 20px; } .offer-document { padding-top:18px; } .offer-timeline { grid-template-columns:1fr; gap:5px; } .offer-value dl { gap:22px; } .offer-cover-body { padding:36px 0; } .offer p.offer-lead { font-size:17px; } .offer p,.offer li { font-size:14px; } .offer-next { padding:20px; } .offer p.offer-chapter-benefit { font-size:16px; } }
+@media print { .offer-document { padding-top:0; } .offer-toolbar { display:none; } .offer-sheet { box-shadow:none; border-radius:0; } .offer p,.offer li { font-size:10pt; line-height:1.6; } .offer h1 { font-size:58px; } .offer p.offer-lead { font-size:12pt; } .offer p.offer-chapter-benefit { font-size:12pt; margin-bottom:18px; padding-bottom:14px; } .offer-value dd { font-size:9pt; } .offer-next { break-inside:avoid; } .offer-next a { display:none; } .offer-cover-body { padding:28px 0; } .offer-cover-rule { margin:24px 0 16px; } }
