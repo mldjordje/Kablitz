@@ -1,233 +1,86 @@
-import {
-  ArrowDown, ArrowRight, Award, Check, Clock, Compass, Factory, Inbox, Layers, Lightbulb, PenLine, Plug, ShieldCheck, Sparkles, Wrench,
-  type LucideIcon,
-} from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
-import {
-  AEO_QUESTIONS, AEO_STEPS, CMS, GOALS, LEGAL, PAGE_GROUPS, PHASES, PREPARE, PROPOSALS_LATER, PROPOSALS_NOW, REQUIREMENTS,
-  SUMMARY_CORE, SUMMARY_LATER, SUMMARY_RECOMMENDED, TAKEAWAYS, type Item, type SummaryItem,
-} from "./kablitz-projekt-data";
-import { KablitzProjektReader } from "./kablitz-projekt-reader";
+import type { ReactNode } from "react";
 import "./kablitz-projekt.css";
 
-const ICONS: Record<string, LucideIcon> = {
-  compass: Compass, layers: Layers, award: Award, factory: Factory, wrench: Wrench, pen: PenLine, shield: ShieldCheck,
-  sparkles: Sparkles, inbox: Inbox, plug: Plug,
-};
-
-const TOC = [
-  { id: "ueberblick", label: "Auf einen Blick" },
-  { id: "ziel", label: "Ziel der neuen Website" },
-  { id: "anforderungen", label: "Ihre Anforderungen" },
-  { id: "seiten", label: "Aufbau der Seiten" },
-  { id: "redaktion", label: "Redaktion mit Google-Anmeldung" },
-  { id: "recht", label: "Datenschutz und Recht" },
-  { id: "empfehlungen", label: "Empfohlene Erweiterungen" },
-  { id: "spaeter", label: "Für später" },
-  { id: "ablauf", label: "Ablauf" },
-  { id: "vorbereitung", label: "Was wir von Ihnen brauchen" },
-];
-
-type Kind = "wunsch" | "empfehlung" | "spaeter";
-
-function Label({ kind }: { kind: Kind }) {
-  const text = { wunsch: "Ihr Wunsch", empfehlung: "Unsere Empfehlung", spaeter: "Später" }[kind];
-  return <span className={`kd-label kd-label-${kind}`}>{text}</span>;
+const chapters = ["Website & Inhalte", "Interaktive Präsentation", "CMS & Administration", "SEO & AEO", "Umsetzung & Übergabe", "Betreuung & nächste Phase"];
+function Sheet({ number, title, children }: { number: number; title: string; children: ReactNode }) {
+  return <section className="offer-sheet" id={`kapitel-${number}`} aria-labelledby={`titel-${number}`}>
+    <header className="offer-sheet-head"><span>ADSPIRE / KABLITZ</span><span>Leistungsangebot · {String(number).padStart(2, "0")}</span></header>
+    <div className="offer-section-title"><span>{String(number).padStart(2, "0")}</span><h2 id={`titel-${number}`}>{title}</h2></div>
+    {children}
+    <footer className="offer-sheet-foot"><span>Neue Unternehmenswebsite · Leistungsumfang</span><span>{String(number + 1).padStart(2, "0")} / 07</span></footer>
+  </section>;
 }
-
-function Chapter({ id, n, title, kind, children }: { id: string; n: number; title: string; kind?: Kind; children: React.ReactNode }) {
-  return (
-    <section id={id} className="kd-chapter">
-      <div className="kd-chapter-head kd-reveal">
-        <span className="kd-chapter-num">{String(n).padStart(2, "0")}</span>
-        <div>
-          <h2>{title}</h2>
-          {kind && <Label kind={kind} />}
-        </div>
-      </div>
-      {TAKEAWAYS[id] && <p className="kd-takeaway kd-reveal"><Lightbulb size={18} aria-hidden="true" /><span><strong>Kurz gesagt:</strong> {TAKEAWAYS[id]}</span></p>}
-      {children}
-    </section>
-  );
-}
-
-function Cards({ items, columns = 2 }: { items: Item[]; columns?: 2 | 3 }) {
-  return (
-    <div className={`kd-cards kd-cards-${columns}`}>
-      {items.map((item) => (
-        <article key={item.title} className="kd-card kd-reveal">
-          <h4><Check size={16} aria-hidden="true" />{item.title}</h4>
-          <p>{item.text}</p>
-        </article>
-      ))}
-    </div>
-  );
-}
-
-function SummaryCard({ item, kind }: { item: SummaryItem; kind: Kind }) {
-  const Icon = ICONS[item.icon] ?? Check;
-  return (
-    <a href={`#${item.anchor}`} className={`kd-sum kd-sum-${kind} kd-reveal`}>
-      <span className="kd-sum-icon"><Icon size={22} aria-hidden="true" /></span>
-      <h3>{item.title}</h3>
-      <p className="kd-sum-what">{item.what}</p>
-      <p className="kd-sum-value"><span>Ihr Nutzen</span>{item.value}</p>
-    </a>
-  );
-}
+function Block({ title, children }: { title: string; children: ReactNode }) { return <div className="offer-block"><h3>{title}</h3>{children}</div>; }
 
 export function KablitzProjektPage() {
-  return (
-    <div className="kd">
-      <KablitzProjektReader />
-      <header className="kd-top">
-        <Link href="/"><Image src="/leads/kablitz-gmbh-r4t9k2/logo-transparent.png" alt="Kablitz Demo-Startseite" width={110} height={34} unoptimized /></Link>
-        <Link href="/" className="kd-top-link">Zur Demo-Website <ArrowRight size={15} /></Link>
-        <span className="kd-progress" aria-hidden="true" />
-      </header>
-
-      <div className="kd-cover">
-        <div className="kd-cover-inner">
-          <p className="kd-meta">Projektübersicht · Stand September 2026</p>
-          <h1>Die neue Website für Kablitz</h1>
-          <p className="kd-lead">Was die neue Website enthält, was jede Funktion bewirkt und was wir zusätzlich empfehlen.</p>
-          <div className="kd-cover-facts">
-            <span><Clock size={16} aria-hidden="true" /> Überblick in 3 Minuten, Details in ca. 15 Minuten</span>
-            <span><Check size={16} aria-hidden="true" /> Alle Punkte aus Ihrer Präsentation enthalten</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="kd-layout">
-        <nav className="kd-toc" aria-label="Inhalt">
-          <p>Inhalt</p>
-          <ol>{TOC.map((t, i) => <li key={t.id}><a href={`#${t.id}`}><span>{String(i).padStart(2, "0")}</span>{t.label}</a></li>)}</ol>
-          <div className="kd-toc-legend">
-            <Label kind="wunsch" /><Label kind="empfehlung" /><Label kind="spaeter" />
-          </div>
-        </nav>
-
-        <main className="kd-doc">
-          <section id="ueberblick" className="kd-overview">
-            <p className="kd-kicker">Auf einen Blick</p>
-            <h2>Das Projekt in Kürze – und was es Ihnen bringt</h2>
-            <p className="kd-overview-intro">Die gesamte Spezifikation, verdichtet auf das Wesentliche. Jede Karte zeigt, was umgesetzt wird und welchen Nutzen es für Kablitz hat. Ein Klick führt zur ausführlichen Erklärung.</p>
-
-            <div className="kd-overview-group">
-              <h3><Label kind="wunsch" /> Kernumfang der neuen Website</h3>
-              <div className="kd-sums">{SUMMARY_CORE.map((s) => <SummaryCard key={s.title} item={s} kind="wunsch" />)}</div>
-            </div>
-            <div className="kd-overview-group">
-              <h3><Label kind="empfehlung" /> Unsere Empfehlung zusätzlich</h3>
-              <div className="kd-sums">{SUMMARY_RECOMMENDED.map((s) => <SummaryCard key={s.title} item={s} kind="empfehlung" />)}</div>
-            </div>
-            <div className="kd-overview-group">
-              <h3><Label kind="spaeter" /> Für eine spätere Phase</h3>
-              <div className="kd-sums">{SUMMARY_LATER.map((s) => <SummaryCard key={s.title} item={s} kind="spaeter" />)}</div>
-            </div>
-
-            <a href="#ziel" className="kd-continue">
-              <ArrowDown size={18} aria-hidden="true" />
-              <span><strong>Im Folgenden wird jeder Punkt ausführlich erklärt.</strong> Lesen Sie der Reihe nach oder springen Sie über das Inhaltsverzeichnis direkt zu einem Thema.</span>
-            </a>
-          </section>
-
-          <Chapter id="ziel" n={1} title="Ziel der neuen Website">
-            <p>Die Website soll Kablitz als erfahrenen Hersteller für Energie aus Biomasse und Reststoffen zeigen, mehr passende Anfragen bringen und die tägliche Arbeit Ihres Teams erleichtern.</p>
-            <Cards items={GOALS} />
-          </Chapter>
-
-          <Chapter id="anforderungen" n={2} title="Ihre Anforderungen" kind="wunsch">
-            <p>Alle Punkte aus Ihrer Präsentation „Kablitz Webseite“ und dem Briefing, jeweils mit einer kurzen Erklärung, was sie auf der Website bewirken.</p>
-            {REQUIREMENTS.map((group, i) => (
-              <div key={group.id} className="kd-group">
-                <h3 className="kd-reveal"><span>2.{i + 1}</span>{group.title}</h3>
-                <p className="kd-group-intro kd-reveal">{group.intro}</p>
-                <Cards items={group.items} />
-              </div>
-            ))}
-          </Chapter>
-
-          <Chapter id="seiten" n={3} title="Aufbau der Seiten" kind="wunsch">
-            <p>Jede Leistung, jeder Brennstoff und jede wichtige Kundenfrage erhält eine eigene Seite. So landet jeder Besucher – ob über Google, über eine KI-Suche oder über das Menü – direkt auf der Seite, die sein Anliegen beantwortet. Jede Seite endet mit einem passenden Kontaktweg.</p>
-            <Cards items={PAGE_GROUPS} />
-            <p className="kd-note kd-reveal">Die genauen Seitenadressen legen wir nach der Bestandsaufnahme der heutigen Website fest. Bestehende Adressen werden weitergeleitet, damit keine Google-Platzierung verloren geht.</p>
-          </Chapter>
-
-          <Chapter id="redaktion" n={4} title="Redaktion mit Google-Anmeldung" kind="wunsch">
-            <p>Ihr Team pflegt die Website selbst, ohne Programmierkenntnisse. Der News-Editor ist in der <Link href="/admin">Admin-Vorschau</Link> bereits ausprobierbar.</p>
-            <Cards items={CMS} />
-          </Chapter>
-
-          <Chapter id="recht" n={5} title="Datenschutz und Recht">
-            <p>Deutsche Vorgaben werden bei jeder Funktion von Anfang an berücksichtigt, um Abmahnungen zu vermeiden. Die abschließende Prüfung der Rechtstexte erfolgt durch Ihre Verantwortlichen oder eine Rechtsberatung.</p>
-            <Cards items={LEGAL} />
-          </Chapter>
-
-          <Chapter id="empfehlungen" n={6} title="Empfohlene Erweiterungen" kind="empfehlung">
-            <p>Diese Erweiterungen sparen Zeit und bringen zusätzliche Anfragen. Sie funktionieren ohne Anbindung an Ihre internen Systeme und können mit der neuen Website starten.</p>
-
-            <div className="kd-feature kd-reveal">
-              <p className="kd-feature-kicker"><Sparkles size={16} aria-hidden="true" /> Wichtigste Empfehlung</p>
-              <h3>KI-Sichtbarkeit (AEO): Kablitz wird in ChatGPT & Co. genannt</h3>
-              <p>Immer mehr Einkäufer und Ingenieure suchen nicht mehr bei Google, sondern fragen ChatGPT, Gemini oder Perplexity. Diese Systeme geben eine fertige Antwort und nennen darin wenige Hersteller – oft mit Link. Wer dort nicht genannt wird, kommt in die engere Auswahl gar nicht erst hinein.</p>
-              <p><strong>AEO (Answer Engine Optimization)</strong> ist die Weiterentwicklung der klassischen Suchmaschinenoptimierung: Die Website wird so aufgebaut, dass KI-Systeme Kablitz als passende, glaubwürdige Antwort erkennen und nennen. Gleichzeitig verbessert sie die Platzierung bei Google.</p>
-
-              <div className="kd-chat" aria-label="Beispiel einer KI-Anfrage">
-                <p className="kd-chat-q">{AEO_QUESTIONS[0]}</p>
-                <p className="kd-chat-a"><Sparkles size={15} aria-hidden="true" /><span>… Ein erfahrener Hersteller ist die <strong>Richard Kablitz GmbH</strong> aus Lauda-Königshofen, die wassergekühlte Rostfeuerungen für Altholz und andere Festbrennstoffe baut … <u>kablitz.de</u></span></p>
-                <p className="kd-chat-caption">So soll eine KI-Antwort künftig aussehen (Beispiel).</p>
-              </div>
-
-              <h4>Weitere Fragen, bei denen Kablitz genannt werden soll</h4>
-              <ul className="kd-questions">{AEO_QUESTIONS.slice(1).map((q) => <li key={q}>„{q}“</li>)}</ul>
-
-              <h4>So erreichen wir das</h4>
-              <ol className="kd-steps">{AEO_STEPS.map((s) => <li key={s.title}><strong>{s.title}</strong><span>{s.text}</span></li>)}</ol>
-
-              <p className="kd-note">KI-Antworten kann niemand direkt steuern, und sie schwanken von Frage zu Frage. Wir schaffen die Voraussetzungen, unter denen Kablitz genannt wird, und machen den Fortschritt mit der monatlichen Messung sichtbar.</p>
-            </div>
-
-            <h3 className="kd-sub kd-reveal">Weitere Empfehlungen</h3>
-            <div className="kd-cards kd-cards-2">
-              {PROPOSALS_NOW.map((p) => (
-                <article key={p.title} className="kd-card kd-card-proposal kd-reveal">
-                  <h4>{p.title}</h4>
-                  <p><span className="kd-mini">Was es tut</span>{p.does}</p>
-                  <p className="kd-benefit"><span className="kd-mini">Ihr Nutzen</span>{p.benefit}</p>
-                </article>
-              ))}
-            </div>
-          </Chapter>
-
-          <Chapter id="spaeter" n={7} title="Für später" kind="spaeter">
-            <p>Diese Ideen bringen zusätzlichen Nutzen, erfordern aber eine Anbindung an Ihre bestehenden Systeme oder einen größeren Aufwand. Wir empfehlen, sie nach dem Start der neuen Website und nach einer gemeinsamen Prüfung anzugehen.</p>
-            <div className="kd-cards kd-cards-2">
-              {PROPOSALS_LATER.map((p) => (
-                <article key={p.title} className="kd-card kd-card-later kd-reveal">
-                  <h4>{p.title}</h4>
-                  <p><span className="kd-mini">Was es tut</span>{p.does}</p>
-                  <p><span className="kd-mini">Voraussetzung</span>{p.benefit}</p>
-                </article>
-              ))}
-            </div>
-          </Chapter>
-
-          <Chapter id="ablauf" n={8} title="Ablauf">
-            <ol className="kd-timeline">{PHASES.map((p, i) => <li key={p.title} className="kd-reveal"><span>{i + 1}</span><div><strong>{p.title}</strong><p>{p.text}</p></div></li>)}</ol>
-          </Chapter>
-
-          <Chapter id="vorbereitung" n={9} title="Was wir von Ihnen brauchen">
-            <ul className="kd-checklist">{PREPARE.map((p) => <li key={p} className="kd-reveal"><Check size={18} aria-hidden="true" />{p}</li>)}</ul>
-          </Chapter>
-
-          <footer className="kd-end kd-reveal">
-            <p>Fragen zu diesem Dokument besprechen wir gern persönlich.</p>
-            <div><Link href="/" className="kd-btn">Demo-Website ansehen <ArrowRight size={16} /></Link><Link href="/admin" className="kd-btn kd-btn-ghost">Admin-Vorschau öffnen</Link></div>
-          </footer>
-        </main>
-      </div>
+  return <main className="offer">
+    <nav className="offer-toolbar" aria-label="Dokumentnavigation"><Link href="/">← Zur Demo</Link><span>Leistungsangebot</span><a href="#inhalt">Inhalt ↓</a></nav>
+    <div className="offer-document">
+      <section className="offer-sheet offer-cover" aria-labelledby="angebot-titel">
+        <header className="offer-sheet-head"><strong className="offer-brand">ADSPIRE</strong><span>Für Richard Kablitz GmbH</span></header>
+        <div className="offer-cover-body"><p className="offer-cover-type">Leistungsangebot / Projektumfang</p><h1 id="angebot-titel">Die neue digitale<br />Präsenz von<br /><em>Kablitz.</em></h1><p className="offer-lead">Eine mehrsprachige Unternehmenswebsite mit interaktiver Industriepräsentation, zentraler Redaktion und strukturierten Kundenanfragen.</p><div className="offer-cover-rule" /><dl className="offer-facts"><div><dt>Umsetzung</dt><dd>Maximal 2 Monate</dd></div><div><dt>Sprachen</dt><dd>DE / EN + ES / FR / IT</dd></div><div><dt>Betreuung</dt><dd>3 Monate inklusive</dd></div></dl></div>
+        <div className="offer-parties"><div><small>Auftraggeber</small><strong>Richard Kablitz GmbH</strong><span>Unternehmenswebsite & Administration</span></div><div><small>Auftragnehmer</small><strong>ADSPIRE · Đorđe Mladenović</strong><span>Dimitrija Leka 66, 18000 Niš (Palilula), Serbien</span><span>PIB 114723739 · MB 67804961</span></div></div>
+        <footer className="offer-sheet-foot"><span>Arbeitsfassung · ohne Preisangaben · 01. Oktober 2026</span><span>01 / 07</span></footer>
+      </section>
+      <Sheet number={1} title="Website & Inhalte">
+        <p className="offer-intro">Der bestehende Demo-Auftritt bildet die gestalterische Grundlage. Daraus entsteht eine vollständige, produktive Unternehmenswebsite für Vertrieb, technische Information und Service.</p>
+        <aside className="offer-callout"><h3>Keine vorab festgelegte Begrenzung der Seitenzahl.</h3><p>Der Umfang richtet sich nach den fachlichen Anforderungen und der SEO-/AEO-Strategie. Alle im Projekt abgestimmten relevanten Seiten sind enthalten; die Erstellung wird nicht pro Seite berechnet. Neue Funktionen und laufende Erweiterungen nach Projektabschluss werden separat abgestimmt.</p></aside>
+        <Block title="Vollständiger Unternehmensauftritt"><p>Startseite, Unternehmen, Geschichte, Fertigung und Gießerei, Kontakt, Karriere sowie erforderliche rechtliche Informationsseiten. Ergänzt durch alle relevanten Fachseiten zu Lösungen, Technologien, Anlagen, Brennstoffen, Anwendungen, Service und Ersatzteilen.</p></Block>
+        <Block title="Abgeschlossene und aktuelle Projekte"><p>Jedes zur Veröffentlichung freigegebene Projekt erhält eine eigene Detailseite mit Status, Standort, Bildern, Beschreibung und relevanten technischen Daten. Die Kategorien „Abgeschlossene Projekte“ und „Aktuelle Projekte“ werden im CMS, in der Projektübersicht und auf dem Globus einheitlich verwendet. Die Einordnung zukünftiger Projekte wird mit Kablitz abgestimmt.</p></Block>
+        <Block title="Fünf Sprachversionen"><p>Deutsch und Englisch sind die gewählten Hauptsprachen. Spanisch, Französisch und Italienisch werden für den anfänglichen Projektumfang ohne zusätzliche Berechnung ergänzt. Navigation, Formulare und veröffentlichte Inhalte werden entsprechend mehrsprachig umgesetzt.</p></Block>
+        <Block title="Inhalte gemeinsam vorbereiten"><p>Kablitz liefert Fotos, wesentliche Fachinformationen und vorhandene Texte. ADSPIRE erstellt und überarbeitet daraus die Website-Texte und Sprachversionen. Fachliche Angaben, Übersetzungen, Bildrechte und die Veröffentlichung von Projekten werden durch Kablitz freigegeben.</p></Block>
+        <nav id="inhalt" className="offer-contents" aria-label="Inhaltsverzeichnis"><h3>In diesem Angebot</h3><ol>{chapters.map((title, index) => <li key={title}><a href={`#kapitel-${index + 1}`}><span>{String(index + 1).padStart(2, "0")}</span>{title}<span>↗</span></a></li>)}</ol></nav>
+      </Sheet>
+      <Sheet number={2} title="Interaktive Präsentation">
+        <p className="offer-intro">Die charakteristischen Elemente der Demo bleiben zentral: eine ausdrucksstarke Startseite, der interaktive 3D-Globus und die anschauliche Darstellung des Anlagenprozesses.</p>
+        <Block title="Interaktiver 3D-Globus"><p>Ein drehbarer, interaktiver Globus macht die internationale Präsenz und Entwicklung von Kablitz erlebbar. Jede dargestellte Standort- oder Projektmarkierung ist anklickbar und öffnet zugehörige Informationen sowie den Zugang zur Detailseite.</p><ul><li>Historische Entwicklung des Unternehmens und Erweiterungen des Werks entlang einer Zeitachse.</li><li>Abgeschlossene und aktuelle Projekte; freigegebene zukünftige Vorhaben können ebenfalls dargestellt werden.</li><li>Filter zur gezielten Auswahl von Projekten und historischen Ereignissen.</li><li>Projektvorschau mit Bildern, Standort, Status und wesentlichen Daten.</li><li>Pflege von Projektinformationen, Koordinaten und zeitlicher Einordnung über das CMS.</li></ul><p>Mehrere Ereignisse am gleichen Standort werden zeitlich getrennt dargestellt. Eine ergänzende Projektliste ermöglicht den Zugriff auch ohne Bedienung der 3D-Ansicht.</p></Block>
+        <aside className="offer-callout"><h3>Der Anlagenprozess: vollständig auf Kablitz zugeschnitten.</h3><p>Direkt nach dem Globus erklärt die bereits vorgestellte interaktive Sektion die Funktionsweise der Anlage. Die Darstellung wird anhand der technischen Vorgaben von Kablitz weiter ausgearbeitet.</p></aside>
+        <Block title="Vom Brennstoff bis zur Energie"><p>Die animierte Prozessdarstellung zeigt Brennstoffzuführung, Feuerung, Energieerzeugung und Rauchgasbehandlung. Aufbau, Prozessschritte, Komponenten, Bezeichnungen, Texte und Animationen können vollständig an die tatsächliche Kablitz-Technologie angepasst und weiter verfeinert werden, bis der freigegebene Ablauf fachlich korrekt dargestellt ist.</p><p>Die Abstimmung erfolgt anhand der von Kablitz bereitgestellten technischen Informationen. Die Sektion ist eine erklärende Visualisierung und keine Live-Steuerung oder technische Simulation.</p></Block>
+        <Block title="Qualität auf allen Geräten"><p>Responsive Umsetzung für Desktop, Tablet und Smartphone, verständliche Navigation und zugängliche Bedienung. Animationen berücksichtigen reduzierte Bewegung; Bilder und 3D-Inhalte werden für kurze Ladezeiten und eine flüssige Nutzung optimiert.</p></Block>
+        <div className="offer-flow" aria-label="Prozessübersicht"><span>01<br /><strong>Brennstoff</strong></span><span>02<br /><strong>Feuerung</strong></span><span>03<br /><strong>Energie</strong></span><span>04<br /><strong>Rauchgas</strong></span></div>
+      </Sheet>
+      <Sheet number={3} title="CMS & Administration">
+        <p className="offer-intro">Ein geschützter Arbeitsbereich verbindet die Pflege der Website mit der Bearbeitung von Projekt- und Serviceanfragen. Rollen und Arbeitsabläufe werden auf die Organisation von Kablitz zugeschnitten.</p>
+        <Block title="Google-Anmeldung & Mitarbeiterverwaltung"><p>Sign in with Google für zuvor freigeschaltete E-Mail-Adressen. Owner und berechtigte Administratoren können Mitarbeiter hinzufügen, Rollen zuweisen und Zugänge deaktivieren. Berechtigungen werden serverseitig geprüft.</p><p>Der Owner erhält vollständigen Zugriff. Redaktion, Vertrieb und Service erhalten die jeweils benötigten Rechte. Sichtbarkeit, Veröffentlichung und Zuständigkeiten werden gemeinsam definiert.</p></Block>
+        <div className="offer-table-wrap"><table className="offer-table"><caption>Module der ersten Phase</caption><thead><tr><th>Modul</th><th>Enthaltene Funktionen</th></tr></thead><tbody>
+          <tr><th scope="row">CMS & Medien</th><td>Abgestimmte Seiteninhalte, Bilder und Sprachversionen bearbeiten. Definierte Felder und Sektionen erhalten die Qualität des Designs.</td></tr>
+          <tr><th scope="row">News</th><td>Beiträge erstellen, bearbeiten, als Entwurf speichern und veröffentlichen; Anzeige auf der Startseite und den News-Seiten.</td></tr>
+          <tr><th scope="row">Projekte</th><td>Abgeschlossene und aktuelle Projekte mit Bildern, Fachinformationen, Standort und Detailseite verwalten; Verknüpfung mit dem Globus.</td></tr>
+          <tr><th scope="row">Projektanfragen</th><td>Technische Angaben und Kontaktdaten, Vorgangsnummer, Detailansicht, Filter, Status, interne Notizen und Zuweisung an Mitarbeiter.</td></tr>
+          <tr><th scope="row">Serviceanfragen</th><td>Service- und Ersatzteilanfragen, mehrere Teilepositionen, Fotos und Zeichnungen; Status, interne Notizen und Zuständigkeit.</td></tr>
+          <tr><th scope="row">Analytik</th><td>Besuche, Quellen, beliebte Seiten und Formular-Konversionen; Auswertung nach verfügbaren Messdaten und vereinbartem Datenschutzkonzept.</td></tr>
+        </tbody></table></div>
+        <Block title="Formulare mit tatsächlicher Verarbeitung"><p>Mehrsprachige Projekt- und Serviceformulare, Validierung, sichere Speicherung in der Datenbank sowie geschützte Dateiablage. Eingangsbestätigung für den Absender und E-Mail-Benachrichtigung an zuständige Mitarbeiter. Antworten erfolgen über das bestehende E-Mail-Programm; eine integrierte Mailbox ist nicht Bestandteil dieses Umfangs.</p></Block>
+        <aside className="offer-note">Die Daten und Funktionen der bisherigen Admin-Demo sind Konzeptbeispiele. Die erste Phase umfasst keine Lagerverwaltung, Beschaffung, Wareneingänge, Lieferantenbewertung, Produktionsplanung oder ERP-Funktionen.</aside>
+      </Sheet>
+      <Sheet number={4} title="SEO & AEO">
+        <p className="offer-intro">Die Website wird so strukturiert, dass potenzielle Kunden, Suchmaschinen und KI-basierte Antwortsysteme die Leistungen, Fachkompetenz und Referenzen von Kablitz verstehen können.</p>
+        <Block title="Fachliche Tiefe statt einer festen Seitenzahl"><p>Themenplanung nach Leistungen, Kundenfragen und technischen Anwendungsfällen. Eigenständige Themen erhalten hilfreiche Fachseiten; zusammengehörige Fragen werden sinnvoll gebündelt. Dazu gehören technische Erläuterungen, Brennstoff- und Lösungsseiten, Serviceinformationen und nachvollziehbare Projektberichte.</p></Block>
+        <Block title="Warum Kablitz? Mit konkreten Belegen."><p>Öffentliche Informationsseiten erklären die Stärken und Unterschiede von Kablitz: eigene Fertigung und Gießerei, Engineering, technische Erfahrung, Referenzen und Betreuung über den Anlagenlebenszyklus. Aussagen werden anhand freigegebener Unternehmensinformationen belegt.</p><p>Diese Seiten richten sich an Menschen und sind zugleich für Suchmaschinen und geeignete KI-Crawler technisch zugänglich. Sie enthalten klare Antworten, nachvollziehbare Fakten und passende interne Verknüpfungen.</p></Block>
+        <Block title="Technische Optimierung"><ul><li>Strukturierte Seitenhierarchie, verständliche URLs und interne Verlinkung.</li><li>Individuelle Seitentitel und Beschreibungen, Canonicals und XML-Sitemap.</li><li>Sprachzuordnung mit hreflang und mehrsprachiger Navigation.</li><li>Inhaltlich passende strukturierte Daten und indexierbare Hauptinhalte.</li><li>Optimierung von Ladezeiten, Medien und Core Web Vitals.</li><li>Prüfung bestehender URLs und Einrichtung erforderlicher Weiterleitungen.</li><li>Einrichtung von Google Search Console und Bing Webmaster Tools in den Konten des Auftraggebers.</li></ul></Block>
+        <aside className="offer-callout"><h3>Eine zusätzliche Fachseite pro Betreuungsmonat.</h3><p>ADSPIRE erstellt und veröffentlicht monatlich eine neue SEO-/AEO-optimierte Seite, einschließlich der deutschen, englischen, spanischen, französischen und italienischen Version. Themen und Fachinformationen werden mit Kablitz abgestimmt. Diese Leistung gilt auch während der drei kostenlosen Betreuungsmonate.</p></aside>
+        <Block title="Klare redaktionelle Zuständigkeit"><p>Kablitz kann News und Projektseiten selbst im Admin veröffentlichen. Die zusätzlich betreuten SEO-/AEO-Fachseiten werden von ADSPIRE konzipiert, erstellt und technisch umgesetzt.</p></Block>
+        <p className="offer-fine">Bessere Auffindbarkeit ist das Projektziel. Bestimmte Rankings, Traffic-Zahlen oder Nennungen in KI-Antworten können nicht garantiert werden.</p>
+      </Sheet>
+      <Sheet number={5} title="Umsetzung & Übergabe">
+        <p className="offer-intro">Die Umsetzung beginnt unmittelbar nach Eingang der Anzahlung. Datenmodell, Design und technische Grundlagen werden vorbereitet, während die bereitgestellten Materialien laufend eingearbeitet werden.</p>
+        <div className="offer-timeline"><div><span>Start</span><h3>Direkt nach Anzahlung</h3><p>Technische Basis, Datenbank, Gestaltung, Inhaltsstruktur und Abstimmung der Zugriffsrechte.</p></div><div><span>Ca. Woche 3</span><h3>Erste Veröffentlichung möglich</h3><p>Fertige, geprüfte und freigegebene Bereiche wie Startseite, Unternehmen und Kontakt können bereits online gehen.</p></div><div><span>Max. 2 Monate</span><h3>Vollständiger Projektumfang</h3><p>Weitere Fachseiten, Sprachversionen und Admin-Module werden ergänzt, getestet und übergeben.</p></div></div>
+        <Block title="Schrittweise live gehen"><p>Die erste Veröffentlichung muss nicht bis zum Abschluss aller Module warten. Noch nicht fertige Bereiche werden nicht als funktionsfähig dargestellt. Bestehende wichtige Inhalte bleiben erreichbar oder werden sinnvoll weitergeleitet. Der konkrete Umfang jedes Veröffentlichungsschritts wird abgestimmt.</p></Block>
+        <Block title="Überarbeitungen bis zur finalen Freigabe"><p>Design und vereinbarte Funktionen werden iterativ angepasst, bis Kablitz den abgestimmten Umfang freigibt. Enthalten sind Überarbeitungen innerhalb dieses Umfangs. Neue Module oder nachträgliche Erweiterungen werden separat vereinbart.</p></Block>
+        <Block title="Materialien, Zugang & bestehende Website"><p>Kablitz stellt Fotos, Fachinformationen, Rückmeldungen und erforderliche Zugänge laufend bereit. Benötigt werden insbesondere Zugriff auf Domain/DNS und bei Bedarf das bestehende Hosting zur Übernahme relevanter Inhalte und Sicherung des bisherigen Auftritts. Vorhandene E-Mail-Dienste werden beim Domainwechsel berücksichtigt.</p><p>Eine Migration einer bisherigen Anwendung oder Datenbank ist nicht vorgesehen. Inhaltsübernahme und die Zuordnung wichtiger bestehender URLs sind Bestandteil des Relaunchs.</p></Block>
+        <Block title="Vollständiges Eigentum am Projektcode"><p>Kablitz erhält den vollständigen entwickelten Quellcode, das Repository und die projektspezifischen Inhalte. Hosting, Datenbank und weitere Projektkonten werden dem Auftraggeber zugeordnet. Eine Einführung in CMS, Projektpflege und Anfragebearbeitung gehört zur Übergabe. Für eingesetzte Drittanbieter und Open-Source-Bibliotheken gelten deren eigene Lizenzen.</p></Block>
+        <aside className="offer-note">Ziel: Abschluss spätestens zwei Monate nach Eingang der Anzahlung. Verzögerungen durch ausstehende Materialien, Zugänge oder Freigaben werden frühzeitig kommuniziert und gemeinsam im Zeitplan berücksichtigt.</aside>
+      </Sheet>
+      <Sheet number={6} title="Betreuung & nächste Phase">
+        <Block title="Drei Monate Betreuung inklusive"><p>Ab der ersten öffentlichen Veröffentlichung der neuen Website auf der Kundendomain sind drei Monate des vereinbarten Betreuungspakets kostenlos enthalten. Bei einer schrittweisen Veröffentlichung beginnt dieser Zeitraum mit dem ersten Livegang. Danach kann die Betreuung monatlich fortgeführt werden.</p></Block>
+        <Block title="Regelmäßige technische Betreuung"><p>Kontrolle von Hosting, Datenbank und bestehenden Seiten und Funktionen; Fehlerbehebung und erforderliche technische Wartung. Jeden Arbeitstag um 08:00 Uhr (Zeitzone Europe/Berlin) wird eine Prüfung der verfügbaren System- und Browserfehlerprotokolle vorgenommen. Hinzu kommt eine neue SEO-/AEO-Fachseite pro Monat in allen fünf Sprachen.</p><p>Die Bearbeitung erkannter oder gemeldeter Fehler beginnt am gleichen Arbeitstag. Probleme im eigenen Verantwortungsbereich werden nach Möglichkeit am selben Tag behoben. Bei externen Abhängigkeiten oder umfangreicheren Ursachen werden Maßnahmen und voraussichtliche Lösungszeiten mitgeteilt.</p></Block>
+        <aside className="offer-callout"><h3>Sofortige Intervention bei kritischen Vorfällen.</h3><p>Bei Bekanntwerden eines kritischen Vorfalls – etwa eines Angriffs, eines Verdachts auf kompromittierte Zugänge oder eines vollständigen Website-Ausfalls – beginnt ADSPIRE unverzüglich mit Prüfung, Eindämmung und Wiederherstellung, auch an Wochenenden und Feiertagen. Die vollständige Behebung kann von Ursache und externen Anbietern abhängen.</p></aside>
+        <Block title="Betrieb & Kündigung"><p>Vercel ist für das Hosting und Neon für die Datenbank vorgesehen. Infrastruktur, Dateiablage, E-Mail-Versand und weitere externe Dienste werden vom Auftraggeber nach den tatsächlichen Tarifen und der Nutzung getragen. Die Betreuung kann mit einer Frist von 30 Tagen gekündigt werden. Quellcode und Projektkonten verbleiben bei Kablitz.</p></Block>
+        <Block title="Zahlungsrahmen"><p>20 % Anzahlung zum Projektstart. Der Restbetrag kann nach Vereinbarung auf bis zu zehn monatliche Raten verteilt werden. Der konkrete Zahlungsplan wird vor Beauftragung festgelegt.</p><p className="offer-fine">Noch abzustimmender Vorschlag: Die erste Rate des Restbetrags wird einen Monat nach dem ersten öffentlichen Livegang fällig; weitere Raten folgen monatlich.</p></Block>
+        <Block title="Phase 2: Anbindung an das bestehende ERP-/Lagersystem"><p>Die Synchronisation mit der vorhandenen Desktop- bzw. Lageranwendung ist ein separates Folgeprojekt. WinLine von mesonic ist ein möglicher, noch zu bestätigender Kandidat. Vor einer verbindlichen Planung werden Produkt, Version, Lizenzen, Schnittstellen, Datenumfang und Synchronisationsrichtung mit Kablitz und dem betreuenden Systempartner geprüft.</p></Block>
+        <div className="offer-contact"><strong>ADSPIRE</strong><span>Inhaber: Đorđe Mladenović</span><span>Dimitrija Leka 66 · 18000 Niš (Palilula) · Serbien</span><span>PIB 114723739 · MB 67804961</span></div>
+      </Sheet>
     </div>
-  );
+  </main>;
 }
