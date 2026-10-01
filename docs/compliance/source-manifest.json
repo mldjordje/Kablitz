@@ -1,0 +1,122 @@
+[
+  {
+    "id": "gdpr",
+    "file": "sources/GDPR.html",
+    "url": "https://eur-lex.europa.eu/eli/reg/2016/679",
+    "kind": "EU regulation",
+    "optional": true,
+    "fetchedAtUtc": "2026-10-01T12:31:11.0565095Z",
+    "status": "failed",
+    "error": "Unexpectedly small response"
+  },
+  {
+    "id": "ddg",
+    "file": "sources/DDG.pdf",
+    "url": "https://www.gesetze-im-internet.de/ddg/DDG.pdf",
+    "kind": "German law",
+    "optional": false,
+    "fetchedAtUtc": "2026-10-01T12:31:11.2999204Z",
+    "status": "downloaded",
+    "bytes": 168765,
+    "sha256": "DD8D51B98A1D0393561DAE567112BD14040832AE5C1739C045DFDA46BDF58E30"
+  },
+  {
+    "id": "tdddg",
+    "file": "sources/TDDDG.pdf",
+    "url": "https://www.gesetze-im-internet.de/ttdsg/TDDDG.pdf",
+    "kind": "German law",
+    "optional": false,
+    "fetchedAtUtc": "2026-10-01T12:31:11.6660650Z",
+    "status": "downloaded",
+    "bytes": 150838,
+    "sha256": "A76C314F7EFC1344A382F954037520987399CE38A46533A2403AD6B385A463D9"
+  },
+  {
+    "id": "bdsg",
+    "file": "sources/BDSG.pdf",
+    "url": "https://www.gesetze-im-internet.de/bdsg_2018/BDSG.pdf",
+    "kind": "German law",
+    "optional": false,
+    "fetchedAtUtc": "2026-10-01T12:31:11.9332081Z",
+    "status": "downloaded",
+    "bytes": 267512,
+    "sha256": "859631D6203E0C3D12B280A1982C83D0521CCFE6C4EAA04AE5BC264112711004"
+  },
+  {
+    "id": "bfsg",
+    "file": "sources/BFSG.pdf",
+    "url": "https://www.gesetze-im-internet.de/bfsg/BFSG.pdf",
+    "kind": "German law, applicability conditional",
+    "optional": false,
+    "fetchedAtUtc": "2026-10-01T12:31:12.1682288Z",
+    "status": "downloaded",
+    "bytes": 162122,
+    "sha256": "AF2398B7E1FBF694D7966091DF75AAFA8339E93E4E3EC804AD08194D6BAC33C4"
+  },
+  {
+    "id": "bfsgv",
+    "file": "sources/BFSGV.pdf",
+    "url": "https://www.gesetze-im-internet.de/bfsgv/BFSGV.pdf",
+    "kind": "German regulation, applicability conditional",
+    "optional": false,
+    "fetchedAtUtc": "2026-10-01T12:31:12.3665832Z",
+    "status": "downloaded",
+    "bytes": 89705,
+    "sha256": "F4A351B5E9379A394FD4F35D27B1CFC032B6544C8B9CF766269DA9FECABE72DD"
+  },
+  {
+    "id": "uwg",
+    "file": "sources/UWG.pdf",
+    "url": "https://www.gesetze-im-internet.de/uwg_2004/UWG.pdf",
+    "kind": "German law",
+    "optional": false,
+    "fetchedAtUtc": "2026-10-01T12:31:12.6661711Z",
+    "status": "downloaded",
+    "bytes": 136569,
+    "sha256": "74E12F53CC2A956BBF4B75A5F09FE4D3FF09E0D2C8C1FD177C3B3AA06E4C0B68"
+  },
+  {
+    "id": "urhg",
+    "file": "sources/UrhG.pdf",
+    "url": "https://www.gesetze-im-internet.de/urhg/UrhG.pdf",
+    "kind": "German law",
+    "optional": false,
+    "fetchedAtUtc": "2026-10-01T12:31:12.9958994Z",
+    "status": "downloaded",
+    "bytes": 413416,
+    "sha256": "A9AE29D4AC8C728CD5C57ACDF73280D32850F0792103C89D3B0A9C42E70E6BD7"
+  },
+  {
+    "id": "bfsg-guidance",
+    "file": "sources/bfsg-ecommerce-faq.html",
+    "url": "https://www.bundesfachstelle-barrierefreiheit.de/DE/Barrierefreiheitsstaerkungsgesetz/FAQ-elektronischer-Geschaeftsverkehr/faq-elektronischer-Geschaeftsverkehr_node",
+    "kind": "Official guidance, not legislation",
+    "optional": false,
+    "fetchedAtUtc": "2026-10-01T12:31:13.3501874Z",
+    "status": "downloaded",
+    "bytes": 135703,
+    "sha256": "D1E692DED4A0C11003E8ECAF23A702A389607AF29EC2508F98BFF780409918CB"
+  },
+  {
+    "id": "dsk-guidance",
+    "file": "sources/OH_Digitale_Dienste.pdf",
+    "url": "https://www.datenschutzkonferenz-online.de/media/oh/OH_Digitale_Dienste.pdf",
+    "kind": "Official regulator guidance, not legislation",
+    "optional": false,
+    "fetchedAtUtc": "2026-10-01T12:31:13.8839367Z",
+    "status": "downloaded",
+    "bytes": 486206,
+    "sha256": "BADAB6056A54B2E538504D52FC482B74BBED3B845696CAA73EB67AFC19CA07A7"
+  },
+  {
+    "id": "gdpr-authority-edition",
+    "file": "sources/DSGVO-2025.pdf",
+    "url": "https://www.datenschutz-berlin.de/fileadmin/user_upload/pdf/gesetzestexte/2025-BlnBDI_DSGVO.pdf",
+    "kind": "GDPR text edition published by Berlin data protection authority, December 2025",
+    "optional": false,
+    "fetchedAtUtc": "2026-10-01T12:31:14.2520819Z",
+    "status": "downloaded",
+    "bytes": 1827713,
+    "sha256": "54CA9A453BA52769C67982BD95040FBB58FB2C02D72C8532667039130667246B"
+  }
+]

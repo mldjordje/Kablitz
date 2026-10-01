@@ -1,0 +1,69 @@
+[
+  {
+    "id": "gdpr",
+    "file": "GDPR.html",
+    "url": "https://eur-lex.europa.eu/eli/reg/2016/679",
+    "kind": "EU regulation",
+    "optional": true
+  },
+  {
+    "id": "ddg",
+    "file": "DDG.pdf",
+    "url": "https://www.gesetze-im-internet.de/ddg/DDG.pdf",
+    "kind": "German law"
+  },
+  {
+    "id": "tdddg",
+    "file": "TDDDG.pdf",
+    "url": "https://www.gesetze-im-internet.de/ttdsg/TDDDG.pdf",
+    "kind": "German law"
+  },
+  {
+    "id": "bdsg",
+    "file": "BDSG.pdf",
+    "url": "https://www.gesetze-im-internet.de/bdsg_2018/BDSG.pdf",
+    "kind": "German law"
+  },
+  {
+    "id": "bfsg",
+    "file": "BFSG.pdf",
+    "url": "https://www.gesetze-im-internet.de/bfsg/BFSG.pdf",
+    "kind": "German law, applicability conditional"
+  },
+  {
+    "id": "bfsgv",
+    "file": "BFSGV.pdf",
+    "url": "https://www.gesetze-im-internet.de/bfsgv/BFSGV.pdf",
+    "kind": "German regulation, applicability conditional"
+  },
+  {
+    "id": "uwg",
+    "file": "UWG.pdf",
+    "url": "https://www.gesetze-im-internet.de/uwg_2004/UWG.pdf",
+    "kind": "German law"
+  },
+  {
+    "id": "urhg",
+    "file": "UrhG.pdf",
+    "url": "https://www.gesetze-im-internet.de/urhg/UrhG.pdf",
+    "kind": "German law"
+  },
+  {
+    "id": "bfsg-guidance",
+    "file": "bfsg-ecommerce-faq.html",
+    "url": "https://www.bundesfachstelle-barrierefreiheit.de/DE/Barrierefreiheitsstaerkungsgesetz/FAQ-elektronischer-Geschaeftsverkehr/faq-elektronischer-Geschaeftsverkehr_node",
+    "kind": "Official guidance, not legislation"
+  },
+  {
+    "id": "dsk-guidance",
+    "file": "OH_Digitale_Dienste.pdf",
+    "url": "https://www.datenschutzkonferenz-online.de/media/oh/OH_Digitale_Dienste.pdf",
+    "kind": "Official regulator guidance, not legislation"
+  },
+  {
+    "id": "gdpr-authority-edition",
+    "file": "DSGVO-2025.pdf",
+    "url": "https://www.datenschutz-berlin.de/fileadmin/user_upload/pdf/gesetzestexte/2025-BlnBDI_DSGVO.pdf",
+    "kind": "GDPR text edition published by Berlin data protection authority, December 2025"
+  }
+]
